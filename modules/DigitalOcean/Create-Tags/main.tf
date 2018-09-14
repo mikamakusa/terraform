@@ -1,3 +1,4 @@
 resource "digitalocean_tag" "do_tag" {
-  name = ""
+  count = "${length(var.tag_name)}"
+  name = "${lookup(var.tag_name[count.index], "name")}"
 }
