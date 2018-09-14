@@ -9,7 +9,7 @@ resource "digitalocean_droplet" "do_droplets" {
   ipv6               = "${lookup(var.droplets[count.index], "ipv6")}"
   private_networking = "${lookup(var.droplets[count.index], "private_net")}"
   resize_disk        = "${lookup(var.droplets[count.index], "resize_disk")}"
-  volume_ids         = "${lookup(var.droplets[count.index], "volume_id")}"
-  tags               = "[${var.droplets_tags}]"
+  volume_ids         = ["${element(var.volume_ids, count.index)}"]
+  tags               = ["${element(var.droplets_tags, count.index)}"]
   ssh_keys           = "${lookup(var.droplets[count.index], "ssh_key_id")}"
 }

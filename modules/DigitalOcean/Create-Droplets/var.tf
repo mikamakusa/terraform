@@ -7,3 +7,7 @@ variable "droplets_tags" {
 
   default = {}
 }
+
+variable "volume_ids" {
+  type = "list"
+}
