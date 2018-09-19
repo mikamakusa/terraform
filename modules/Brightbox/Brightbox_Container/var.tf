@@ -1,0 +1,3 @@
+variable "container" {
+  type = "list"
+}
