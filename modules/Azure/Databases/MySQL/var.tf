@@ -1,19 +1,15 @@
-variable "mysql_sku" {
-  type = "map"
-
-  default = {}
+variable "mysql_server" {
+  type = "list"
 }
 
-variable "mysql_storage_profile" {
-  type = "map"
+variable "administrator_login" {}
 
-  default = {}
-}
+variable "administrator_login_password" {}
 
-variable "mysql_rg_name" {}
-variable "mysql_rg_location" {}
+variable "mysql_resource_group_name" {}
+variable "mysql_location" {}
 
-variable "mysql_db" {
+variable "mysql_config" {
   type = "list"
 }
 
