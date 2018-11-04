@@ -57,6 +57,13 @@ module "openstack_loadbalancer" {
   os_lbmember       = "${var.lbmember}"
 }
 
+## Firewall
+module "openstack_firewall" {
+  source            = "../../modules/Create_Firewall"
+  fw_rule           = "${var.rule}"
+  fw_policy         = "${var.policy}"
+  firewall          = "${var.firewall}"  
+}
 ```
 
 **vars.tf**  
@@ -128,6 +135,18 @@ variable "lbpool" {
 }
 
 variable "lbmember" {
+  type = "list"
+}
+
+variable "rule" {
+  type = "list"
+}
+
+variable "policy" {
+  type = "list"
+}
+
+variable "firewall" {
   type = "list"
 }
 
