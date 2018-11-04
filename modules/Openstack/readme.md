@@ -47,6 +47,16 @@ module "openstack_servers" {
   default_sec_group = "${var.default_sec_group}"
   float_ip          = "${var.float_ip}"
 }
+
+## Load Balancer
+module "openstack_loadbalancer" {
+  source            = "../../modules/Create_LoadBalancer"
+  os_loadbalancer   = "${var.loadbalancer}"
+  os_listener       = "${var.listener}"
+  os_lbpool         = "${var.lbpool}"
+  os_lbmember       = "${var.lbmember}"
+}
+
 ```
 
 **vars.tf**  
@@ -104,6 +114,23 @@ variable "pool_ip" {
 }
 
 variable "default_sec_group" {}
+
+variable "loadbalancer" {
+  type = "list"
+}
+
+variable "listener" {
+  type = "list"
+}
+
+variable "lbpool" {
+  type = "list"
+}
+
+variable "lbmember" {
+  type = "list"
+}
+
 ```
 
 **vars.tfvars** (for example)  
