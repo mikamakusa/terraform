@@ -37,3 +37,9 @@ resource "openstack_compute_floatingip_associate_v2" "os_floatip_assoc" {
   floating_ip = "${lookup(var.float_ip[count.index],"floating_ip")}"
   instance_id = "${element(openstack_compute_instance_v2.os_instance.*.id,lookup(var.float_ip[count.index],"id_instance"))}"
 }
+
+resource "openstack_blockstorage_volume_attach_v2" "os_blkstor_attach" {
+  count     = "${length(var.os_blockstor)}"
+  host_name = "${element(openstack_compute_instance_v2.os_instance.*.name,lookup(var.os_blockstor,"instance_name"))}"
+  volume_id = "${lookup(var.os_blockstor,"blockstor_id")}"
+}

@@ -18,7 +18,7 @@ terraform {
 }
 
 ## Network
-module "dacechange_openstack_network" {
+module "openstack_network" {
   source  = "../../modules/Create_Network"
   subnet  = "${var.subnet}"
   network = "${var.network}"
@@ -26,14 +26,20 @@ module "dacechange_openstack_network" {
 }
 
 ## Security
-module "dacechange_openstack_security" {
+module "openstack_security" {
   source         = "../../modules/Create_Security_Groups"
   sec_group_rule = "${var.sec_group_rule}"
   sec_group      = "${var.sec_group}"
 }
 
+## Storage
+module "openstack_storage" {
+  source            = "../../modules/Create_BlockStorage"
+  os_blockstor      = "${var.os_blockstor}"
+}
+
 ## Instances
-module "dacechange_openstack_servers" {
+module "openstack_servers" {
   source            = "../../modules/Create_Instance_Basic"
   network           = "${var.network}"
   os_instance       = "${var.os_instance}"
@@ -83,9 +89,9 @@ variable "router" {
   type = "list"
 }
 
-# variable "os_blockstor" {
-#   type = "list"
-# }
+variable "os_blockstor" {
+  type = "list"
+}
 
 variable "os_auth_url" {}
 variable "tenant_id" {}
@@ -205,16 +211,16 @@ float_ip = [
 ### Storage
 os_blockstor = [
   {
-    blockstor_id = "0"
-    name         = "front_blockstor"
-    size         = "10"
-    id_instance  = "1"
+    blockstor_id   = "0"
+    name           = "front_blockstor"
+    size           = "10"
+    instance_name  = "front"
   },
   {
-    blockstor_id = "0"
-    name         = "postgre_blockstor"
-    size         = "10"
-    id_instance  = "2"
+    blockstor_id   = "0"
+    name           = "postgre_blockstor"
+    size           = "10"
+    instance_name  = "postgre"
   },  
 ]
 
