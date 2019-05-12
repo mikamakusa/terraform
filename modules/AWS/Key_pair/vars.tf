@@ -1,0 +1,3 @@
+variable "keypairs" {
+  type = "list"
+}
