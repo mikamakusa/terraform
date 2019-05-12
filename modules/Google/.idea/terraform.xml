@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="TerraformToolProjectSettings">
+    <option name="myTerraformPath" value="/opt/terraform_11.11/terraform" />
+  </component>
+</project>
