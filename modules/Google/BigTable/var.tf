@@ -1,4 +1,8 @@
-variable "bq_instance" {
+variable "bt_instance" {
+  type = "list"
+}
+
+variable "bt_table" {
   type = "list"
 }
 
