@@ -1,45 +1,46 @@
-resource "google_compute_instance" "" {
-  count        = ""
-  name         = ""
-  machine_type = ""
-  zone         = ""
-  tags         = []
+resource "google_compute_disk" "gcp_disk" {
+  count = "${length(var.disk)}"
+  name  = "${lookup(var.disk[count.index],"name")}"
+  type  = "${lookup(var.disk[count.index],"type")}"
+  zone  = "${var.zone}"
+  size  = "${lookup(var.disk[count.index],"size")}"
+}
 
-  boot_disk {
+resource "google_compute_attached_disk" "gcp_attached_disk" {
+  count       = "${length(var.disk)}"
+  disk        = "${element(google_compute_disk.gcp_disk.*.self_link,count.index)}"
+  instance    = "${element(google_compute_instance.google_Vms.*.id,lookup(var.disk[count.index],"instance_id"))}"
+  device_name = "${lookup(var.disk[count.index],"device_name")}"
+  project     = "${var.project}"
+  zone        = "${var.zone}"
+}
+
+resource "google_compute_instance" "google_Vms" {
+  count               = "${length(var.Linux_Vms)}"
+  name                = "${var.prefix}-${lookup(var.Linux_Vms[count.index],"suffix_name")}-${lookup(var.Linux_Vms[count.index], "id")}"
+  project             = "${var.project}"
+  zone                = "projects/${var.app_project}/zones/${var.zone}"
+  can_ip_forward      = "${lookup(var.Linux_Vms[count.index],"can_ip_forward")}"
+  deletion_protection = "${lookup(var.Linux_Vms[count.index],"deletion_protection")}"
+  machine_type        = "${lookup(var.Linux_Vms[count.index],"machine_type")}"
+
+  "boot_disk" {
+    auto_delete = "${lookup(var.Linux_Vms[count.index],"auto_delete")}"
+    device_name = "${var.prefix}-${lookup(var.Linux_Vms[count.index],"suffix_name")}-${lookup(var.Linux_Vms[count.index], "id")}-bootdisk"
+
     initialize_params {
-      image = ""
-      size  = ""
+      size  = "${lookup(var.Linux_Vms[count.index],"size")}"
+      type  = "${lookup(var.Linux_Vms[count.index],"type")}"
+      image = "${lookup(var.Linux_Vms[count.index],"image")}"
     }
   }
 
   "network_interface" {
-    network            = ""
-    subnetwork         = ""
-    subnetwork_project = ""
-    address            = ""
-
-    access_config {
-      nat_ip                 = ""
-      public_ptr_domain_name = ""
-      network_tier           = ""
-    }
+    network    = "${var.network}"
+    subnetwork = "${var.subnetwork}"
   }
 
-  attached_disk {
-    source                  = ""
-    device_name             = ""
-    mode                    = ""
-    disk_encryption_key_raw = ""
-  }
-
-  service_account {
-    scopes = []
-    email  = ""
-  }
-
-  scheduling {
-    preemptible         = ""
-    on_host_maintenance = ""
-    automatic_restart   = ""
+  metadata {
+    ssh-keys = "${var.app_admin}:${var.ssh_keys}"
   }
 }
