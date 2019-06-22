@@ -12,3 +12,7 @@ variable "app_project" {}
 variable "disk" {
   type = "list"
 }
+variable "address" {
+  type = "list"
+}
+variable "region" {}

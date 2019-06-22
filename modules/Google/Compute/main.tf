@@ -1,3 +1,13 @@
+resource "google_compute_address" "gcp_address" {
+  count        = "${length(var.address)}"
+  name         = "${var.prefix}-${lookup(var.address[count.index],"suffix_name")}-${lookup(var.address[count.index],"id")}-addr"
+  region       = "${var.region}"
+  project      = "${var.project}"
+  subnetwork   = "${var.subnetwork}"
+  address_type = "${lookup(var.address[count.index],"address_type")}"
+  address      = "${lookup(var.address[count.index],"address")}"
+}
+
 resource "google_compute_disk" "gcp_disk" {
   count = "${length(var.disk)}"
   name  = "${lookup(var.disk[count.index],"name")}"
@@ -38,6 +48,7 @@ resource "google_compute_instance" "google_Vms" {
   "network_interface" {
     network    = "${var.network}"
     subnetwork = "${var.subnetwork}"
+    address    = "${element(google_compute_address.gcp_address.*.id,lookup(var.Linux_Vms[count.index],"address_id"))}"
   }
 
   metadata {
