@@ -1,6 +1,5 @@
 How to use this module ?
 
-# ElasticSearch
 ‘‘‘
 elastic_policy_name = "xxxxxxxx-elasticsearch"
 

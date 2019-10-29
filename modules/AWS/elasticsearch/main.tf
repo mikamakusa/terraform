@@ -23,25 +23,7 @@ resource "aws_cloudwatch_log_group" "aws_cw_es_group" {
 
 resource "aws_cloudwatch_log_resource_policy" "aws_cw_es_policy" {
   policy_name = join("-",[var.elastic_policy_name,"policy"])
-  policy_document = <<CONFIG
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "es.amazonaws.com"
-      },
-      "Action": [
-        "logs:PutLogEvents",
-        "logs:PutLogEventsBatch",
-        "logs:CreateLogStream"
-      ],
-      "Resource": "arn:aws:logs:*"
-    }
-  ]
-}
-CONFIG
+  policy_document = file("${path.cwd}/policies/${var.elastic_policy_name}.json")
 }
 
 resource "aws_elasticsearch_domain" "engie_elastic" {
