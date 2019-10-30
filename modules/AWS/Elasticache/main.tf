@@ -46,9 +46,9 @@ resource "aws_elasticache_replication_group" "ElasticacheReplicationGroup" {
   node_type                     = lookup(var.RepGroup[count.index], "node_type", null)
   port                          = lookup(var.RepGroup[count.index], "port", null)
   parameter_group_name          = element(aws_elasticache_parameter_group.ElasticacheParamGroup.*.name, lookup(var.RepGroup[count.index], "parameter_group_name"))
-  automatic_failover_enabled    = lookup(var.RepGroup[count.index], "automatic_failover_enabled")
+  automatic_failover_enabled    = lookup(var.RepGroup[count.index], "automatic_failover_enabled", false)
   engine                        = lookup(var.RepGroup[count.index], "engine", null)
-  engine_version                = lookup(var.RepGroup[count.index], "engine_version")
+  engine_version                = lookup(var.RepGroup[count.index], "engine_version", null)
   at_rest_encryption_enabled    = lookup(var.RepGroup[count.index], "at_rest_encryption_enabled", false)
   transit_encryption_enabled    = lookup(var.RepGroup[count.index], "transit_encryption_enabled", false)
   auth_token                    = lookup(var.RepGroup[count.index], "auth_token") ? aws_elasticache_replication_group.ElasticacheReplicationGroup.transit_encryption_enabled : true
