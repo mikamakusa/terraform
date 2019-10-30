@@ -18,11 +18,11 @@ resource "aws_iam_service_linked_role" "aws_linked_role_es" {
 }
 
 resource "aws_cloudwatch_log_group" "aws_cw_es_group" {
-  name = join("-",[var.elastic_policy_name,"group"])
+  name = join("-", [var.elastic_policy_name, "group"])
 }
 
 resource "aws_cloudwatch_log_resource_policy" "aws_cw_es_policy" {
-  policy_name = join("-",[var.elastic_policy_name,"policy"])
+  policy_name     = join("-", [var.elastic_policy_name, "policy"])
   policy_document = file("${path.cwd}/policies/${var.elastic_policy_name}.json")
 }
 
@@ -83,15 +83,15 @@ resource "aws_elasticsearch_domain" "elastic" {
   }
 
   dynamic "snapshot_options" {
-    for_each = lookup(var.elasticsearch[count.index],"snapshot_options")
+    for_each = lookup(var.elasticsearch[count.index], "snapshot_options")
     content {
-      automated_snapshot_start_hour = lookup(snapshot_options.value,"automated_snapshot_start_hour", null)
+      automated_snapshot_start_hour = lookup(snapshot_options.value, "automated_snapshot_start_hour", null)
     }
   }
 }
 
 resource "aws_elasticsearch_domain_policy" "aws_es_domain_policy" {
-  count = "${ "${length(var.elasticsearch)}" == "0" ? "0" : "${length(var.es_policy)}" }"
-  access_policies = file("${path.cwd}/policies/${lookup(var.es_policy[count.index],"access_policies")}.json")
-  domain_name = element(aws_elasticsearch_domain.elastic.*.id, lookup(var.es_policy[count.index],"domain_id"))
+  count           = "${"${length(var.elasticsearch)}" == "0" ? "0" : "${length(var.es_policy)}"}"
+  access_policies = file("${path.cwd}/policies/${lookup(var.es_policy[count.index], "access_policies")}.json")
+  domain_name     = element(aws_elasticsearch_domain.elastic.*.id, lookup(var.es_policy[count.index], "domain_id"))
 }
