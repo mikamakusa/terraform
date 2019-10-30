@@ -1,6 +1,6 @@
-How to use this module ?
+# How to use this module ?
 
-‘‘‘
+````yaml
 elastic_policy_name = "xxxxxxxx-elasticsearch"
 
 SecGroupName = "elastic"
