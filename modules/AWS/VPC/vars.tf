@@ -13,3 +13,11 @@ variable "route_table" {
 variable "route" {
   type = "list"
 }
+
+variable "endpoint" {
+  type = "list"
+}
+
+variable "route_table_association" {
+  type = "list"
+}
