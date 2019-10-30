@@ -7,7 +7,7 @@ resource "aws_security_group_rule" "aws_security_rule" {
   count             = length(var.SecGroupRules)
   from_port         = lookup(var.SecGroupRules[count.index], "from_port")
   protocol          = lookup(var.SecGroupRules[count.index], "protocol")
-  security_group_id = aws_security_group.aws_security_group.id
+  security_group_id = aws_security_group.elastic_security_group.id
   to_port           = lookup(var.SecGroupRules[count.index], "to_port")
   type              = lookup(var.SecGroupRules[count.index], "type")
   cidr_blocks       = [lookup(var.SecGroupRules[count.index], "cidr_blocks")]
@@ -26,13 +26,13 @@ resource "aws_cloudwatch_log_resource_policy" "aws_cw_es_policy" {
   policy_document = file("${path.cwd}/policies/${var.elastic_policy_name}.json")
 }
 
-resource "aws_elasticsearch_domain" "engie_elastic" {
+resource "aws_elasticsearch_domain" "elastic" {
   count                 = length(var.elasticsearch)
   domain_name           = lookup(var.elasticsearch[count.index], "domain_name")
   elasticsearch_version = lookup(var.elasticsearch[count.index], "elasticsearch_version")
 
   vpc_options {
-    security_group_ids = [join("", aws_security_group.aws_security_group.*.id)]
+    security_group_ids = [join("", aws_security_group.elastic_security_group.id)]
     subnet_ids         = [element(data.terraform_remote_state.vpc.outputs.private_subnets, 0)]
   }
 
@@ -88,4 +88,10 @@ resource "aws_elasticsearch_domain" "engie_elastic" {
       automated_snapshot_start_hour = lookup(snapshot_options.value,"automated_snapshot_start_hour", null)
     }
   }
+}
+
+resource "aws_elasticsearch_domain_policy" "aws_es_domain_policy" {
+  count = "${ "${length(var.elasticsearch)}" == "0" ? "0" : "${length(var.es_policy)}" }"
+  access_policies = file("${path.cwd}/policies/${lookup(var.es_policy[count.index],"access_policies")}.json")
+  domain_name = element(aws_elasticsearch_domain.elastic.*.id, lookup(var.es_policy[count.index],"domain_id"))
 }
