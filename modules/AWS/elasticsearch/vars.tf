@@ -7,6 +7,10 @@ variable "elasticsearch" {
   type = "list"
 }
 
+variable "es_policy" {
+  type = "list"
+}
+
 variable "elastic_policy_name" {}
 
 # Security Group
