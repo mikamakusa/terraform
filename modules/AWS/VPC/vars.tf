@@ -21,3 +21,13 @@ variable "endpoint" {
 variable "route_table_association" {
   type = "list"
 }
+
+variable "default_sg" {
+  type = "list"
+}
+
+variable "eip" {
+  type = "list"
+}
+
+variable "region" {}
