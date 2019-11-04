@@ -1,6 +1,3 @@
-access_key = "AKIAJXLT6UOWBOI7AY3Q"
-secret_key = "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"
-
 aws_vpc = [
   {
     id                   = "0"
