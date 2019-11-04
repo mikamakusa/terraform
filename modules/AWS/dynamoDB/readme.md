@@ -1,5 +1,29 @@
 # How to use this module ?
 
+## How to call the module
+```hcl-terraform
+module "dynamodb" {
+  source       = "../modules/AWS/dynamoDB"
+  global_table = var.global_table
+  item         = var.item
+  table        = var.table
+}
+```
+
+## The variables
+```hcl-terraform
+variable "global_table" {
+  type = "list"
+}
+variable "table" {
+  type = "list"
+}
+variable "item" {
+  type = "list"
+}
+```
+
+## The variables in tfvars file
 ### global_table resource
 ```yaml
 global_table = [

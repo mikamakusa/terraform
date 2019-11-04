@@ -1,5 +1,36 @@
 # How to use this module
 
+## How to call the module
+```hcl-terraform
+module "elasticache" {
+  source      = "../modules/AWS/Elasticache"
+  ParamGroup  = var.ParamGroup
+  RepGroup    = var.RepGroup
+  SecGroup    = var.SecGroup
+  SubnetGroup = var.SubnetGroup
+  elasticache = var.elasticache
+}
+```
+
+## The variables
+```hcl-terraform
+variable "elasticache" {
+  type = "list"
+}
+variable "ParamGroup" {
+  type = "list"
+}
+variable "RepGroup" {
+  type = "list"
+}
+variable "SecGroup" {
+  type = "list"
+}
+variable "SubnetGroup" {
+  type = "list"
+}
+```
+
 ### aws_elasticache_security_group resource
 ```yaml
 SecGroup = [

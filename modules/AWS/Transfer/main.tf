@@ -10,7 +10,7 @@ resource "aws_transfer_server" "transfer_server" {
   dynamic "endpoint_details" {
     for_each = lookup(var.transfer_server[count.index], "endpoint_details")
     content {
-      vpc_endpoint_id = lookup(var.transfer_server[count.index], "vpc_endpoint_id", null)
+      vpc_endpoint_id = element(var.vpc_endpoint_id,lookup(var.transfer_server[count.index],"vpc_endpoint_id"), null)
     }
   }
 }
