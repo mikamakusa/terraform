@@ -30,4 +30,12 @@ variable "eip" {
   type = "list"
 }
 
+variable "nat-gw" {
+  type = "list"
+}
+
+variable "subnet" {
+  type = "list"
+}
+
 variable "region" {}

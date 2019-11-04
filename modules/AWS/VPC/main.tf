@@ -68,10 +68,29 @@ resource "aws_vpc_endpoint_route_table_association" "aws_vpc_endpoint_route_tabl
 
 
 resource "aws_eip" "aws_eip" {
-  count                     = length(var.eip)
-  vpc                       = lookup(var.eip[count.index],"vpc", null)
-  instance                  = lookup(var.eip[count.index],"instance", null)
-  network_interface         = lookup(var.eip[count.index],"network_interface", null)
-  associate_with_private_ip = lookup(var.eip[count.index],"associate_with_private_ip", null)
-  public_ipv4_pool          = lookup(var.eip[count.index],"public_ipv4_pool", null)
+  count = length(var.aws_vpc) == "0" ? "0" : length(var.eip)
+  vpc   = true
+  tags  = lookup(var.eip[count.index], "tags")
+}
+
+resource "aws_subnet" "aws_subnet" {
+  count                   = length(var.aws_vpc) == "0" ? "0" : length(var.subnet)
+  cidr_block              = lookup(var.subnet[count.index], "cidr_block")
+  vpc_id                  = "${element(aws_vpc.aws_vpc.*.id, lookup(var.subnet[count.index], "vpc_id"))}"
+  availability_zone       = lookup(var.subnet[count.index], "availability_zone")
+  map_public_ip_on_launch = lookup(var.subnet[count.index], "map_public_ip_on_launch")
+
+  dynamic "lifecycle" {
+    for_each = lookup(var.subnet[count.index], "lifecycle")
+    content {
+      create_before_destroy = lookup(lifecycle.value, "create_before_destroy", null)
+      prevent_destroy       = lookup(lifecycle.value, "prevent_destory", null)
+    }
+  }
+}
+
+resource "aws_nat_gateway" "aws_nat_gw" {
+  count         = length(var.eip) == "0" ? "0" : length(var.nat-gw)
+  allocation_id = element(aws_eip.aws_eip.*.id, lookup(var.nat-gw[count.index], "eip_id"))
+  subnet_id     = element(aws_subnet.aws_subnet.*.id,lookup(var.nat-gw[count.index],"subnet_id"))
 }
