@@ -61,6 +61,18 @@ s3_bucket = [
   {
     id     = "0"
     bucket = "sftp"
+    acl    = "private"
+    versioning = [
+      {
+        enabled    = "true"
+        mfa_delete = "false"
+      }
+    ]
+    server_side_encryption_configuration = [
+      {
+        sse_algorithm = "AES256"
+      }
+    ]
   }
 ]
 

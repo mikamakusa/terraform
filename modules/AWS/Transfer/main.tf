@@ -12,6 +12,26 @@ resource "aws_iam_role_policy" "iam_role_policy" {
 resource "aws_s3_bucket" "bucket" {
   count  = length(var.s3_bucket)
   bucket = lookup(var.s3_bucket[count.index], "bucket")
+  acl    = lookup(var.s3_bucket[count.index], "acl")
+
+  dynamic "versioning" {
+    for_each = lookup(var.s3_bucket[count.index], "versioning")
+    content {
+      enabled    = lookup(versioning.value, "enabled")
+      mfa_delete = lookup(versioning.value, "mfa_delete")
+    }
+  }
+
+  dynamic "server_side_encryption_configuration" {
+    for_each = lookup(var.s3_bucket[count.index], "server_side_encryption_configuration")
+    content {
+      rule {
+        apply_server_side_encryption_by_default {
+          sse_algorithm = lookup(server_side_encryption_configuration.value, "sse_algorithm")
+        }
+      }
+    }
+  }
 }
 
 resource "aws_transfer_server" "transfer_server" {
