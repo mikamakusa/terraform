@@ -50,7 +50,7 @@ resource "aws_dynamodb_table" "aws_dynamodb_table" {
       name               = lookup(local_secondary_index.value, "name")
       range_key          = lookup(local_secondary_index.value, "range_key")
       projection_type    = lookup(local_secondary_index.value, "projection_type")
-      non_key_attributes = [lookup(local_secondary_index.value, "non_key_attributes"), null]
+      non_key_attributes = [lookup(local_secondary_index.value, "non_key_attributes", null)]
     }
   }
 
