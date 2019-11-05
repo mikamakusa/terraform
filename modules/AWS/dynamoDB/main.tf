@@ -11,7 +11,7 @@ resource "aws_dynamodb_global_table" "aws_global_table" {
 }
 
 resource "aws_dynamodb_table" "aws_dynamodb_table" {
-  count          = "${ "${length(var.global_table)}" == "0" ? "0" : "${length(var.table)}"}"
+  count          = "${length(var.global_table)}" == "0" ? "0" : "${length(var.table)}"
   hash_key       = lookup(var.table[count.index], "hash_key")
   name           = lookup(var.table[count.index], "name")
   billing_mode   = lookup(var.table[count.index], "billing_mode")
