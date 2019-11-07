@@ -115,3 +115,78 @@ sftp_ssh_key = [
   }
 ]
 ```
+
+## The role
+```yaml
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "transfer.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+## The service policy
+To guarantee access to the bucket and send the logs to the **CloudWatch** service.
+```yaml
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowFullAccesstoCloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:*",
+        "s3:*"
+      ],
+      "Resource": "arn:aws:s3:::*"
+    }
+  ]
+}
+```
+
+## The user policy
+In order to manage the user access and to prevent a user from browsing another directory than his home directory.
+```yaml
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowListingOfUserFolder",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::${transfer:HomeBucket}"
+      ],
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:UserName}/*",
+            "${transfer:UserName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "HomeDirObjectAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObjectVersion",
+        "s3:DeleteObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}*"
+    }
+  ]
+}
+```

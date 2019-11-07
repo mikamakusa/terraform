@@ -50,6 +50,7 @@ resource "aws_transfer_user" "sftp_user" {
   server_id      = element(aws_transfer_server.transfer_server.*.id, lookup(var.sftp_user[count.index], "server_id"))
   user_name      = lookup(var.sftp_user[count.index], "user_name")
   home_directory = "/${element(aws_s3_bucket.bucket.*.id, lookup(var.sftp_user[count.index], "bucket_id"))}/${lookup(var.sftp_user[count.index], "user_name")}"
+  policy         = file("${path.cwd}/policy/${lookup(var.sftp_user[count.index], "policy")}.json")
 }
 
 resource "aws_transfer_ssh_key" "sftp_ssh_key" {
