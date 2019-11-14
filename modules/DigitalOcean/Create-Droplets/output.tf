@@ -1,19 +1,23 @@
 output "droplet_id" {
-  value = "${digitalocean_droplet.do_droplets.id}"
+  value = digitalocean_droplet.do_droplets.*.id
 }
 
 output "droplet_name" {
-  value = "${digitalocean_droplet.do_droplets.name}"
+  value = digitalocean_droplet.do_droplets.*.name
 }
 
 output "droplet_image" {
-  value = "${digitalocean_droplet.do_droplets.image}"
+  value = digitalocean_droplet.do_droplets.*.image
 }
 
 output "droplet_region" {
-  value = "${digitalocean_droplet.do_droplets.region}"
+  value = digitalocean_droplet.do_droplets.*.region
 }
 
 output "droplet_ipv4" {
-  value = "${digitalocean_droplet.do_droplets.ipv4_address}"
+  value = digitalocean_droplet.do_droplets.*.ipv4_address
+}
+
+output "droplet_urn" {
+  value = digitalocean_droplet.do_droplets.*.urn
 }
