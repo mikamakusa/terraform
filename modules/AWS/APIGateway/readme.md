@@ -37,9 +37,7 @@ variable "base_path_mapping" {
   type = "list"
 }
 
-variable "certificate_arn" {
-  type = "list"
-}
+variable "certificate_arn" {}
 
 variable "deployment" {
   type = "list"
