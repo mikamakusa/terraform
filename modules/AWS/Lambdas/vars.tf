@@ -10,10 +10,10 @@ variable "permission" {
   type = "list"
 }
 
-variable "lambda" {
+variable "iam_role_id" {}
+
+variable "event_source_mapping" {
   type = "list"
 }
 
-variable "iam_lambda" {
-  type = "list"
-}
+variable "event_source_arn" {}
