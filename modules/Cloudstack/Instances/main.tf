@@ -1,3 +1,10 @@
+resource "cloudstack_ssh_keypair" "ssh_keypair" {
+  count = length(var.ssh_keypair)
+  name = lookup(var.ssh_keypair[count.index], "name")
+  public_key = file(join(".", [join("/", [path.cwd, "keypair", lookup(var.ssh_keypair[count.index], "keypair", null)]), "key"]))
+  project = lookup(var.ssh_keypair[count.index], "project", null)
+}
+
 resource "cloudstack_instance" "instances" {
   count                = length(var.instance)
   service_offering     = lookup(var.instance[count.index], "service_offering")
@@ -13,6 +20,6 @@ resource "cloudstack_instance" "instances" {
   project              = lookup(var.instance, "project", null)
   start_vm             = lookup(var.instance, "start_vm", true)
   user_data            = file(join(".", [join("/", [path.cwd, "user_data", lookup(var.instance[count.index], "user_data", null)]), "sh"]))
-  keypair              = file(join(".", [join("/", [path.cwd, "keypair", lookup(var.instance[count.index], "keypair", null)]), "key"]))
+  keypair              = element(cloudstack_ssh_keypair.ssh_keypair.*.name, lookup(var.instance[count.index], "keypair_id", null))
   expunge              = lookup(var.instance[count.index], "expunge", true)
 }

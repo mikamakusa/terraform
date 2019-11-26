@@ -91,7 +91,7 @@ resource "aws_elasticsearch_domain" "elastic" {
 }
 
 resource "aws_elasticsearch_domain_policy" "aws_es_domain_policy" {
-  count           = "${"${length(var.elasticsearch)}" == "0" ? "0" : "${length(var.es_policy)}"}"
+  count           = length(var.elasticsearch) == "0" ? "0" : length(var.es_policy)
   access_policies = file("${path.cwd}/policies/${lookup(var.es_policy[count.index], "access_policies")}.json")
   domain_name     = element(aws_elasticsearch_domain.elastic.*.id, lookup(var.es_policy[count.index], "domain_id"))
 }

@@ -23,7 +23,7 @@ resource "aws_security_group" "security_group" {
 }
 
 resource "aws_security_group_rule" "security_group_rules" {
-  count             = "${"${length(var.security_group)}" == "0" ? "0" : "${length(var.security_rule)}"}"
+  count             = length(var.security_group) == "0" ? "0" : length(var.security_rule)
   from_port         = lookup(var.security_rule[count.index], "from_port")
   protocol          = lookup(var.security_rule[count.index], "protocol")
   security_group_id = element(aws_security_group.security_group.*.id, lookup(var.security_rule[count.index], "security_group_id"))

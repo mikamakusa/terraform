@@ -120,3 +120,11 @@ resource "aws_api_gateway_base_path_mapping" "base_path_mapping" {
   domain_name = element(aws_api_gateway_domain_name.domain_name.*.domain_name, lookup(var.base_path_mapping[count.index], "domain_id"))
   stage_name  = element(aws_api_gateway_stage.stage.*.stage_name, lookup(var.base_path_mapping[count.index], "stage_id"))
 }
+
+resource "aws_api_gateway_model" "gateway_model" {
+  count        = length(var.rest_api) == "0" ? "0" : length(var.gateway_model)
+  content_type = lookup(var.gateway_model[count.index], "content_type")
+  name         = lookup(var.gateway_model[count.index], "name")
+  rest_api_id  = element(aws_api_gateway_rest_api.rest_api.*.id, lookup(var.gateway_model[count.index], "rest_api_id"))
+  schema       = file(join(".", [join("/", [path.cwd, lookup(var.gateway_model[count.index], "schema")]), ".json"]))
+}

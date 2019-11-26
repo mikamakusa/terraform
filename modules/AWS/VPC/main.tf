@@ -76,7 +76,7 @@ resource "aws_eip" "aws_eip" {
 resource "aws_subnet" "aws_subnet" {
   count                   = length(var.aws_vpc) == "0" ? "0" : length(var.subnet)
   cidr_block              = lookup(var.subnet[count.index], "cidr_block")
-  vpc_id                  = "${element(aws_vpc.aws_vpc.*.id, lookup(var.subnet[count.index], "vpc_id"))}"
+  vpc_id                  = element(aws_vpc.aws_vpc.*.id, lookup(var.subnet[count.index], "vpc_id"))
   availability_zone       = lookup(var.subnet[count.index], "availability_zone")
   map_public_ip_on_launch = lookup(var.subnet[count.index], "map_public_ip_on_launch")
 

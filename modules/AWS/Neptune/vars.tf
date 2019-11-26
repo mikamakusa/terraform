@@ -1,3 +1,8 @@
+variable "iam_role" {}
+variable "kms_key" {}
+variable "vpc_id" {}
+variable "sns_neptune" {}
+
 variable "neptune" {
   type = "list"
 }

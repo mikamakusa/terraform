@@ -43,3 +43,7 @@ variable "certificate_arn" {}
 variable "base_path_mapping" {
   type = "list"
 }
+
+variable "gateway_model" {
+  type = "list"
+}

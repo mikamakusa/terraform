@@ -4,7 +4,9 @@ variable "instance" {
 
 variable "ami" {}
 
-variable "key_pair" {}
+variable "key_pair" {
+  type = "list"
+}
 
 variable "subnet_id" {}
 

@@ -1,21 +1,15 @@
-variable "os_instance" {
+variable "tenant_id" {}
+
+variable "flavor" {
   type = "list"
 }
 
-variable "network" {
+variable "flavor_access" {
   type = "list"
 }
 
-variable "os_keypair" {
+variable "instance" {
   type = "list"
 }
 
-variable "float_ip" {
-  type = "list"
-}
-
-variable "os_blockstor" {
-   type = "list"
-}
-
-variable "default_sec_group" {}
+variable "security_groups" {}
