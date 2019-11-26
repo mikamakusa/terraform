@@ -1,19 +1,19 @@
 variable "elasticache" {
-  type = list(string)
+  type = "list"
 }
 
 variable "SecGroup" {
-  type = list(string)
+  type = "list"
 }
 
 variable "SubnetGroup" {
-  type = list(string)
+  type = "list"
 }
 
 variable "ParamGroup" {
-  type = list(string)
+  type = "list"
 }
 
 variable "RepGroup" {
-  type = list(string)
+  type = "list"
 }

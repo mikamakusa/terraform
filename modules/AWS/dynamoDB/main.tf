@@ -11,7 +11,7 @@ resource "aws_dynamodb_global_table" "aws_global_table" {
 }
 
 resource "aws_dynamodb_table" "aws_dynamodb_table" {
-  count          = "${length(var.global_table)}" == "0" ? "0" : "${length(var.table)}"
+  count          = length(var.global_table) == "0" ? "0" : length(var.table)
   hash_key       = lookup(var.table[count.index], "hash_key")
   name           = lookup(var.table[count.index], "name")
   billing_mode   = lookup(var.table[count.index], "billing_mode")
@@ -82,7 +82,7 @@ resource "aws_dynamodb_table" "aws_dynamodb_table" {
 }
 
 resource "aws_dynamodb_table_item" "aws_table_item" {
-  count      = length(var.item)
+  count      = length(var.table) == "0" ? "0" : length(var.item)
   hash_key   = element(aws_dynamodb_table.aws_dynamodb_table.hash_key,lookup(var.item[count.index],"hash_id"))
   item       = file("${path.cwd}/dynamodb/${lookup(var.item[count.index],"name")}.json")
   table_name = element(aws_dynamodb_table.aws_dynamodb_table.name,lookup(var.item[count.index],"table_id"))

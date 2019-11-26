@@ -1,29 +1,5 @@
-resource "aws_security_group" "elastic_security_group" {
-  vpc_id = data.terraform_remote_state.vpc.defaults
-  name   = var.SecGroupName
-}
-
-resource "aws_security_group_rule" "aws_security_rule" {
-  count             = length(var.SecGroupRules)
-  from_port         = lookup(var.SecGroupRules[count.index], "from_port")
-  protocol          = lookup(var.SecGroupRules[count.index], "protocol")
-  security_group_id = aws_security_group.elastic_security_group.id
-  to_port           = lookup(var.SecGroupRules[count.index], "to_port")
-  type              = lookup(var.SecGroupRules[count.index], "type")
-  cidr_blocks       = [lookup(var.SecGroupRules[count.index], "cidr_blocks")]
-}
-
 resource "aws_iam_service_linked_role" "aws_linked_role_es" {
   aws_service_name = "es.amazonaws.com"
-}
-
-resource "aws_cloudwatch_log_group" "aws_cw_es_group" {
-  name = join("-", [var.elastic_policy_name, "group"])
-}
-
-resource "aws_cloudwatch_log_resource_policy" "aws_cw_es_policy" {
-  policy_name     = join("-", [var.elastic_policy_name, "policy"])
-  policy_document = file("${path.cwd}/policies/${var.elastic_policy_name}.json")
 }
 
 resource "aws_elasticsearch_domain" "elastic" {
@@ -32,8 +8,8 @@ resource "aws_elasticsearch_domain" "elastic" {
   elasticsearch_version = lookup(var.elasticsearch[count.index], "elasticsearch_version")
 
   vpc_options {
-    security_group_ids = [join("", aws_security_group.elastic_security_group.id)]
-    subnet_ids         = [element(data.terraform_remote_state.vpc.outputs.private_subnets, 0)]
+    security_group_ids = [element(var.security_group_ids, lookup(var.elasticsearch[count.index], "security_group_ids"))]
+    subnet_ids         = [element(var.subnet_ids, lookup(var.elasticsearch[count.index], "subnet_ids"))]
   }
 
   dynamic "cluster_config" {
@@ -69,7 +45,7 @@ resource "aws_elasticsearch_domain" "elastic" {
     for_each = lookup(var.elasticsearch[count.index], "encrypt_at_rest")
     content {
       enabled    = lookup(encrypt_at_rest.value, "enabled", false)
-      kms_key_id = lookup(encrypt_at_rest.value, "kms_key_id", null)
+      kms_key_id = element(var.kms_key_id, lookup(encrypt_at_rest.value, "kms_key_id"))
     }
   }
 
@@ -77,7 +53,7 @@ resource "aws_elasticsearch_domain" "elastic" {
     for_each = lookup(var.elasticsearch[count.index], "log_publishing_options")
     content {
       log_type                 = lookup(log_publishing_options.value, "log_type", null)
-      cloudwatch_log_group_arn = lookup(log_publishing_options.value, "cloudwatch_log_group_arn", aws_cloudwatch_log_group.aws_cw_es_group.arn)
+      cloudwatch_log_group_arn = element(var.cloudwatch_log_group_arn, lookup(log_publishing_options.value, "cloudwatch_log_group_id"))
       enabled                  = lookup(log_publishing_options.value, "enabled", true)
     }
   }
@@ -92,6 +68,6 @@ resource "aws_elasticsearch_domain" "elastic" {
 
 resource "aws_elasticsearch_domain_policy" "aws_es_domain_policy" {
   count           = length(var.elasticsearch) == "0" ? "0" : length(var.es_policy)
-  access_policies = file("${path.cwd}/policies/${lookup(var.es_policy[count.index], "access_policies")}.json")
+  access_policies = data.template_file.elasticsearchPolicy.rendered
   domain_name     = element(aws_elasticsearch_domain.elastic.*.id, lookup(var.es_policy[count.index], "domain_id"))
 }
