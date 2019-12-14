@@ -1,15 +1,3 @@
-resource "aws_dynamodb_global_table" "aws_global_table" {
-  count = length(var.global_table)
-  name  = lookup(var.global_table[count.index], "name")
-
-  dynamic "replica" {
-    for_each = lookup(var.global_table[count.index], "relica")
-    content {
-      region_name = lookup(replica.value, "region_name")
-    }
-  }
-}
-
 resource "aws_dynamodb_table" "aws_dynamodb_table" {
   count          = length(var.global_table) == "0" ? "0" : length(var.table)
   hash_key       = lookup(var.table[count.index], "hash_key")
@@ -17,7 +5,7 @@ resource "aws_dynamodb_table" "aws_dynamodb_table" {
   billing_mode   = lookup(var.table[count.index], "billing_mode")
   read_capacity  = lookup(var.table[count.index], "read_capacity")
   write_capacity = lookup(var.table[count.index], "write_capacity")
-  range_key      = lookup(var.table[count.index], "range_key")
+  range_key      = lookup(var.table[count.index], "range_key", null)
 
   dynamic "attribute" {
     for_each = lookup(var.table[count.index], "attribute")
@@ -74,16 +62,28 @@ resource "aws_dynamodb_table" "aws_dynamodb_table" {
   }
 
   dynamic "point_in_time_recovery" {
-    for_each = lookup(var.table[count.inde], "point_in_time_recovery")
+    for_each = lookup(var.table[count.index], "point_in_time_recovery")
     content {
       enabled = lookup(point_in_time_recovery.value, "enabled", false)
     }
   }
 }
 
+resource "aws_dynamodb_global_table" "aws_global_table" {
+  count = length(var.global_table)
+  name  = element(aws_dynamodb_table.aws_dynamodb_table.*.name, lookup(var.global_table[count.index], "table_id"))
+
+  dynamic "replica" {
+    for_each = lookup(var.global_table[count.index], "replica")
+    content {
+      region_name = lookup(replica.value, "region_name")
+    }
+  }
+}
+
 resource "aws_dynamodb_table_item" "aws_table_item" {
   count      = length(var.table) == "0" ? "0" : length(var.item)
-  hash_key   = element(aws_dynamodb_table.aws_dynamodb_table.hash_key,lookup(var.item[count.index],"hash_id"))
+  hash_key   = element(aws_dynamodb_table.aws_dynamodb_table.*.hash_key,lookup(var.item[count.index],"table_id"))
   item       = file("${path.cwd}/dynamodb/${lookup(var.item[count.index],"name")}.json")
-  table_name = element(aws_dynamodb_table.aws_dynamodb_table.name,lookup(var.item[count.index],"table_id"))
+  table_name = element(aws_dynamodb_table.aws_dynamodb_table.*.name,lookup(var.item[count.index],"table_id"))
 }
