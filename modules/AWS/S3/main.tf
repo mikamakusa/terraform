@@ -111,10 +111,10 @@ resource "aws_s3_bucket" "s3_bucket" {
 resource "aws_s3_bucket_object" "s3_bucket_object" {
   count                         = length(var.s3_bucket) == "0" ? "0" : length(var.s3_bucket_object)
   bucket                        = element(aws_s3_bucket.s3_bucket.*.id, lookup(var.s3_bucket_object[count.index], "bucket_id"))
-  key                           = ""
-  source                        = lookup(var.s3_bucket_object[count.index], "content") == "" && lookup(var.s3_bucket_object[count.index], "content_base64") == "" ? "" : lookup(var.s3_bucket_object[count.index], "source")
-  content                       = lookup(var.s3_bucket_object[count.index], "source") == "" && lookup(var.s3_bucket_object[count.index], "content_base64") == "" ? "" : lookup(var.s3_bucket_object[count.index], "content")
-  content_base64                = lookup(var.s3_bucket_object[count.index], "content") == "" && lookup(var.s3_bucket_object[count.index], "source") == "" ? "" : lookup(var.s3_bucket_object[count.index], "content_base64")
+  key                           = lookup(var.s3_bucket_object[count.index], "key")
+  source                        = lookup(var.s3_bucket_object[count.index], "content") == "" && lookup(var.s3_bucket_object[count.index], "content_base64") == "" ? lookup(var.s3_bucket_object[count.index], "source") : ""
+  content                       = lookup(var.s3_bucket_object[count.index], "source") == "" && lookup(var.s3_bucket_object[count.index], "content_base64") == "" ? lookup(var.s3_bucket_object[count.index], "content") : ""
+  content_base64                = lookup(var.s3_bucket_object[count.index], "content") == "" && lookup(var.s3_bucket_object[count.index], "source") == "" ? lookup(var.s3_bucket_object[count.index], "content_base64") : ""
   acl                           = lookup(var.s3_bucket_object[count.index], "acl") == "" ? "" : lookup(var.s3_bucket_object[count.index], "acl")
   cache_control                 = lookup(var.s3_bucket_object[count.index], "cache_control") == "" ? "" : lookup(var.s3_bucket_object[count.index], "cache_control")
   content_disposition           = lookup(var.s3_bucket_object[count.index], "content_disposition") == "" ? "" : lookup(var.s3_bucket_object[count.index], "content_disposition")
@@ -123,9 +123,8 @@ resource "aws_s3_bucket_object" "s3_bucket_object" {
   content_type                  = lookup(var.s3_bucket_object[count.index], "content_type") == "" ? "" : lookup(var.s3_bucket_object[count.index], "content_type")
   website_redirect              = lookup(var.s3_bucket_object[count.index], "website_redirect") == "" ? "" : lookup(var.s3_bucket_object[count.index], "website_redirect")
   storage_class                 = lookup(var.s3_bucket_object[count.index], "storage_class") == "" ? "" : lookup(var.s3_bucket_object[count.index], "storage_class")
-  etag                          = lookup(var.s3_bucket_object[count.index], "kms_key_id") == "" ? "" : lookup(var.s3_bucket_object[count.index], "etag")
+  etag                          = lookup(var.s3_bucket_object[count.index], "kms_key_id") == "" ? lookup(var.s3_bucket_object[count.index], "etag") : ""
   server_side_encryption        = lookup(var.s3_bucket_object[count.index], "server_side_encryption") == "" ? "" : lookup(var.s3_bucket_object[count.index], "server_side_encryption")
-  kms_key_id                    = lookup(var.s3_bucket_object[count.index], "etag") == "" ? "" : element(var.kms_key_id, lookup(var.s3_bucket_object[count.index], "kms_key_id"))
   force_destroy                 = lookup(var.s3_bucket_object[count.index], "force_destroy") == "" ? "" : lookup(var.s3_bucket_object[count.index], "force_destroy")
   object_lock_legal_hold_status = lookup(var.s3_bucket_object[count.index], "object_lock_legal_hold_status") == "" ? "" : lookup(var.s3_bucket_object[count.index], "object_lock_legal_hold_status")
   object_lock_mode              = lookup(var.s3_bucket_object[count.index], "object_lock_mode") == "" ? "" : lookup(var.s3_bucket_object[count.index], "object_lock_mode")
@@ -133,10 +132,48 @@ resource "aws_s3_bucket_object" "s3_bucket_object" {
 }
 
 resource "aws_s3_account_public_access_block" "s3_public_access_block" {
-  count                   = ""
-  block_public_acls       = ""
-  block_public_policy     = ""
-  restrict_public_buckets = ""
-  ignore_public_acls      = ""
-  account_id              = ""
+  count                   = length(var.s3_public_access_block)
+  block_public_acls       = lookup(var.s3_public_access_block[count.index], "block_public_acls")
+  block_public_policy     = lookup(var.s3_public_access_block[count.index], "block_public_policy")
+  restrict_public_buckets = lookup(var.s3_public_access_block[count.index], "restrict_public_buckets")
+  ignore_public_acls      = lookup(var.s3_public_access_block[count.index], "ignore_public_acls")
+  account_id              = lookup(var.s3_public_access_block[count.index], "account_id")
+}
+
+resource "aws_s3_bucket_notification" "s3_bucket_notification" {
+  count  = length(var.s3_bucket) == "0" ? "0" : length(var.s3_bucket_notification)
+  bucket = element(aws_s3_bucket.s3_bucket.*.id, lookup(var.s3_bucket_notification[count.index], "bucket_id"))
+
+  dynamic "topic" {
+    for_each = lookup(var.s3_bucket_notification[count.index], "topic")
+    content {
+      events        = [lookup(topic.value, "events")]
+      topic_arn     = lookup(topic.value, "topic_id")
+      id            = lookup(topic.value, "id")
+      filter_prefix = lookup(topic.value, "filter_prefix")
+      filter_suffix = lookup(topic.value, "filter_suffix")
+    }
+  }
+
+  dynamic "lambda_function" {
+    for_each = lookup(var.s3_bucket_notification[count.index], "lambda_function")
+    content {
+      events              = [lookup(lambda_function.value, "events")]
+      lambda_function_arn = lookup(lambda_function.value, "lambda_id")
+      id                  = lookup(lambda_function.value, "id")
+      filter_prefix       = lookup(lambda_function.value, "filter_prefix")
+      filter_suffix       = lookup(lambda_function.value, "filter_suffix")
+    }
+  }
+
+  dynamic "queue" {
+    for_each = lookup(var.s3_bucket_notification[count.index], "queue")
+    content {
+      events        = [lookup(queue.value, "events")]
+      queue_arn     = lookup(queue.value, "queue_id")
+      id            = lookup(queue.value, "id")
+      filter_prefix = lookup(queue.value, "filter_prefix")
+      filter_suffix = lookup(queue.value, "filter_suffix")
+    }
+  }
 }

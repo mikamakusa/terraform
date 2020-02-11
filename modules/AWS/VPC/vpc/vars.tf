@@ -1,0 +1,3 @@
+variable "vpc" {
+  type = "list"
+}

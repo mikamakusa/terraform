@@ -10,4 +10,8 @@ variable "s3_bucket_object" {
   type = "list"
 }
 
-variable "kms_key_id" {}
+variable "s3_bucket_notification" {
+  type = "list"
+}
+
+//variable "kms_key_id" {}
