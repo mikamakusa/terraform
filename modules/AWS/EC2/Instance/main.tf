@@ -1,14 +1,8 @@
-resource "aws_key_pair" "instance_key_pair" {
-  count      = length(var.key_pair)
-  key_name   = lookup(var.key_pair[count.index], "key_name")
-  public_key = lookup(var.key_pair[count.index], "public_key")
-}
-
 resource "aws_instance" "aws_instance" {
   count                       = length(var.instance)
   ami                         = lookup(var.instance[count.index], "ami")
   instance_type               = lookup(var.instance[count.index], "instance_type")
-  key_name                    = element(aws_key_pair.instance_key_pair.*.key_name, lookup(var.instance[count.index], "key_id"))
+  key_name                    = element(var.key_pair, lookup(var.instance[count.index], "key_id"))
   availability_zone           = lookup(var.instance[count.index], "availability_zone")
   placement_group             = lookup(var.instance[count.index], "placement_group")
   disable_api_termination     = lookup(var.instance[count.index], "disable_api_termination")
@@ -18,7 +12,6 @@ resource "aws_instance" "aws_instance" {
   security_groups             = [var.security_groups]
   subnet_id                   = var.subnet_id
   root_block_device           = lookup(var.instance[count.index], "root_block_device")
-  vpc_security_group_ids      = [lookup(var.instance[count.index], "vpc_security_group_ids") ? aws_instance.aws_instance.*.security_groups : ""]
   source_dest_check           = lookup(var.instance[count.index], "source_dest_check", null)
   tenancy                     = lookup(var.instance[count.index], "tenancy", null)
   host_id                     = lookup(var.instance[count.index], "host_id", null)

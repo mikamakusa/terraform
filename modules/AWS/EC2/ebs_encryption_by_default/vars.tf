@@ -1,0 +1,1 @@
+variable "ebs_encryption_by_default" {}
