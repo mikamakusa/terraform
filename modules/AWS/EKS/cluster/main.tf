@@ -15,5 +15,5 @@ resource "aws_eks_cluster" "eks_cluster" {
     }
   }
 
-  tags = lookup(var.eks_cluster[count.index], "tags", null)
+  tags = var.tags
 }
