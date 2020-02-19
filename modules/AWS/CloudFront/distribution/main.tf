@@ -13,7 +13,10 @@ resource "aws_cloudfront_distribution" "cloudfont_distribution" {
   wait_for_deployment = lookup(var.cloudfont_distribution[count.index], "wait_for_deployment", null)
 
   dynamic "cache_behavior" {
-    for_each = lookup(var.cloudfont_distribution[count.index], "cache_behavior")
+    for_each = [for i in lookup(var.cloudfont_distribution[count.index], "cache_behavior") : {
+      lambda_function_association = lookup(i, "lambda_function_association")
+      forwarded_values            = lookup(i, "forwarded_values")
+    }]
     content {
       allowed_methods           = [lookup(cache_behavior.value, "allowed_methods")]
       cached_methods            = [lookup(cache_behavior.value, "cached_methods")]
@@ -27,20 +30,40 @@ resource "aws_cloudfront_distribution" "cloudfont_distribution" {
       min_ttl                   = lookup(cache_behavior.value, "min_ttl", null)
       trusted_signers           = [lookup(cache_behavior.value, "trusted_signers", null)]
 
-      lambda_function_association {
-        event_type   = lookup(cache_behavior.value, "event_type")
-        lambda_arn   = element(var.lambda_arn, lookup(cache_behavior.value, "lambda_id"))
-        include_body = lookup(cache_behavior.value, "include_body", false)
+      dynamic "lambda_function_association" {
+        for_each = cache_behavior.value.lambda_function_association == null ? [] : [for i in cache_behavior.value.lambda_function_association : {
+          event_id     = i.event_id
+          lambda_id    = i.lambda_id
+          include_body = i.include_body
+        }]
+        content {
+          event_type   = element(var.event_type, lambda_function_association.value.event_id)
+          lambda_arn   = element(var.lambda_arn, lambda_function_association.value.lambda_id)
+          include_body = lambda_function_association.value.include_body
+        }
       }
 
-      forwarded_values {
-        query_string            = lookup(cache_behavior.value, "query_string", false)
-        headers                 = [lookup(cache_behavior.value, "headers")]
-        query_string_cache_keys = [lookup(cache_behavior.value, "query_string_cache_keys")]
+      dynamic "forwarded_values" {
+        for_each = cache_behavior.value.forwarded_values == null ? [] : [for i in cache_behavior.value.forwarded_values : {
+          query_string            = i.query_string
+          headers                 = i.headers
+          query_string_cache_keys = i.query_string_cache_keys
+        }]
+        content {
+          query_string            = forwarded_values.value.query_string
+          headers                 = forwarded_values.value.headers
+          query_string_cache_keys = [forwarded_values.value.query_string_cache_keys]
 
-        cookies {
-          forward           = lookup(cache_behavior.value, "forward")
-          whitelisted_names = [lookup(cache_behavior.value, "whitelisted_names")]
+          dynamic "cookies" {
+            for_each = forwarded_values.value.cookies == null ? [] : [for i in forwarded_values.value.cookies : {
+              forward           = i.forward
+              whitelisted_names = i.whitelisted_names
+            }]
+            content {
+              forward           = cookies.value.forward
+              whitelisted_names = [cookies.value.whitelisted_names]
+            }
+          }
         }
       }
     }
@@ -57,21 +80,39 @@ resource "aws_cloudfront_distribution" "cloudfont_distribution" {
   }
 
   dynamic "origin" {
-    for_each = lookup(var.cloudfont_distribution[count.index], "origin")
+    for_each = [for i in lookup(var.cloudfont_distribution[count.index], "origin") : {
+      custom_header        = lookup(i, "custom_header")
+      custom_origin_config = lookup(i, "custom_origin_config")
+      s3_origin_config     = lookup(i, "s3_origin_config")
+    }]
     content {
       domain_name = lookup(origin.value, "origin_type") == "s3" ? element(var.domain_id_s3, lookup(origin.value, "domain_id")) : element(var.domain_id_alb, lookup(origin.value, "domain_id"))
       origin_id   = join("-", ["origin", lookup(origin.value, "origin_type") == "s3" ? element(var.domain_id_s3, lookup(origin.value, "domain_id")) : element(var.domain_id_alb, lookup(origin.value, "domain_id"))])
 
-      custom_header {
-        name  = lookup(origin.value, "custom_header_name")
-        value = lookup(origin.value, "custom_header_value")
+      dynamic "custom_header" {
+        for_each = origin.value.custom_header == null ? [] : [for i in origin.value.custom_header : {
+          name  = i.name
+          value = i.value
+        }]
+        content {
+          name  = custom_header.value.name
+          value = custom_header.value.value
+        }
       }
 
-      custom_origin_config {
-        http_port              = lookup(origin.value, "http_port")
-        https_port             = lookup(origin.value, "https_port")
-        origin_protocol_policy = lookup(origin.value, "origin_protocol_policy")
-        origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+      dynamic "custom_origin_config" {
+        for_each = origin.value.custom_origin_config == null ? [] : [for i in origin.value.custom_origin_config : {
+          http_port              = i.http_port
+          https_port             = i.https_port
+          origin_protocol_policy = i.origin_protocol_policy
+          origin_ssl_protocols   = i.origin_ssl_protocols
+        }]
+        content {
+          http_port              = custom_origin_config.value.http_port
+          https_port             = custom_origin_config.value.https_port
+          origin_protocol_policy = custom_origin_config.value.origin_protocol_policy
+          origin_ssl_protocols   = [custom_origin_config.value.origin_ssl_protocols]
+        }
       }
 
       s3_origin_config {
@@ -104,17 +145,28 @@ resource "aws_cloudfront_distribution" "cloudfont_distribution" {
   }
 
   dynamic "restrictions" {
-    for_each = lookup(var.cloudfont_distribution[count.index], "restrictions")
+    for_each = [for i in lookup(var.cloudfont_distribution[count.index], "restrictions") : {
+      geo_restriction = lookup(i, "geo_restriction")
+    }]
     content {
-      geo_restriction {
-        restriction_type = lookup(restrictions.value, "restriction_type")
-        locations        = [lookup(restrictions.value, "locations", null)]
+      dynamic "geo_restriction" {
+        for_each = [for i in restrictions.value.geo_restriction : {
+          restriction_type = i.restriction_type
+          locations        = i.locations
+        }]
+        content {
+          restriction_type = geo_restriction.value.restriction_type
+          locations        = [geo_restriction.value.locations]
+        }
       }
     }
   }
 
   dynamic "default_cache_behavior" {
-    for_each = lookup(var.cloudfont_distribution[count.index], "default_cache_behavior")
+    for_each = [for i in lookup(var.cloudfont_distribution[count.index], "default_cache_behavior") : {
+      forwarded_values            = lookup(i, "forwarded_values", null)
+      lambda_function_association = lookup(i, "lambda_function_association", null)
+    }]
     content {
       allowed_methods           = [lookup(default_cache_behavior.value, "allowed_methods")]
       cached_methods            = [lookup(default_cache_behavior.value, "cached_methods")]
@@ -127,21 +179,41 @@ resource "aws_cloudfront_distribution" "cloudfont_distribution" {
       min_ttl                   = lookup(default_cache_behavior.value, "min_ttl", null)
       trusted_signers           = [lookup(default_cache_behavior.value, "trusted_signers", null)]
 
-      forwarded_values {
-        query_string            = lookup(default_cache_behavior.value, "query_string", false)
-        headers                 = [lookup(default_cache_behavior.value, "headers")]
-        query_string_cache_keys = [lookup(default_cache_behavior.value, "query_string_cache_keys")]
-
-        cookies {
-          forward           = lookup(default_cache_behavior.value, "forward")
-          whitelisted_names = [lookup(default_cache_behavior.value, "whitelisted_names")]
+      dynamic "forwarded_values" {
+        for_each = [for i in default_cache_behavior.value.forwarded_values : {
+          query_string            = i.query_string
+          headers                 = i.headers
+          query_string_cache_keys = i.query_string_cache_keys
+          cookies                 = lookup(i, "cookies")
+        }]
+        content {
+          query_string            = forwarded_values.value.query_string
+          headers                 = [forwarded_values.value.headers]
+          query_string_cache_keys = [forwarded_values.value.query_string_cache_keys]
+          dynamic "cookies" {
+            for_each = [for i in forwarded_values.value.cookies : {
+              forward           = i.forward
+              whitelisted_names = i.whitelisted_names
+            }]
+            content {
+              forward           = cookies.value.forward
+              whitelisted_names = [cookies.value.whitelisted_names]
+            }
+          }
         }
       }
 
-      lambda_function_association {
-        event_type   = element(var.event_type, lookup(default_cache_behavior.value, "event_type"))
-        lambda_arn   = element(var.lambda_arn, lookup(default_cache_behavior.value, "lambda_id"))
-        include_body = lookup(default_cache_behavior.value, "include_body", false)
+      dynamic "lambda_function_association" {
+        for_each = [for i in default_cache_behavior.value.lambda_function_association : {
+          event_id     = i.event_id
+          lambda_id    = i.lambda_id
+          include_body = i.include_body
+        }]
+        content {
+          event_type   = element(var.event_type, lambda_function_association.value.event_id)
+          lambda_arn   = element(var.lambda_arn, lambda_function_association.value.lambda_id)
+          include_body = lambda_function_association.value.include_body
+        }
       }
     }
   }
@@ -154,7 +226,10 @@ resource "aws_cloudfront_distribution" "cloudfont_distribution" {
   }
 
   dynamic "ordered_cache_behavior" {
-    for_each = lookup(var.cloudfont_distribution[count.index], "ordered_cache_behavior")
+    for_each = [for i in lookup(var.cloudfont_distribution[count.index], "ordered_cache_behavior") : {
+      forwarded_value             = lookup(i, "forwarded_values")
+      lambda_function_association = lookup(i, "lambda_function_association")
+    }]
     content {
       allowed_methods           = [lookup(ordered_cache_behavior.value, "allowed_methods")]
       cached_methods            = [lookup(ordered_cache_behavior.value, "cached_methods")]
@@ -168,21 +243,41 @@ resource "aws_cloudfront_distribution" "cloudfont_distribution" {
       min_ttl                   = lookup(ordered_cache_behavior.value, "min_ttl", null)
       trusted_signers           = [lookup(ordered_cache_behavior.value, "trusted_signers"), null]
 
-      forwarded_values {
-        query_string            = lookup(ordered_cache_behavior.value, "query_string")
-        headers                 = [lookup(ordered_cache_behavior.value, "headers")]
-        query_string_cache_keys = [lookup(ordered_cache_behavior.value, "query_string_cache_keys")]
-
-        cookies {
-          forward           = lookup(ordered_cache_behavior.value, "forward")
-          whitelisted_names = lookup(ordered_cache_behavior.value, "whitelisted_names")
+      dynamic "forwarded_values" {
+        for_each = [for i in ordered_cache_behavior.value.forwarded_value : {
+          query_string            = i.query_string
+          headers                 = i.headers
+          query_string_cache_keys = i.query_string_cache_keys
+          cookies                 = lookup(i, "cookies")
+        }]
+        content {
+          query_string            = forwarded_values.value.query_string
+          headers                 = [forwarded_values.value.headers]
+          query_string_cache_keys = [forwarded_values.value.query_string_cache_keys]
+          dynamic "cookies" {
+            for_each = [for i in forwarded_values.value.cookies : {
+              forward           = i.forward
+              whitelisted_names = i.whitelisted_names
+            }]
+            content {
+              forward           = cookies.value.forward
+              whitelisted_names = [cookies.value.whitelisted_names]
+            }
+          }
         }
       }
 
-      lambda_function_association {
-        event_type   = element(var.event_type, lookup(ordered_cache_behavior.value, "event_type"))
-        lambda_arn   = element(var.lambda_arn, lookup(ordered_cache_behavior.value, "lambda_arn"))
-        include_body = lookup(ordered_cache_behavior.value, "include_body")
+      dynamic "lambda_function_association" {
+        for_each = [for i in ordered_cache_behavior.value.lambda_function_association : {
+          event_id     = i.event_id
+          lambda_id    = i.lambda_id
+          include_body = i.include_body
+        }]
+        content {
+          event_type   = element(var.event_type, lambda_function_association.value.event_id)
+          lambda_arn   = element(var.lambda_arn, lambda_function_association.value.lambda_id)
+          include_body = lambda_function_association.value.include_body
+        }
       }
     }
   }
