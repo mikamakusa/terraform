@@ -1,7 +1,7 @@
 resource "azurerm_container_service" "service" {
   count                  = length(var.service)
-  resource_group_name    = lookup(service[count.index], "resource_group_id") == null ? var.resource_group_name : element(var.resource_group_name, lookup(service[count.index], "resource_group_id"))
-  location               = lookup(service[count.index], "resource_group_id") == null ? var.resource_group_location : element(var.resource_group_location, lookup(service[count.index], "resource_group_id"))
+  resource_group_name    = lookup(var.service[count.index], "resource_group_id") == null ? var.resource_group_name : element(var.resource_group_name, lookup(var.service[count.index], "resource_group_id"))
+  location               = lookup(var.service[count.index], "resource_group_id") == null ? var.resource_group_location : element(var.resource_group_location, lookup(var.service[count.index], "resource_group_id"))
   name                   = lookup(var.service[count.index], "name")
   orchestration_platform = lookup(var.service[count.index], "orchestration_platform")
 
