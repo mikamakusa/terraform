@@ -1,0 +1,3 @@
+variable "table" {
+  type = "list"
+}
