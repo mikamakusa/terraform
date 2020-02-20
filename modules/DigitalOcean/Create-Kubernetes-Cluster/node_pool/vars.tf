@@ -1,7 +1,3 @@
-variable "kube_cluster" {
-  type = "list"
-}
-
 variable "prefix" {}
 
 variable "region" {}
@@ -9,3 +5,5 @@ variable "region" {}
 variable "node_pool" {
   type = "list"
 }
+
+variable "cluster_id" {}
