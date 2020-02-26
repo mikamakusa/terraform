@@ -87,10 +87,17 @@ module "iam_instance_profile" {
 }
 
 # Load Balancer
+module "key_pair" {
+  source   = "../../../modules/AWS/EC2/key_pair"
+  key_pair = ""
+}
+
 module "launch_configuration" {
-  source               = "../../../modules/AWS/EC2/launch_configuration"
-  launch_configuration = var.launch_configuration
-  security_group_ids   = module.security_group.security_group_id
+  source                  = "../../../modules/AWS/EC2/launch_configuration"
+  launch_configuration    = var.launch_configuration
+  security_group_ids      = module.security_group.security_group_id
+  iam_instance_profile_id = module.iam_instance_profile.instance_profile_id
+  key_pair_name           = module.key_pair.key_name
 }
 
 module "autoscaling_group" {
@@ -98,6 +105,7 @@ module "autoscaling_group" {
   autoscalling_group      = var.autoscaling_group
   launch_configuration    = module.launch_configuration.launch_configuration_name
   service_linked_role_arn = module.service_linked_role.service_linked_role_arn
+  vpc_zone_identifier     = element(module.subnet.*.subnet_id, count.index)
 }
 
 module "load_balancer" {

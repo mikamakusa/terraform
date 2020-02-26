@@ -149,8 +149,51 @@ iam_instance_profile = [
   }
 ]
 
-launch_configuration = []
-autoscaling_group    = []
+key_pair = [
+  {
+    id         = "0"
+    name       = "ecs_key_pair"
+    public_key = "ecs_key_pair"
+  }
+]
+
+launch_configuration = [
+  {
+    id                          = "0"
+    image_id                    = ""
+    instance_type               = ""
+    security_group_id           = "0"
+    iam_instance_profile_id     = "0"
+    associate_public_ip_address = "true"
+    key_pair_id                 = "0"
+    root_block_device = [
+      {
+        volume_type = "standard"
+        volume_size = "100"
+      }
+    ]
+    lifecycle = [
+      {
+        create_before_destroy = "true"
+      }
+    ]
+  }
+]
+
+autoscaling_group = [
+  {
+    id                      = "0"
+    name                    = "ecs_autoscaling_group"
+    max_size                = "1"
+    min_size                = "5"
+    desired_capacity        = "1"
+    service_linked_role_id  = "0"
+    launch_configuration_id = "0"
+    health_check_type       = "ELB"
+    vpc_zone_identifier_id  = "0"
+  }
+]
+
 load_balancer = [
   {
     id       = "0"

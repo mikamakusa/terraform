@@ -58,6 +58,10 @@ variable "iam_instance_profile" {
   type = "list"
 }
 
+variable "key_pair" {
+  type = "list"
+}
+
 variable "launch_configuration" {
   type = "list"
 }
