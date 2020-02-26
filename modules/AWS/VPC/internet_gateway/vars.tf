@@ -3,3 +3,4 @@ variable "internet_gateway" {
 }
 
 variable "vpc_id" {}
+variable "tags" {}

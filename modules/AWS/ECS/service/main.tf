@@ -1,6 +1,9 @@
 resource "aws_ecs_service" "service" {
   count           = length(var.service)
   name            = lookup(var.service[count.index], "name")
+  cluster         = element(var.cluster_id, lookup(var.service[count.index], "cluster_id"))
+  desired_count   = lookup(var.service[count.index], "desired_count")
+  launch_type     = lookup(var.service[count.index], "launch_type")
   task_definition = lookup(var.service[count.index], "task_definition_id") == "" ? var.task_definition_arn : element(var.task_definition_arn, lookup(var.service[count.index], "task_definition_id"))
   iam_role        = lookup(var.service[count.index], "iarm_role_id") == "" ? var.iam_role_arn : element(var.iam_role_arn, lookup(var.service[count.index], "iam_role_id"))
 
@@ -42,9 +45,9 @@ resource "aws_ecs_service" "service" {
   dynamic "network_configuration" {
     for_each = lookup(var.service[count.index], "network_configuration")
     content {
-      subnets          = [lookup(network_configuration.value, "subnet_id") == "" ? var.subnet : element(var.subnet, lookup(network_configuration.value, "subnet_id"))]
-      security_groups  = [lookup(network_configuration.value, "security_group_id") == "" ? var.security_group : element(var.security_group, lookup(network_configuration.value, "security_group_id"))]
-      assign_public_ip = lookup(network_configuration.value, "assign_public_ip")
+      subnets          = [lookup(network_configuration.value, "subnet_id") == [] ? var.subnet : element(var.subnet, lookup(network_configuration.value, "subnet_id"))]
+      security_groups  = [lookup(network_configuration.value, "security_group_id") == [] ? var.security_group : element(var.security_group, lookup(network_configuration.value, "security_group_id"))]
+      assign_public_ip = lookup(network_configuration.value, "assign_public_ip", true)
     }
   }
 

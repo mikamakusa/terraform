@@ -1,4 +1,4 @@
-variable "security_group" {
+variable "target_group" {
   type = "list"
 }
 

@@ -5,8 +5,8 @@ resource "aws_ecs_task_definition" "task_definition" {
   task_role_arn            = lookup(var.task_definition[count.index], "task_role_id") == "" ? var.task_role_arn : element(var.task_role_arn, lookup(var.task_definition[count.index], "task_role_id"))
   execution_role_arn       = lookup(var.task_definition[count.index], "execution_role_id") == "" ? var.execution_role_arn : element(var.execution_role_arn, lookup(var.execution_role_arn[count.index], "execution_role_id"))
   network_mode             = lookup(var.task_definition[count.index], "network_mode")
-  ipc_mode                 = lookup(var.task_definition[count.index], "ipc_mode")
-  pid_mode                 = lookup(var.task_definition[count.index], "pid_mode")
+  ipc_mode                 = lookup(var.task_definition[count.index], "ipc_mode", null)
+  pid_mode                 = lookup(var.task_definition[count.index], "pid_mode", null)
   cpu                      = lookup(var.task_definition[count.index], "cpu")
   memory                   = lookup(var.task_definition[count.index], "memory")
   requires_compatibilities = [lookup(var.task_definition[count.index], "requires_compatibilities")]

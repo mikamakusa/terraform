@@ -3,4 +3,3 @@ variable "iam_role_policy" {
 }
 
 variable "role" {}
-variable "policy" {}

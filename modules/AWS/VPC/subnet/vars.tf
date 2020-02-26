@@ -3,3 +3,4 @@ variable "subnet" {
 }
 
 variable "vpc_id" {}
+variable "tags" {}

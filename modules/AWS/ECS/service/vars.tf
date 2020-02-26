@@ -2,6 +2,7 @@ variable "service" {
   type = "list"
 }
 
+variable "cluster_id" {}
 variable "task_definition_arn" {}
 variable "iam_role_arn" {}
 variable "capacity_provider_name" {}
