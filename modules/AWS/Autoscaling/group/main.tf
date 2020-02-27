@@ -5,7 +5,7 @@ resource "aws_autoscaling_group" "autoscalling_group" {
   min_size                = lookup(var.autoscalling_group[count.index], "min_size")
   desired_capacity        = lookup(var.autoscalling_group[count.index], "desired_capacity", null)
   force_delete            = lookup(var.autoscalling_group[count.index], "force_delete", false)
-  target_group_arns       = [element(var.target_group_arn, lookup(var.autoscalling_group[count.index], "target_group_id"))]
+  //load_balancers          = [element(var.target_group_arn, lookup(var.autoscalling_group[count.index], "target_group_id"))]
   service_linked_role_arn = element(var.service_linked_role_arn, lookup(var.autoscalling_group[count.index], "service_linked_role_id"))
   launch_configuration    = element(var.launch_configuration, lookup(var.autoscalling_group[count.index], "launch_configuration_id"))
   protect_from_scale_in   = lookup(var.autoscalling_group[count.index], "protect_from-scale_in", null)
@@ -13,8 +13,11 @@ resource "aws_autoscaling_group" "autoscalling_group" {
   enabled_metrics         = lookup(var.autoscalling_group[count.index], "enabled_metrics", null)
   placement_group         = lookup(var.autoscalling_group[count.index], "placement_group", null)
   termination_policies    = lookup(var.autoscalling_group[count.index], "termination_policies", null)
-  vpc_zone_identifier     = [element(var.vpc_zone_identifier, lookup(var.autoscalling_group[count.index], "vpc_zone_identifier_id"))]
-  health_check_type       = lookup(var.autoscalling_group[count.index], "health_check_type")
+  vpc_zone_identifier = [
+    element(var.vpc_zone_identifier, lookup(var.autoscalling_group[count.index], "vpc_zone_identifier_id_1")),
+    element(var.vpc_zone_identifier, lookup(var.autoscalling_group[count.index], "vpc_zone_identifier_id_2"))
+  ]
+  health_check_type = lookup(var.autoscalling_group[count.index], "health_check_type")
 
   dynamic "initial_lifecycle_hook" {
     for_each = lookup(var.autoscalling_group[count.index], "initial_lifecycle_hook")
