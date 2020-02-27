@@ -3,7 +3,10 @@ resource "aws_alb" "alb" {
   name               = lookup(var.alb[count.index], "name")
   internal           = lookup(var.alb[count.index], "internal", false)
   load_balancer_type = lookup(var.alb[count.index], "laod_balancer_type", null)
-  security_groups    = [lookup(var.alb[count.index], "security_group_id") == [] ? var.security_group_id : (var.security_group_id, lookup(var.alb[count.index], "security_group_id"))]
-  subnets            = [lookup(var.alb[count.index], "subnet_id") == [] ? var.subnet_id : element(var.subnet_id, lookup(var.alb[count.index], "subnet_id"))]
+  security_groups    = [element(var.security_group_id, lookup(var.alb[count.index], "security_group_id"))]
+  subnets            = [
+    element(var.subnet_id, lookup(var.alb[count.index], "subnet_id_1")),
+    element(var.subnet_id, lookup(var.alb[count.index], "subnet_id_2"))
+  ]
   tags               = var.tags
 }

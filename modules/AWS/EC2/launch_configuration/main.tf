@@ -20,12 +20,4 @@ resource "aws_launch_configuration" "launch_configuration" {
       encrypted             = lookup(root_block_device.value, "encrypted", true)
     }
   }
-
-  dynamic "lifecycle" {
-    for_each = lookup(var.launch_configuration[count.index], "lifecycle")
-    content {
-      prevent_destroy       = lookup(lifecycle.value, "prevent_destroy", false)
-      create_before_destroy = lookup(lifecycle.value, "create_before_destroy", false)
-    }
-  }
 }

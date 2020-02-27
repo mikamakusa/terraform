@@ -5,7 +5,7 @@ resource "aws_autoscaling_group" "autoscalling_group" {
   min_size                = lookup(var.autoscalling_group[count.index], "min_size")
   desired_capacity        = lookup(var.autoscalling_group[count.index], "desired_capacity", null)
   force_delete            = lookup(var.autoscalling_group[count.index], "force_delete", false)
-  target_group_arns       = [lookup(var.autoscalling_group[count.index], "target_group_arns", null)]
+  target_group_arns       = [element(var.target_group_arn, lookup(var.autoscalling_group[count.index], "target_group_id"))]
   service_linked_role_arn = element(var.service_linked_role_arn, lookup(var.autoscalling_group[count.index], "service_linked_role_id"))
   launch_configuration    = element(var.launch_configuration, lookup(var.autoscalling_group[count.index], "launch_configuration_id"))
   protect_from_scale_in   = lookup(var.autoscalling_group[count.index], "protect_from-scale_in", null)
@@ -42,14 +42,6 @@ resource "aws_autoscaling_group" "autoscalling_group" {
         spot_instance_pools                      = lookup(mixed_instances_policy.value, "spot_instance_pools", null)
         spot_max_price                           = lookup(mixed_instances_policy.value, "spot_max_price", null)
       }
-    }
-  }
-
-  dynamic "lifecycle" {
-    for_each = lookup(var.autoscalling_group[count.index], "lifecycle")
-    content {
-      create_before_destroy = lookup(lifecycle.value, "create_before_destroy", null)
-      prevent_destroy       = lookup(lifecycle.value, "prevent_destrot", null)
     }
   }
 }

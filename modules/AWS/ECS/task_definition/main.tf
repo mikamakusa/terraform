@@ -2,8 +2,8 @@ resource "aws_ecs_task_definition" "task_definition" {
   count                    = length(var.task_definition)
   container_definitions    = file(join(".", [join("/", [path.cwd, "container", lookup(var.task_definition[count.index], "container_definition")]), "json"]))
   family                   = lookup(var.task_definition[count.index], "family")
-  task_role_arn            = lookup(var.task_definition[count.index], "task_role_id") == "" ? var.task_role_arn : element(var.task_role_arn, lookup(var.task_definition[count.index], "task_role_id"))
-  execution_role_arn       = lookup(var.task_definition[count.index], "execution_role_id") == "" ? var.execution_role_arn : element(var.execution_role_arn, lookup(var.execution_role_arn[count.index], "execution_role_id"))
+  task_role_arn            = element(var.task_role_arn, lookup(var.task_definition[count.index], "task_role_id"))
+  execution_role_arn       = element(var.execution_role_arn, lookup(var.task_definition[count.index], "execution_role_id"))
   network_mode             = lookup(var.task_definition[count.index], "network_mode")
   ipc_mode                 = lookup(var.task_definition[count.index], "ipc_mode", null)
   pid_mode                 = lookup(var.task_definition[count.index], "pid_mode", null)
@@ -33,10 +33,10 @@ resource "aws_ecs_task_definition" "task_definition" {
           scope         = docker_volume_configuration.value.scope
           autoprovision = docker_volume_configuration.value.autoprovision
           driver        = docker_volume_configuration.value.driver
-          driver_opts {
+          driver_opts = {
             variables = docker_volume_configuration.value.driver_opts
           }
-          labels {
+          labels = {
             variables = docker_volume_configuration.value.labels
           }
         }
@@ -71,7 +71,7 @@ resource "aws_ecs_task_definition" "task_definition" {
     content {
       container_name = proxy_configuration.value.container_name
       type           = proxy_configuration.value.type
-      properties {
+      properties = {
         variables = proxy_configuration.value.properties
       }
     }
