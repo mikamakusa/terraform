@@ -1,0 +1,15 @@
+[
+  {
+    "cpu": ${cpu},
+    "image": "${image}",
+    "memory": ${memory},
+    "name": "${name}",
+    "networkMode": "${networkMode}",
+    "portMappings": [
+      {
+        "containerPort": ${containerPort},
+        "hostPort": ${hostPort}
+      }
+    ]
+  }
+]

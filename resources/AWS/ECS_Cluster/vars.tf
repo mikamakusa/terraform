@@ -38,10 +38,6 @@ variable "service_linked_role" {
   type = "list"
 }
 
-variable "iam_policy_document" {
-  type = "list"
-}
-
 variable "iam_role" {
   type = "list"
 }
@@ -50,11 +46,11 @@ variable "iam_role_policy" {
   type = "list"
 }
 
-variable "iam_role_policy_attachment" {
+variable "iam_instance_profile" {
   type = "list"
 }
 
-variable "iam_instance_profile" {
+variable "iam_role_policy_attachment" {
   type = "list"
 }
 
@@ -95,5 +91,9 @@ variable "ecs_cluster" {
 }
 
 variable "ecs_service" {
+  type = "list"
+}
+
+variable "container_definitions" {
   type = "list"
 }

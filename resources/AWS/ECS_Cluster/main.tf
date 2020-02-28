@@ -76,7 +76,7 @@ module "iam_role" {
 
 module "role_policy" {
   source          = "../../../modules/AWS/IAM/iam_role_policy"
-  iam_role_policy = ""
+  iam_role_policy = var.iam_role_policy
   role            = module.iam_role.iam_role_id
 }
 
@@ -86,10 +86,16 @@ module "iam_instance_profile" {
   role_name        = module.iam_role.iam_role_id
 }
 
+module "iam_role_policy_attachment" {
+  source                     = "../../../modules/AWS/IAM/iam_role_policy_attachment"
+  iam_role                   = module.iam_role.iam_role_name
+  iam_role_policy_attachment = var.iam_role_policy_attachment
+}
+
 # Load Balancer
 module "key_pair" {
   source   = "../../../modules/AWS/EC2/key_pair"
-  key_pair = ""
+  key_pair = var.key_pair
 }
 
 module "launch_configuration" {
@@ -100,19 +106,11 @@ module "launch_configuration" {
   key_pair_name           = module.key_pair.key_name
 }
 
-module "autoscaling_group" {
-  source                  = "../../../modules/AWS/Autoscaling/group"
-  autoscalling_group      = var.autoscaling_group
-  launch_configuration    = module.launch_configuration.launch_configuration_name
-  service_linked_role_arn = module.service_linked_role.service_linked_role_arn
-  vpc_zone_identifier     = element(module.subnet.*.subnet_id, count.index)
-}
-
 module "load_balancer" {
   source            = "../../../modules/AWS/ALB/lb"
   alb               = var.load_balancer
-  security_group_id = module.security_group.*.security_group_id
-  subnet_id         = module.subnet.*.subnet_id
+  security_group_id = module.security_group.security_group_id
+  subnet_id         = module.subnet.subnet_id
   tags              = local.lb_tags
 }
 
@@ -130,6 +128,15 @@ module "load_balancer_listener" {
   target_group_arn  = module.load_balancer_target_group.target_group_arn
 }
 
+module "autoscaling_group" {
+  source                  = "../../../modules/AWS/Autoscaling/group"
+  autoscalling_group      = var.autoscaling_group
+  launch_configuration    = module.launch_configuration.launch_configuration_name
+  service_linked_role_arn = module.service_linked_role.service_linked_role_arn
+  vpc_zone_identifier     = module.subnet.subnet_id
+  target_group_arn        = module.load_balancer.lb_arn
+}
+
 # ECS
 module "capacity_provider" {
   source                = "../../../modules/AWS/ECS/capacity_provider"
@@ -139,12 +146,13 @@ module "capacity_provider" {
 }
 
 module "task_definition" {
-  source             = "../../../modules/AWS/ECS/task_definition"
-  execution_role_arn = ""
-  file_system_id     = ""
-  tags               = local.td_tags
-  task_definition    = var.task_definition
-  task_role_arn      = module.iam_role.iam_role_arn
+  source                = "../../../modules/AWS/ECS/task_definition"
+  execution_role_arn    = module.iam_role.iam_role_arn
+  file_system_id        = ""
+  tags                  = local.td_tags
+  task_definition       = var.task_definition
+  task_role_arn         = module.iam_role.iam_role_arn
+  container_definitions = data.template_file.container_definitions.*.rendered
 }
 
 module "ecs_cluster" {
@@ -157,13 +165,13 @@ module "ecs_cluster" {
 module "ecs_service" {
   source                 = "../../../modules/AWS/ECS/service"
   capacity_provider_name = module.capacity_provider.capacity_provider_name
-  elb_name               = ""
+  elb_name               = module.load_balancer.lb_arn
   iam_role_arn           = module.iam_role.iam_role_arn
   registry_arn           = ""
-  security_group         = module.security_group.*.security_group_id
+  security_group         = module.security_group.security_group_id
   service                = var.ecs_service
-  subnet                 = module.subnet.*.subnet_id
-  target_group_arn       = module.load_balancer_target_group
+  subnet                 = module.subnet.subnet_id
+  target_group_arn       = module.load_balancer_target_group.target_group_arn
   task_definition_arn    = module.task_definition.task_definition_arn
   cluster_id             = module.ecs_cluster.cluster_id
 }

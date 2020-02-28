@@ -5,7 +5,7 @@ resource "aws_autoscaling_group" "autoscalling_group" {
   min_size                = lookup(var.autoscalling_group[count.index], "min_size")
   desired_capacity        = lookup(var.autoscalling_group[count.index], "desired_capacity", null)
   force_delete            = lookup(var.autoscalling_group[count.index], "force_delete", false)
-  //load_balancers          = [element(var.target_group_arn, lookup(var.autoscalling_group[count.index], "target_group_id"))]
+  target_group_arns       = [element(var.target_group_arn, lookup(var.autoscalling_group[count.index], "target_group_id"))]
   service_linked_role_arn = element(var.service_linked_role_arn, lookup(var.autoscalling_group[count.index], "service_linked_role_id"))
   launch_configuration    = element(var.launch_configuration, lookup(var.autoscalling_group[count.index], "launch_configuration_id"))
   protect_from_scale_in   = lookup(var.autoscalling_group[count.index], "protect_from-scale_in", null)

@@ -36,20 +36,24 @@ route_table = [
   {
     id     = "0"
     vpc_id = "0"
-    route = [{
-      cidr_block     = "0.0.0.0/0"
-      gateway_id     = "0"
-      nat_gateway_id = ""
-    }]
+    route = [
+      {
+        cidr_block     = "0.0.0.0/0"
+        gateway_id     = "0"
+        nat_gateway_id = ""
+      }
+    ]
   },
   {
     id     = "1"
     vpc_id = "0"
-    route = [{
-      cidr_block     = "0.0.0.0/0"
-      gateway_id     = ""
-      nat_gateway_id = "0"
-    }]
+    route = [
+      {
+        cidr_block     = "0.0.0.0/0"
+        gateway_id     = ""
+        nat_gateway_id = "0"
+      }
+    ]
   }
 ]
 
@@ -87,26 +91,29 @@ security_group_rules = [
   {
     id                = "0"
     type              = "ingress"
-    protocal          = "TCP"
+    protocol          = "TCP"
     from_port         = "22"
     to_port           = "22"
     security_group_id = "0"
+    cidr_blocks       = "10.10.0.0/16"
   },
   {
     id                = "1"
     type              = "egress"
-    protocal          = "TCP"
+    protocol          = "TCP"
     from_port         = "80"
     to_port           = "80"
     security_group_id = "0"
+    cidr_blocks       = "0.0.0.0/0"
   },
   {
     id                = "2"
     type              = "egress"
-    protocal          = "-1"
+    protocol          = "-1"
     from_port         = "0"
     to_port           = "0"
     security_group_id = "0"
+    cidr_blocks       = "0.0.0.0/0"
   }
 ]
 
@@ -117,7 +124,14 @@ eip = [
   }
 ]
 
-service_linked_role = []
+service_linked_role = [
+  {
+    id               = "0"
+    aws_service_name = "autoscaling"
+    custom_suffix    = "jparnaudeau-demo"
+  }
+]
+
 iam_role = [
   {
     id     = "0"
@@ -125,18 +139,12 @@ iam_role = [
     policy = "ecs_service_policy"
     path   = "/"
   },
-  {
-    id     = "1"
-    name   = "ecs_instance_role"
-    policy = "ecs_instance_policy"
-    path   = "/"
-  }
 ]
 
 iam_role_policy = [
   {
     id      = "0"
-    role_id = "1"
+    role_id = "0"
     name    = "ecs-ec2-role-policy"
   }
 ]
@@ -144,24 +152,37 @@ iam_role_policy = [
 iam_instance_profile = [
   {
     id      = "0"
-    role_id = "1"
+    role_id = "0"
     name    = "ecs_instance_profile"
+  }
+]
+
+iam_role_policy_attachment = [
+  {
+    id          = "0"
+    iam_role_id = "0"
+    policy_arn  = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+  },
+  {
+    id          = "1"
+    iam_role_id = "0"
+    policy_arn  = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
   }
 ]
 
 key_pair = [
   {
     id         = "0"
-    name       = "ecs_key_pair"
-    public_key = "ecs_key_pair"
+    key_name   = "ecs_key_pair"
+    public_key = "ecs_demo"
   }
 ]
 
 launch_configuration = [
   {
     id                          = "0"
-    image_id                    = ""
-    instance_type               = ""
+    image_id                    = "ami-0851c53aff84212c3"
+    instance_type               = "t2.small"
     security_group_id           = "0"
     iam_instance_profile_id     = "0"
     associate_public_ip_address = "true"
@@ -181,31 +202,38 @@ launch_configuration = [
 ]
 
 autoscaling_group = [
-  {
-    id                      = "0"
-    name                    = "ecs_autoscaling_group"
-    max_size                = "1"
-    min_size                = "5"
-    desired_capacity        = "1"
-    service_linked_role_id  = "0"
-    launch_configuration_id = "0"
-    health_check_type       = "ELB"
-    vpc_zone_identifier_id  = "0"
-  }
+  /*{
+    id                       = "0"
+    name                     = "ecs-autoscaling-group"
+    max_size                 = "5"
+    min_size                 = "1"
+    desired_capacity         = "1"
+    service_linked_role_id   = "0"
+    launch_configuration_id  = "0"
+    health_check_type        = "ELB"
+    vpc_zone_identifier_id_1 = "0"
+    vpc_zone_identifier_id_2 = "1"
+    target_group_id          = "0"
+    initial_lifecycle_hook   = []
+    mixed_instances_policy   = []
+  }*/
 ]
 
 load_balancer = [
   {
-    id       = "0"
-    name     = "alb_ecs"
-    internal = "true"
+    id                = "0"
+    name              = "alb-ecs"
+    internal          = "true"
+    security_group_id = "0"
+    subnet_id_1       = "0"
+    subnet_id_2       = "1"
   }
 ]
 
 load_balancer_target_group = [
   {
     id           = "0"
-    name         = "tg_alb_ecs"
+    name         = "tg-alb-ecs"
     port         = "80"
     protocol     = "HTTP"
     vpc_id       = "0"
@@ -229,25 +257,41 @@ load_balancer_listener = [
   }
 ]
 
-capacity_provider = []
+capacity_provider = [
+  /*    {
+    id   = "0"
+    name = "ecs-demo"
+    auto_scaling_group_provider = [
+      {
+        autoscaling_group_id      = "0"
+        maximum_scaling_step_size = "5"
+        minimum_scaling_step_size = "1"
+        target_capacity           = "1"
+      }
+    ]
+  }*/
+]
 task_definition = [
   {
-    id                    = "0"
-    family                = "app"
-    network_mode          = "aws_vpc"
-    cpu                   = ""
-    memory                = ""
-    container_definition  = "ecs_fargate_demo"
-    volume                = []
-    placement_constraints = []
-    proxy_configuration   = []
+    id                       = "0"
+    family                   = "app"
+    network_mode             = "awsvpc"
+    container_definition_id  = "0"
+    task_role_id             = "0"
+    execution_role_id        = "0"
+    requires_compatibilities = "FARGATE"
+    container_definition     = "ecs-fargate-demo"
+    volume                   = []
+    placement_constraints    = []
+    proxy_configuration      = []
   }
 ]
 
 ecs_cluster = [
   {
     id                                 = "0"
-    name                               = "ecs_cluster"
+    name                               = "ecs-cluster"
+    capacity_provider_id               = "-1"
     setting                            = []
     default_capacity_provider_strategy = []
   }
@@ -256,23 +300,45 @@ ecs_cluster = [
 ecs_service = [
   {
     id                         = "0"
-    name                       = "ecs_fargate_demo_service"
+    name                       = "ecs-fargate-demo-service"
     cluster_id                 = "0"
     desired_count              = "1"
     launch_type                = "FARGATE"
+    task_definition_id         = "0"
+    iam_role_id                = "0"
     capacity_provider_strategy = []
     ordered_placement_strategy = []
     load_balancer = [
       {
         elb_id          = "0"
         target_group_id = "0"
-        container_name  = "ecs_fargate_demo_container"
-        container_port  = "80"
+        container_name  = "prometheus"
+        container_port  = "9090"
       }
     ]
     placement_constraints = []
-    network_configuration = []
+    network_configuration = [
+      {
+        security_group_id = "0"
+        subnet_id_1       = "0"
+        subnet_id_2       = "1"
+      }
+    ]
     service_registries    = []
     deployment_controller = []
+  }
+]
+
+container_definitions = [
+  {
+    id                   = "0"
+    cpu                  = "256"
+    memory               = "512"
+    name                 = "prometheus"
+    image                = "prom/prometheus"
+    containerPort        = "9090"
+    hostPort             = "9090"
+    network_mode         = "awsvpc"
+    container_definition = "ecs-fargate-demo"
   }
 ]
