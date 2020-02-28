@@ -11,7 +11,10 @@ resource "aws_eks_cluster" "eks_cluster" {
       endpoint_private_access = lookup(vpc_config.value, "endpoint_private_access", null)
       endpoint_public_access  = lookup(vpc_config.value, "endpoint_public_access", null)
       security_group_ids      = [element(var.security_group_id, lookup(var.eks_cluster[count.index], "security_group_id"))]
-      subnet_ids              = [element(var.subnet_id, lookup(var.eks_cluster[count.index], "subnet_id"))]
+      subnet_ids              = [
+        element(var.subnet_id, lookup(var.eks_cluster[count.index], "subnet_id_1")),
+        element(var.subnet_id, lookup(var.eks_cluster[count.index], "subnet_id_2"))
+      ]
     }
   }
 

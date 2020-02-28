@@ -4,13 +4,13 @@ resource "aws_eks_node_group" "node_group" {
   node_group_name = lookup(var.node_group[count.index], "node_group_name")
   node_role_arn   = element(var.role_arn, lookup(var.node_group[count.index], "role_id"))
   subnet_ids      = element(var.subnet_id, lookup(var.node_group[count.index], "subnet_id"))
-  ami_type        = lookup(var.node_group[count.index], "ami_type")
+  /*ami_type        = lookup(var.node_group[count.index], "ami_type")
   disk_size       = lookup(var.node_group[count.index], "disk_size")
   instance_types  = lookup(var.node_group[count.index], "instance_types")
   labels          = lookup(var.node_group[count.index], "labels")
-  release_version = lookup(var.node_group[count.index], "release_version")
+  release_version = lookup(var.node_group[count.index], "release_version")*/
   tags            = var.tags
-  version         = lookup(var.node_group[count.index], "version")
+  //version         = lookup(var.node_group[count.index], "version")
 
   dynamic "scaling_config" {
     for_each = lookup(var.node_group[count.index], "scaling_config")
