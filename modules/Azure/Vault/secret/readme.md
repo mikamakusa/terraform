@@ -1,0 +1,12 @@
+## Providers
+
+No provider.
+
+## Inputs
+
+No input.
+
+## Outputs
+
+No output.
+
