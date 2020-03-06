@@ -48,3 +48,16 @@ module "route_table_association" {
   route_table_id          = module.route_table.route_table_id
   subnet_id               = module.subnets.subnet_id
 }
+
+module "security_group" {
+  source         = "../../../modules/AWS/VPC/security_groups"
+  security_group = var.security_group
+  vpc_id         = module.vpc.vpc_id
+  tags           = local.sg_tags
+}
+
+module "security_group_rules" {
+  source                   = "../../../modules/AWS/VPC/security_group_rule"
+  security_group_id        = module.security_group.security_group_id
+  security_group_rule      = var.security_group_rules
+}

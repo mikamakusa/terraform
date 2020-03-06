@@ -45,11 +45,8 @@ resource "aws_ecs_service" "service" {
   dynamic "network_configuration" {
     for_each = lookup(var.service[count.index], "network_configuration")
     content {
-      subnets          = [
-        element(var.subnet, lookup(network_configuration.value, "subnet_id_1")),
-        element(var.subnet, lookup(network_configuration.value, "subnet_id_2"))
-      ]
-      security_groups  = [element(var.security_group, lookup(network_configuration.value, "security_group_id"))]
+      subnets          = var.subnet
+      security_groups  = [var.security_group]
       assign_public_ip = lookup(network_configuration.value, "assign_public_ip", true)
     }
   }

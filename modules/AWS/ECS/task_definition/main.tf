@@ -2,8 +2,8 @@ resource "aws_ecs_task_definition" "task_definition" {
   count                    = length(var.task_definition)
   container_definitions    = element(var.container_definitions, lookup(var.task_definition[count.index], "container_definition_id"))
   family                   = lookup(var.task_definition[count.index], "family")
-  task_role_arn            = element(var.task_role_arn, lookup(var.task_definition[count.index], "task_role_id"))
-  execution_role_arn       = element(var.execution_role_arn, lookup(var.task_definition[count.index], "execution_role_id"))
+  task_role_arn            = var.task_role_arn
+  execution_role_arn       = var.execution_role_arn
   network_mode             = lookup(var.task_definition[count.index], "network_mode")
   ipc_mode                 = lookup(var.task_definition[count.index], "ipc_mode", null)
   pid_mode                 = lookup(var.task_definition[count.index], "pid_mode", null)

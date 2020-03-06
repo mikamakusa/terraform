@@ -25,3 +25,11 @@ variable "route_table" {
 variable "route_table_association" {
   type = list
 }
+
+variable "security_group" {
+  type = list
+}
+
+variable "security_group_rules" {
+  type = list
+}

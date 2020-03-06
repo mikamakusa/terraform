@@ -43,14 +43,14 @@ internet_gateway = [
 ]
 
 eip = [
-    {
+  {
     id     = "0"
     vpc_id = "0"
   }
 ]
 
 route_table = [
-    {
+  {
     id     = "0"
     vpc_id = "0"
     route = [
@@ -75,7 +75,7 @@ route_table = [
 ]
 
 nat_gateway = [
-    {
+  {
     id            = "0"
     allocation_id = "0"
     subnet_id     = "0"
@@ -83,7 +83,7 @@ nat_gateway = [
 ]
 
 route_table_association = [
-    {
+  {
     id             = "0"
     route_table_id = "0"
     subnet_id      = "0"
@@ -102,5 +102,35 @@ route_table_association = [
     id             = "3"
     route_table_id = "1"
     subnet_id      = "3"
+  }
+]
+
+security_group = [
+  {
+    id          = "0"
+    name        = "ECS_security_group"
+    description = "ECS_security_group"
+    vpc_id      = "0"
+  }
+]
+
+security_group_rules = [
+  {
+    id                       = "0"
+    type                     = "ingress"
+    protocol                 = "TCP"
+    from_port                = "80"
+    to_port                  = "80"
+    security_group_id        = "0"
+    cidr_blocks              = "0.0.0.0/0"
+  },
+  {
+    id                       = "1"
+    type                     = "egress"
+    protocol                 = "-1"
+    from_port                = "0"
+    to_port                  = "0"
+    security_group_id        = "0"
+    cidr_blocks              = "0.0.0.0/0"
   }
 ]

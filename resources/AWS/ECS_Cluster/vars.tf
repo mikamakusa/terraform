@@ -97,3 +97,7 @@ variable "ecs_service" {
 variable "container_definitions" {
   type = "list"
 }
+
+
+variable "region" {}
+variable "bucket" {}

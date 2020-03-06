@@ -13,14 +13,14 @@ subnet = [
     id                      = "0"
     vpc_id                  = "0"
     cidr_block              = "10.10.10.0/24"
-    availability_zone       = ""
+    availability_zone       = "eu-west-1b"
     map_public_ip_on_launch = "true"
   },
   {
     id                      = "1"
     vpc_id                  = "0"
     cidr_block              = "10.10.20.0/24"
-    availability_zone       = ""
+    availability_zone       = "eu-west-1a"
     map_public_ip_on_launch = "true"
   }
 ]
@@ -114,7 +114,16 @@ security_group_rules = [
     to_port           = "0"
     security_group_id = "0"
     cidr_blocks       = "0.0.0.0/0"
-  }
+  },
+  {
+    id                = "3"
+    type              = "egress"
+    protocol          = "TCP"
+    from_port         = "9000"
+    to_port           = "10000"
+    security_group_id = "0"
+    cidr_blocks       = "0.0.0.0/0"
+  },
 ]
 
 eip = [
@@ -234,7 +243,7 @@ load_balancer_target_group = [
   {
     id           = "0"
     name         = "tg-alb-ecs"
-    port         = "80"
+    port         = "9090"
     protocol     = "HTTP"
     vpc_id       = "0"
     target_type  = "ip"
@@ -246,7 +255,7 @@ load_balancer_listener = [
   {
     id               = "0"
     load_balancer_id = "0"
-    port             = "80"
+    port             = "9090"
     protocol         = "HTTP"
     default_action = [
       {
@@ -342,3 +351,6 @@ container_definitions = [
     container_definition = "ecs-fargate-demo"
   }
 ]
+
+bucket = "tests-tfstate"
+region = "eu-west-3"
