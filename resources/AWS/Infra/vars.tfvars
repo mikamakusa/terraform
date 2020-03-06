@@ -122,7 +122,7 @@ security_group_rules = [
     from_port                = "80"
     to_port                  = "80"
     security_group_id        = "0"
-    cidr_blocks              = "0.0.0.0/0"
+    cidr_blocks              = ["0.0.0.0/0"]
   },
   {
     id                       = "1"
@@ -131,6 +131,6 @@ security_group_rules = [
     from_port                = "0"
     to_port                  = "0"
     security_group_id        = "0"
-    cidr_blocks              = "0.0.0.0/0"
+    cidr_blocks              = ["0.0.0.0/0"]
   }
 ]
