@@ -5,10 +5,10 @@ resource "aws_security_group" "prometheus_sg" {
   vpc_id      = join("", data.terraform_remote_state.vpc.outputs.vpc_id)
 
   tags = merge(
-  {
-    "Name" = "sgr-prometheus-service"
-  },
-  local.td_tags,
+    {
+      "Name" = "sgr-prometheus-service"
+    },
+    local.td_tags,
   )
 }
 
@@ -59,11 +59,11 @@ module "ecs_service" {
   registry_arn           = ""
   security_group         = aws_security_group.prometheus_sg.id
   service                = var.ecs_service
-  subnet                 = [
+  subnet = [
     data.terraform_remote_state.vpc.outputs.subnet_id[2],
     data.terraform_remote_state.vpc.outputs.subnet_id[3]
   ]
-  target_group_arn       = data.terraform_remote_state.lb.outputs.target_group_arn
-  task_definition_arn    = module.task_definition.task_definition_arn
-  cluster_id             = module.ecs_cluster.cluster_id
+  target_group_arn    = data.terraform_remote_state.lb.outputs.target_group_arn
+  task_definition_arn = module.task_definition.task_definition_arn
+  cluster_id          = module.ecs_cluster.cluster_id
 }

@@ -35,14 +35,14 @@ module "openid_connect_provider" {
 module "vpc" {
   source = "../../../modules/AWS/VPC/vpc"
   vpc    = var.vpc
-  tags   = ""
+  tags   = local.vpc_tags
 }
 
 module "security_group" {
   source         = "../../../modules/AWS/VPC/security_groups"
   security_group = var.security_group
   vpc_id         = module.vpc.vpc_id
-  tags           = ""
+  tags           = local.sg_tags
 }
 
 module "security_group_rule" {
@@ -55,7 +55,7 @@ module "subnet" {
   source = "../../../modules/AWS/VPC/subnet"
   subnet = var.subnet
   vpc_id = module.vpc.vpc_id
-  tags   = ""
+  tags   = local.subnet_tags
 }
 
 # Cloudwatch
@@ -63,6 +63,7 @@ module "cloudwatch_log_group" {
   source     = "../../../modules/AWS/CloudWatch/log_group"
   kms_key_id = ""
   log_group  = var.log_group
+  tags       =
 }
 
 # EKS - master node
@@ -72,7 +73,7 @@ module "eks_cluster" {
   role_arn          = module.iam_role.iam_role_arn
   security_group_id = module.security_group.security_group_id
   subnet_id         = module.subnet.subnet_id
-  tags              = ""
+  tags              = local.eks_tags
 }
 
 # workers
@@ -83,5 +84,5 @@ module "node_group" {
   role_arn          = module.iam_role.iam_role_arn
   security_group_id = module.security_group.security_group_id
   subnet_id         = module.subnet.subnet_id
-  tags              = ""
+  tags              = local.worker_tags
 }

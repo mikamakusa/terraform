@@ -1,6 +1,7 @@
 resource "aws_ecs_task_definition" "task_definition" {
   count                    = length(var.task_definition)
-  container_definitions    = element(var.container_definitions, lookup(var.task_definition[count.index], "container_definition_id"))
+  //container_definitions    = element(var.container_definitions, lookup(var.task_definition[count.index], "container_definitions_id"))
+  container_definitions = file(join(".",[join("/",[path.cwd, "container", lookup(var.task_definition[count.index], "container_definitions")]),"json"]))
   family                   = lookup(var.task_definition[count.index], "family")
   task_role_arn            = var.task_role_arn
   execution_role_arn       = var.execution_role_arn

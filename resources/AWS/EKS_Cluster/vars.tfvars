@@ -73,14 +73,14 @@ subnet = [
     id                      = "0"
     vpc_id                  = "0"
     cidr_block              = "10.10.10.0/24"
-    availability_zone       = ""
+    availability_zone       = "eu-west-1a"
     map_public_ip_on_launch = "true"
   },
   {
     id                      = "1"
     vpc_id                  = "0"
     cidr_block              = "10.10.20.0/24"
-    availability_zone       = ""
+    availability_zone       = "eu-west-1b"
     map_public_ip_on_launch = "true"
   }
 ]
@@ -231,9 +231,9 @@ node_group = [
     subnet_id       = "1"
     scaling_config = [
       {
-        desired_size = ""
-        max_size     = ""
-        min_size     = ""
+        desired_size = "1"
+        max_size     = "5"
+        min_size     = "1"
       }
     ]
     remote_access = []
