@@ -41,7 +41,7 @@ module "task_definition" {
   tags                  = local.td_tags
   task_definition       = var.task_definition
   task_role_arn         = data.terraform_remote_state.iam.outputs.iam_role_arn[0]
-  container_definitions = data.template_file.container_definitions.*.rendered
+  container_definitions = var.container_definitions
 }
 
 module "ecs_cluster" {

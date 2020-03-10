@@ -72,27 +72,13 @@ ecs_service = [
   }
 ]
 
-container_definitions = [
-  {
-    id                   = "0"
-    cpu                  = "256"
-    memory               = "512"
-    name                 = "prometheus"
-    image                = "prom/prometheus"
-    containerPort        = "9090"
-    hostPort             = "9090"
-    network_mode         = "awsvpc"
-    container_definition = "ecs-fargate-demo"
-  }
-]
-
 bucket = "tests-tfstate"
 region = "eu-west-3"
 
 
 ## Test
 
-definition = [
+container_definitions = [
   {
     id                     = "0"
     name                   = "prometheus"
@@ -146,88 +132,3 @@ definition = [
     dependsOn             = ""
   }
 ]
-
-/*name                   = "app"
-hostname               = ""
-interactive            = true
-image                  = "cloudposse/geodesic"
-memory                 = 256
-memoryReservation      = 128
-cpu                    = "256"
-essential              = true
-readonlyRootFilesystem = "b"
-environment = [
-  {
-    name  = "string_var"
-    value = "I am a string"
-  },
-  {
-    name  = "true_boolean_var"
-    value = true
-  },
-  {
-    name  = "false_boolean_var"
-    value = false
-  },
-  {
-    name  = "integer_var"
-    value = 42
-  }
-]
-portMappings = [
-  {
-    containerPort = 8080
-    hostPort      = 80
-    protocol      = "tcp"
-  },
-  {
-    containerPort = 8081
-    hostPort      = 443
-    protocol      = "udp"
-  }
-]
-logConfiguration = [
-  {
-    logDriver : "awslogs",
-    options = {
-      "awslogs-region" : "eu-west-3",
-      "awslogs-group" : "ecs-fargate",
-      "awslogs-stream-prefix" : "test"
-    }
-    secretOptions = null
-  }
-]
-command               = []
-container_depends_on  = ""
-disableNetworking     = false
-dnsSearchDomains      = []
-dnsServers            = []
-dockerLabels          = []
-dockerSecurityOptions = []
-entryPoint = [
-  "string"
-]
-healthCheck = {
-  command     = ""
-  interval    = 0
-  timeout     = 0
-  retries     = 1
-  startPeriod = 0
-}
-links = {
-  name = "1"
-}
-linuxParameters       = []
-mountPoints           = []
-privileged            = "a"
-repositoryCredentials = []
-secrets               = []
-start_timeout         = ""
-stop_timeout          = ""
-systemControls        = []
-ulimits               = []
-user                  = ""
-volumesFrom           = []
-workingDirectory      = ""
-extraHosts            = []
-pseudoTerminal        = true*/

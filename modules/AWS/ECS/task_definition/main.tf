@@ -1,7 +1,50 @@
+resource "local_file" "container_definition" {
+  count    = length(var.container_definitions)
+  filename = "${path.cwd}/container/${lookup(var.container_definitions[count.index], "name")}.json"
+  content  = <<JSON
+[
+  {
+    "command": %{if lookup(var.container_definitions[count.index], "command") == ""}null,%{else}${jsonencode(lookup(var.container_definitions[count.index], "command"))}%{endif},
+    "cpu": ${jsonencode(lookup(var.container_definitions[count.index], "cpu"))},
+    "disableNetworking": ${jsonencode(lookup(var.container_definitions[count.index], "disableNetworking"))},
+    "dnsSearchDomains": %{if lookup(var.container_definitions[count.index], "dnsSearchDomains") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "dnsSearchDomains"))}%{endif},
+    "dnsServers": %{if lookup(var.container_definitions[count.index], "dnsServers") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "dnsServers"))}%{endif},
+    "dockerLabels": %{if lookup(var.container_definitions[count.index], "dockerLabels") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "dockerLabels"))}%{endif},
+    "dockerSecurityOptions": %{if lookup(var.container_definitions[count.index], "dockerSecurityOptions") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "dockerSecurityOptions"))}%{endif},
+    "entryPoint": %{if lookup(var.container_definitions[count.index], "entryPoint") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "entryPoint"))}%{endif},
+    "environment": %{if lookup(var.container_definitions[count.index], "environment") == ""}[]%{else}${jsonencode(lookup(var.container_definitions[count.index], "environment"))}%{endif},
+    "essential": ${jsonencode(lookup(var.container_definitions[count.index], "essential"))},
+    "extraHosts": %{if lookup(var.container_definitions[count.index], "extraHosts") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "extraHosts"))}%{endif},
+    "healthCheck": %{if lookup(var.container_definitions[count.index], "healthCheck") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "healthCheck"))}%{endif},
+    "hostname": %{if lookup(var.container_definitions[count.index], "hostname") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "hostname"))}%{endif},
+    "image": ${jsonencode(lookup(var.container_definitions[count.index], "image"))},
+    "interactive": %{if lookup(var.container_definitions[count.index], "interactive") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "interactive"))}%{endif},
+    "links": %{if lookup(var.container_definitions[count.index], "links") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "links"))}%{endif},
+    "linuxParameters": %{if lookup(var.container_definitions[count.index], "linuxParameters") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "linuxParameters"))}%{endif},
+    "logConfiguration": %{if lookup(var.container_definitions[count.index], "logConfiguration") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "logConfiguration"))}%{endif},
+    "memory": ${jsonencode(lookup(var.container_definitions[count.index], "memory"))},
+    "memoryReservation": %{if lookup(var.container_definitions[count.index], "memoryReservation") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "memoryReservation"))}%{endif},
+    "mountPoints": %{if lookup(var.container_definitions[count.index], "mountPoints") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "mountPoints"))}%{endif},
+    "name": ${jsonencode(lookup(var.container_definitions[count.index], "name"))},
+    "portMappings": %{if lookup(var.container_definitions[count.index], "portMappings") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "portMappings"))}%{endif},
+    "privileged": false,
+    "pseudoTerminal": %{if lookup(var.container_definitions[count.index], "pseudoTerminal") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "pseudoTerminal"))}%{endif},
+    "readonlyRootFilesystem": %{if lookup(var.container_definitions[count.index], "readonlyRootFilesystem") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "readonlyRootFilesystem"))}%{endif},
+    "secrets": %{if lookup(var.container_definitions[count.index], "secrets") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "secrets"))}%{endif},
+    "systemControls": %{if lookup(var.container_definitions[count.index], "systemControls") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "systemControls"))}%{endif},
+    "ulimits": %{if lookup(var.container_definitions[count.index], "ulimits") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "ulimits"))}%{endif},
+    "user": %{if lookup(var.container_definitions[count.index], "user") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "user"))}%{endif},
+    "volumesFrom": %{if lookup(var.container_definitions[count.index], "volumesFrom") == ""}[]%{else}${jsonencode(lookup(var.container_definitions[count.index], "volumesFrom"))}%{endif},
+    "workingDirectory": %{if lookup(var.container_definitions[count.index], "workingDirectory") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "workingDirectory"))}%{endif},
+    "dependsOn": %{if lookup(var.container_definitions[count.index], "dependsOn") == ""}null%{else}${jsonencode(lookup(var.container_definitions[count.index], "dependsOn"))}%{endif}
+  }
+]
+JSON
+}
+
 resource "aws_ecs_task_definition" "task_definition" {
   count                    = length(var.task_definition)
-  //container_definitions    = element(var.container_definitions, lookup(var.task_definition[count.index], "container_definitions_id"))
-  container_definitions = file(join(".",[join("/",[path.cwd, "container", lookup(var.task_definition[count.index], "container_definitions")]),"json"]))
+  container_definitions    = file(join(".", [join("/", [path.cwd, "container", lookup(var.task_definition[count.index], "container_definitions")]), "json"]))
   family                   = lookup(var.task_definition[count.index], "family")
   task_role_arn            = var.task_role_arn
   execution_role_arn       = var.execution_role_arn
