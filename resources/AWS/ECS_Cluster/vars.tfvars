@@ -1,3 +1,6 @@
+security_group = []
+security_group_rules = []
+
 capacity_provider = [
   /*    {
     id   = "0"

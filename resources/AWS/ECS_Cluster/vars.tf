@@ -1,23 +1,31 @@
 variable "task_definition" {
-  type = "list"
+  type = list
 }
 
 variable "ecs_cluster" {
-  type = "list"
+  type = list
 }
 
 variable "ecs_service" {
-  type = "list"
+  type = list
 }
 
 variable "container_definitions" {
-  type = "list"
+  type = list
 }
 
 variable "region" {}
 variable "bucket" {}
 
 variable "definition" {
+  type = list
+}
+
+variable "security_group" {
+  type = list
+}
+
+variable "security_group_rules" {
   type = list
 }
 
