@@ -60,4 +60,5 @@ module "security_group_rules" {
   source                   = "../../../modules/AWS/VPC/security_group_rule"
   security_group_id        = module.security_group.security_group_id
   security_group_rule      = var.security_group_rules
+  source_security_group_id = ""
 }
