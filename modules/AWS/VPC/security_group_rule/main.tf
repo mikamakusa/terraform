@@ -6,4 +6,5 @@ resource "aws_security_group_rule" "security_group_rule" {
   to_port                  = lookup(var.security_group_rule[count.index], "to_port")
   type                     = lookup(var.security_group_rule[count.index], "type")
   cidr_blocks              = lookup(var.security_group_rule[count.index], "cidr_blocks")
+  source_security_group_id = lookup(var.security_group_rule[count.index], "cidr_blocks") == "" ? var.source_security_group_id : null
 }
