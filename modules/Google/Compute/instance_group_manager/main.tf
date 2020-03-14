@@ -1,11 +1,11 @@
 resource "google_compute_instance_group_manager" " instance_group_manager" {
   count              = length(var.instance_group_manager)
   base_instance_name = lookup(var.instance_group_manager[count.index], "base_instance_name")
-  instance_template  = ""
+  instance_template  = element(var.instance_template, lookup(var.instance_group_manager[count.index], "instance_template_id"))
   name               = lookup(var.instance_group_manager[count.index], "name")
-  zone               = ""
+  zone               = var.zone
   description        = lookup(var.instance_group_manager[count.index], "description")
-  project            = ""
+  project            = var.project
   target_size        = lookup(var.instance_group_manager[count.index], "target_size")
   target_pools       = lookup(var.instance_group_manager[count.index], "target_pools")
   wait_for_instances = lookup(var.instance_group_manager[count.index], "wait_for_instances")
