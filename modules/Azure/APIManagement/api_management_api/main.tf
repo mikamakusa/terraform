@@ -12,7 +12,7 @@ resource "azurerm_api_management_api" "api_management_api" {
   soap_pass_through   = lookup(var.api_management_api[count.index], "soap_pass_through")
 
   dynamic "import" {
-    for_each = lookup(var.api_management_api[count.index], "import") == "" ? null : [for i in lookup(var.api_management_api[count.index], "import") : {
+    for_each = lookup(var.api_management_api[count.index], "import") == null ? [] : [for i in lookup(var.api_management_api[count.index], "import") : {
       format = i.content_format
       value  = i.value
       wsdl   = lookup(i, "wsdl_selector", null)
@@ -21,7 +21,7 @@ resource "azurerm_api_management_api" "api_management_api" {
       content_format = import.value.format
       content_value  = import.value.value
       dynamic "wsdl_selector" {
-        for_each = import.value.wsdl == "" ? null : [for i in import.value.wsdl : {
+        for_each = import.value.wsdl == null ? [] : [for i in import.value.wsdl : {
           endpoint = i.endpoint_name
           service  = i.service
         }]
@@ -34,7 +34,7 @@ resource "azurerm_api_management_api" "api_management_api" {
   }
 
   dynamic "subscription_key_parameter_names" {
-    for_each = lookup(var.api_management_api[count.index], "subscription_key_parameter_names") == "" ? null : lookup(var.api_management_api[count.index], "subscription_key_parameter_names")
+    for_each = lookup(var.api_management_api[count.index], "subscription_key_parameter_names") == null ? [] : lookup(var.api_management_api[count.index], "subscription_key_parameter_names")
     content {
       header = lookup(subscription_key_parameter_names.value, "header")
       query  = lookup(subscription_key_parameter_names.value, "query")

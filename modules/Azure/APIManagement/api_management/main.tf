@@ -8,14 +8,14 @@ resource "azurerm_api_management" "api_management" {
   sku_name            = lookup(var.api_management[count.index], "sku_name")
 
   dynamic "additional_location" {
-    for_each = lookup(var.api_management[count.index], "additional_location") == "" ? null : lookup(var.api_management[count.index], "additional_location")
+    for_each = lookup(var.api_management[count.index], "additional_location") == null ? [] : lookup(var.api_management[count.index], "additional_location")
     content {
       location = lookup(additional_location.value, "location")
     }
   }
 
   dynamic "certificate" {
-    for_each = lookup(var.api_management[count.index], "certificate") == "" ? null : lookup(var.api_management[count.index], "certificate")
+    for_each = lookup(var.api_management[count.index], "certificate") == null ? [] : lookup(var.api_management[count.index], "certificate")
     content {
       certificate_password = lookup(certificate.value, "certificate_password")
       encoded_certificate  = lookup(certificate.value, "encoded_certificate")
@@ -24,14 +24,14 @@ resource "azurerm_api_management" "api_management" {
   }
 
   dynamic "identity" {
-    for_each = lookup(var.api_management[count.index], "identity") == "" ? null : lookup(var.api_management[count.index], "identity")
+    for_each = lookup(var.api_management[count.index], "identity") == null ? [] : lookup(var.api_management[count.index], "identity")
     content {
       type = lookup(identity.value, "type")
     }
   }
 
   dynamic "hostname_configuration" {
-    for_each = lookup(var.api_management[count.index], "hostname_configuration") == "" ? null : [for i in lookup(var.api_management[count.index], "hostname_configuration") : {
+    for_each = lookup(var.api_management[count.index], "hostname_configuration") == null ? [] : [for i in lookup(var.api_management[count.index], "hostname_configuration") : {
       management = lookup(i, "management", null)
       scm        = lookup(i, "scm", null)
       portal     = lookup(i, "portal", null)
@@ -39,7 +39,7 @@ resource "azurerm_api_management" "api_management" {
     }]
     content {
       dynamic "management" {
-        for_each = hostname_configuration.value.management == "" ? null : [for i in hostname_configuration.value.management : {
+        for_each = hostname_configuration.value.management == null ? [] : [for i in hostname_configuration.value.management : {
           name                         = i.hostname
           key_vault_id                 = i.key_vault_id
           certificate                  = i.certificate
@@ -55,7 +55,7 @@ resource "azurerm_api_management" "api_management" {
         }
       }
       dynamic "scm" {
-        for_each = hostname_configuration.value.scm == "" ? null : [for i in hostname_configuration.value.scm : {
+        for_each = hostname_configuration.value.scm == null ? [] : [for i in hostname_configuration.value.scm : {
           name                         = i.hostname
           key_vault_id                 = i.key_vault_id
           certificate                  = i.certificate
@@ -71,7 +71,7 @@ resource "azurerm_api_management" "api_management" {
         }
       }
       dynamic "portal" {
-        for_each = hostname_configuration.value.portal == "" ? null : [for i in hostname_configuration.value.portal : {
+        for_each = hostname_configuration.value.portal == null ? [] : [for i in hostname_configuration.value.portal : {
           name                         = i.hostname
           key_vault_id                 = i.key_vault_id
           certificate                  = i.certificate
@@ -87,7 +87,7 @@ resource "azurerm_api_management" "api_management" {
         }
       }
       dynamic "proxy" {
-        for_each = hostname_configuration.value.proxy == "" ? null : [for i in hostname_configuration.value.proxy : {
+        for_each = hostname_configuration.value.proxy == null ? [] : [for i in hostname_configuration.value.proxy : {
           name                         = i.hostname
           key_vault_id                 = i.key_vault_id
           certificate                  = i.certificate
@@ -128,14 +128,14 @@ resource "azurerm_api_management" "api_management" {
   }
 
   dynamic "sign_up" {
-    for_each = lookup(var.api_management[count.index], "sign_up") == "" ? null : [for i in lookup(var.api_management[count.index], "sign_up") : {
+    for_each = lookup(var.api_management[count.index], "sign_up") == null ? [] : [for i in lookup(var.api_management[count.index], "sign_up") : {
       enabled = i.enabled
       terms   = lookup(i, "terms_of_service")
     }]
     content {
       enabled = sign_up.value.enabled
       dynamic "terms_of_service" {
-        for_each = sign_up.value.terms == "" ? null : [for i in sign_up.value.terms : {
+        for_each = sign_up.value.terms == null ? [] : [for i in sign_up.value.terms : {
           consent = i.consent
           enabled = i.enabled
         }]

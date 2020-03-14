@@ -10,7 +10,7 @@ resource "azurerm_api_management_api_operation" "operation" {
   description         = lookup(var.operation[count.index], "description", null)
 
   dynamic "request" {
-    for_each = lookup(var.operation[count.index], "request") == "" ? null : [for i in lookup(var.operation[count.index], "request") : {
+    for_each = lookup(var.operation[count.index], "request") == null ? [] : [for i in lookup(var.operation[count.index], "request") : {
       description    = i.description
       representation = lookup(i, "representation")
       header         = lookup(i, "header")
@@ -19,7 +19,7 @@ resource "azurerm_api_management_api_operation" "operation" {
     content {
       description = request.value.description
       dynamic "representation" {
-        for_each = request.value.representation == "" ? null : [for i in request.value.representation : {
+        for_each = request.value.representation == null ? [] : [for i in request.value.representation : {
           content = i.content
           sample  = i.sample
           schema  = i.schema
@@ -32,7 +32,7 @@ resource "azurerm_api_management_api_operation" "operation" {
           schema_id    = representation.value.schema
           type_name    = representation.value.type
           dynamic "form_parameter" {
-            for_each = representation.value.form == "" ? null : [for i in representation.value.form : {
+            for_each = representation.value.form == null ? [] : [for i in representation.value.form : {
               name     = i.name
               required = i.required
               type     = i.type
@@ -46,7 +46,7 @@ resource "azurerm_api_management_api_operation" "operation" {
         }
       }
       dynamic "header" {
-        for_each = request.value.header == "" ? null : [for i in request.value.header : {
+        for_each = request.value.header == null ? [] : [for i in request.value.header : {
           name     = i.name
           required = i.required
           type     = i.type
@@ -58,7 +58,7 @@ resource "azurerm_api_management_api_operation" "operation" {
         }
       }
       dynamic "query_parameter" {
-        for_each = request.value.query == "" ? null : [for i in request.value.query : {
+        for_each = request.value.query == null ? [] : [for i in request.value.query : {
           name     = i.name
           required = i.required
           type     = i.type
@@ -73,7 +73,7 @@ resource "azurerm_api_management_api_operation" "operation" {
   }
 
   dynamic "response" {
-    for_each = lookup(var.operation[count.index], "response") == "" ? null : [for i in lookup(var.operation[count.index], "response") : {
+    for_each = lookup(var.operation[count.index], "response") == null ? [] : [for i in lookup(var.operation[count.index], "response") : {
       status         = i.status_code
       description    = i.description
       representation = lookup(i, "representation")
@@ -83,7 +83,7 @@ resource "azurerm_api_management_api_operation" "operation" {
       status_code = response.value.status
       description = response.value.description
       dynamic "representation" {
-        for_each = response.value.representation == "" ? null : [for i in response.value.representation : {
+        for_each = response.value.representation == null ? [] : [for i in response.value.representation : {
           content = i.content
           sample  = i.sample
           schema  = i.schema
@@ -96,7 +96,7 @@ resource "azurerm_api_management_api_operation" "operation" {
           schema_id    = representation.value.schema
           type_name    = representation.value.type
           dynamic "form_parameter" {
-            for_each = representation.value.form == "" ? null : [for i in representation.value.form : {
+            for_each = representation.value.form == null ? [] : [for i in representation.value.form : {
               name     = i.name
               required = i.required
               type     = i.type
@@ -110,7 +110,7 @@ resource "azurerm_api_management_api_operation" "operation" {
         }
       }
       dynamic "header" {
-        for_each = response.value.header == "" ? null : [for i in response.value.header : {
+        for_each = response.value.header == null ? [] : [for i in response.value.header : {
           name     = i.name
           required = i.required
           type     = i.type

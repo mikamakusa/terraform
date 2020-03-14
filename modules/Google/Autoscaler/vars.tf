@@ -13,9 +13,6 @@ variable "template" {
   type = "list"
 }
 
-variable "app_admin" {}
-variable "ssh_key" {}
-
 variable "instance_group_manager" {
   type = "list"
 }
@@ -27,3 +24,4 @@ variable "region" {}
 variable "pool" {
   type = "list"
 }
+variable "kms_key_self_link" {}

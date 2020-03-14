@@ -30,9 +30,19 @@ resource "google_compute_instance" "google_Vms" {
   name                = "${var.prefix}-${lookup(var.Linux_Vms[count.index], "suffix_name")}-${lookup(var.Linux_Vms[count.index], "id")}"
   project             = var.project
   zone                = "projects/${var.app_project}/zones/${var.zone}"
-  can_ip_forward      = lookup(var.Linux_Vms[count.index], "can_ip_forward")
-  deletion_protection = lookup(var.Linux_Vms[count.index], "deletion_protection")
+  can_ip_forward      = lookup(var.Linux_Vms[count.index], "can_ip_forward", false)
+  deletion_protection = lookup(var.Linux_Vms[count.index], "deletion_protection", false)
   machine_type        = lookup(var.Linux_Vms[count.index], "machine_type")
+  allow_stopping_for_update = lookup(var.Linux_Vms[count.index], "allow_stopping_for_update", false)
+  min_cpu_platform = lookup(var.Linux_Vms[count.index], "min_cpu_platform", null)
+
+  dynamic "guest_accelerator" {
+    for_each = lookup(var.Linux_Vms[count.index], "guest_accelerator")
+    content {
+      count = lookup(guest_accelerator.value, "count")
+      type = lookup(guest_accelerator.value, "type")
+    }
+  }
 
   dynamic "boot_disk" {
     for_each = lookup(var.Linux_Vms[count.index], "boot_disk")
@@ -97,7 +107,6 @@ resource "google_compute_instance" "google_Vms" {
       enable_integrity_monitoring = lookup(shielded_instance_config.value,"enable_integrity_monitoring",true)
     }
   }
-
   metadata {
     ssh-keys = "${var.app_admin}:${var.ssh_keys}"
   }

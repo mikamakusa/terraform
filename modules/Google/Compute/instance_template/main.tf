@@ -25,19 +25,29 @@ resource "google_compute_instance_template" "instance_template" {
 
   dynamic "disk" {
     for_each = [for disk_info in lookup(var.instance_template[count.index], "disk") : {
+      auto_delete         = disk_info.auto_delete
+      source              = disk_info.source
+      source_image        = disk_info.source_image
+      device_name         = disk_info.device_name
+      interface           = disk_info.interface
+      mode                = disk_info.mode
+      disk_type           = disk_info.disk_type
+      disk_name           = disk_info.disk_name
+      disk_size_gb        = disk_info.disk_size_gb
+      type                = disk_info.type
       disk_encryption_key = lookup(disk_info, "disk_encryption_key", null)
     }]
     content {
-      auto_delete  = lookup(disk.value, "auto_delete", null)
-      source       = lookup(disk.value, "source", null)
-      source_image = lookup(disk.value, "source_image", null)
-      device_name  = lookup(disk.value, "device_name", null)
-      interface    = lookup(disk.value, "interface", null)
-      mode         = lookup(disk.value, "mode", null)
-      disk_type    = lookup(disk.value, "disk_type", null)
-      disk_name    = lookup(disk.value, "disk_name", null)
-      disk_size_gb = lookup(disk.value, "disk_size_gb", null)
-      type         = lookup(disk.value, "type", null)
+      auto_delete  = disk.value.auto_delete
+      source       = disk.value.source
+      source_image = disk.value.source_image
+      device_name  = disk.value.device_name
+      interface    = disk.value.interface
+      mode         = disk.value.mode
+      disk_type    = disk.value.disk_type
+      disk_name    = disk.value.disk_name
+      disk_size_gb = disk.value.disk_size_gb
+      type         = disk.value.type
       dynamic "disk_encryption_key" {
         for_each = disk.value.disk_encryption_key == null ? [] : [for i in disk.value.disk_encryption_key : {
           kms_key_self_link = i.kms_key_self_link
@@ -51,14 +61,13 @@ resource "google_compute_instance_template" "instance_template" {
 
   dynamic "network_interface" {
     for_each = [for i in lookup(var.instance_template[count.index], "network_interface") : {
-      access_config  = lookup(i, "access_config", null)
-      alias_ip_range = lookup(i, "alias_ip_range", null)
+      network_ip         = i.network_ip
+      access_config      = lookup(i, "access_config", null)
+      alias_ip_range     = lookup(i, "alias_ip_range", null)
     }]
     content {
-      network            = lookup(network_interface.value, "network", null)
-      network_ip         = lookup(network_interface.value, "network_ip", null)
-      subnetwork         = lookup(network_interface.value, "subnetwork", null)
-      subnetwork_project = lookup(network_interface.value, "subnetwork_project", null)
+      network            = var.network
+      network_ip         = network_interface.value.network_ip
       dynamic "access_config" {
         for_each = network_interface.value.access_config == null ? [] : [for i in network_interface.value.access_config : {
           nat_ip       = i.nat_ip
@@ -85,19 +94,22 @@ resource "google_compute_instance_template" "instance_template" {
   dynamic "service_account" {
     for_each = lookup(var.instance_template[count.index], "service_account")
     content {
-      scopes = [lookup(service_account.value, "scopes")]
+      scopes = lookup(service_account.value, "scopes")
       email  = lookup(service_account.value, "email")
     }
   }
 
   dynamic "scheduling" {
     for_each = [for i in lookup(var.instance_template[count.index], "scheduling") : {
-      node_affinities = lookup(i, "node_affinities", null)
+      automatic_restart   = i.automatic_restart
+      on_host_maintenance = i.on_host_maintenance
+      preemptible         = i.preemptible
+      node_affinities     = lookup(i, "node_affinities", null)
     }]
     content {
-      automatic_restart   = lookup(scheduling.value, "automatic_restart")
-      on_host_maintenance = lookup(scheduling.value, "on_host_maintenance")
-      preemptible         = lookup(scheduling.value, "preemptible")
+      automatic_restart   = scheduling.value.automatic_restart
+      on_host_maintenance = scheduling.value.on_host_maintenance
+      preemptible         = scheduling.value.preemptible
       dynamic "node_affinities" {
         for_each = scheduling.value.node_affinities == null ? [] : [for i in scheduling.value.node_affinities : {
           key      = i.key
@@ -107,7 +119,7 @@ resource "google_compute_instance_template" "instance_template" {
         content {
           key      = node_affinities.value.key
           operator = node_affinities.value.operator
-          values   = [node_affinities.value.values]
+          values   = node_affinities.value.values
         }
       }
     }
