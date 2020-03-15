@@ -1,0 +1,15 @@
+resource "openstack_blockstorage_volume_v2" "volume" {
+  count                = length(var.volume)
+  name                 = lookup(var.volume[count.index], "name")
+  size                 = lookup(var.volume[count.index], "size")
+  region               = lookup(var.volume[count.index], "region", null)
+  consistency_group_id = lookup(var.volume[count.index], "consistency_group_id", null)
+  availability_zone    = lookup(var.volume[count.index], "availability_zone", null)
+  description          = lookup(var.volume[count.index], "description", null)
+  image_id             = lookup(var.volume[count.index], "image_id", null)
+  snapshot_id          = lookup(var.volume[count.index], "snapshot_id", null)
+  source_replica       = lookup(var.volume[count.index], "source_replica", null)
+  source_vol_id        = lookup(var.volume[count.index], "source_vol_id", null)
+  volume_type          = lookup(var.volume[count.index], "volume_type", null)
+  metadata             = lookup(var.volume[count.index], "metadata", null)
+}
