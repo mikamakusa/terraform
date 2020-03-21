@@ -41,13 +41,22 @@ resource "aws_db_instance" "instance" {
   performance_insights_retention_period = lookup(var.instance[count.index], "performance_insights_retention_period", null)
 
   dynamic "s3_import" {
-    for_each = lookup(var.instance[count.index], "copy_tags_to_snapshot")
+    for_each = lookup(var.instance[count.index], "s3_import") == null ? [] : lookup(var.instance[count.index], "s3_import")
     content {
       bucket_name           = lookup(s3_import.value, "bucket_name", null)
       ingestion_role        = lookup(s3_import.value, "ingestion_role", null)
       source_engine         = lookup(s3_import.value, "source_engine", null)
       source_engine_version = lookup(s3_import.value, "source_engine_version", null)
       bucket_prefix         = lookup(s3_import.value, "bucket_prefix", null)
+    }
+  }
+
+  dynamic "timeouts" {
+    for_each = lookup(var.instance[count.index], "timeouts") == null ? [] : lookup(var.instance[count.index], "timeouts")
+    content {
+      create = lookup(timeouts.value, "create")
+      delete = lookup(timeouts.value, "delete")
+      update = lookup(timeouts.value, "update")
     }
   }
 }
