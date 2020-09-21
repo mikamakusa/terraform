@@ -1,5 +1,5 @@
 resource "google_dialogflow_intent" "intent" {
-  depends_on = [var.depends]
+  depends_on                  = [var.depends]
   count                       = length(var.intent)
   project                     = var.project
   display_name                = lookup(var.intent[count.index], "display_name")
