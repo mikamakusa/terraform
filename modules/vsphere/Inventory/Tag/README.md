@@ -1,3 +1,5 @@
+# VSphere Tag Terraform Module Documentation
+
 ## Requirements
 
 | Name | Version |
@@ -31,3 +33,27 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_tag"></a> [tag](#output\_tag) | n/a |
+
+## Usage
+### main.tf
+```hcl
+module "tag_category" {
+  source       = "../../../modules/vsphere/Inventory/Tag_Category"
+  tag_category = {
+    category-1 = {
+      cardinality       = "SINGLE"
+      associable_types  = [
+        "VirtualMachine",
+        "Datastore"
+      ]
+    }
+  }
+}
+
+module "tags" {
+  source = "../../../modules/vsphere/Inventory/Tag"
+  tag    = {
+    tag_category = module.tag_category[*].tag_category
+  }
+}
+```

@@ -1,3 +1,5 @@
+# VSphere Folder Terraform Module Documentation
+
 ## Requirements
 
 | Name | Version |
@@ -31,3 +33,39 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_folder"></a> [folder](#output\_folder) | n/a |
+
+## Usage
+### main.tf
+```hcl
+module "custom_attribute" {
+  source = "../../../modules/vsphere/Inventory/Custom_Attribute"
+  custom_attribute = {
+    attribute-1 = {
+      object_managed_type = "VirtualMachines"
+    },
+    attribute-2 = {
+      object_managed_type = "Datacenters"
+    }
+  }
+}
+
+module "datacenter" {
+  source = "../../../modules/vsphere/Inventory/Datacenter"
+  datacenter = {
+    dc-01 = {
+      folder            = "/research/"
+      tags              = module.tags[*].tag
+      custom_attributes = module.custom_attributes[*].custom_attribute
+    }
+  }
+}
+
+module "folder" {
+  source = "../../../modules/vsphere/Inventory/Folder"
+  folder = {
+    path = "terraform"
+    type = "datacenter"
+    datacenter_id = module.datacenter[*].datacenter
+  }
+}
+```

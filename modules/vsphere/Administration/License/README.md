@@ -1,3 +1,5 @@
+# VSphere License Terraform module documentation
+
 ## Requirements
 
 | Name | Version |
@@ -32,3 +34,32 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_license"></a> [license](#output\_license) | n/a |
+
+## Usage
+### main.tf / No labels
+```hcl
+module "License" {
+  source = "../../../modules/vsphere/Administration/License"
+  license = var.license
+}
+```
+
+### main.tf / With Labels
+```hcl
+module "License" {
+  source = "../../../modules/vsphere/Administration/License"
+  license = var.license
+  labels = {
+    label1 = "label1"
+    label2 = "label2"
+  }
+}
+```
+
+### vars.tf
+```hcl
+variable "license" {
+  type = string
+}
+```
+
