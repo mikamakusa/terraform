@@ -1,31 +1,20 @@
-variable "hosts" {
-  type        = list(string)
-  description = "Lists of the hosts of the cluster"
+variable "cluster" {
+  type = map(object({
+    datacenter_id     = string
+    folder            = optional(string)
+    tags              = optional(list(string))
+    custom_attributes = optional(map(string))
+  }))
 }
 
-variable "datacenter" {
-  type        = string
-  description = "Datacenter name"
-}
-
-variable "cluster_name" {
-  type        = string
-  description = "Name of the cluster"
-}
-
-variable "folder_name" {
-  type        = string
-  description = "The relative path to a folder in which the cluster will be stored"
-}
-
-variable "tags" {
-  type        = list(string)
-  description = "the IDs of the tags to attach to this cluster"
-}
-
-variable "custom_attributes" {
-  type        = map(string)
-  description = "Attributes IDs to set on this cluster"
+variable "host_management" {
+  type = object({
+    host_system_ids           = optional(list(string))
+    host_managed              = optional(bool)
+    host_cluster_exit_timeout = optional(number)
+    force_evacuate_on_destroy = optional(bool)
+  })
+  default = {}
 }
 
 variable "drs" {
@@ -39,6 +28,7 @@ variable "drs" {
     advanced_options         = optional(map(string))
   })
   description = "DRS configuration for this cluster"
+  default     = {}
 }
 
 variable "dpm" {
@@ -48,6 +38,7 @@ variable "dpm" {
     threshold        = optional(number)
   })
   description = "DPM - Distributed Power Management - configuration for this cluster"
+  default     = {}
 }
 
 variable "ha" {
@@ -94,6 +85,7 @@ variable "ha" {
       datastore_policy = optional(string)
     }))
   })
+  default = {}
 }
 
 variable "proactive" {
@@ -104,6 +96,7 @@ variable "proactive" {
     ha_severe_remediation   = optional(string)
     ha_provider_ids         = optional(list(string))
   })
+  default = {}
 }
 
 variable "vsan" {
@@ -121,4 +114,5 @@ variable "vsan" {
       storage = optional(map(string))
     }))
   })
+  default = {}
 }

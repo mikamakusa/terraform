@@ -1,12 +1,14 @@
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_vsphere"></a> [vsphere](#requirement\_vsphere) | 2.3.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_vsphere"></a> [vsphere](#provider\_vsphere) | n/a |
+| <a name="provider_vsphere"></a> [vsphere](#provider\_vsphere) | 2.3.1 |
 
 ## Modules
 
@@ -16,7 +18,7 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [vsphere_datacenter.datacenter](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/resources/datacenter) | resource |
+| [vsphere_datacenter.datacenter](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/datacenter) | resource |
 
 ## Inputs
 

@@ -18,16 +18,16 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [vsphere_tag_category.tag_category](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/tag_category) | resource |
+| [vsphere_role.role](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/role) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_tag_category"></a> [tag\_category](#input\_tag\_category) | n/a | <pre>map(object({<br>    description      = optional(string)<br>    cardinality      = string<br>    associable_types = list(string)<br>  }))</pre> | n/a | yes |
+| <a name="input_role"></a> [role](#input\_role) | n/a | <pre>map(object({<br>    role_privileges = optional(list(string))<br>  }))</pre> | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_tag_category"></a> [tag\_category](#output\_tag\_category) | n/a |
+| <a name="output_role"></a> [role](#output\_role) | n/a |

@@ -1,13 +1,15 @@
 resource "vsphere_compute_cluster" "compute_cluster" {
-  datacenter_id     = data.vsphere_datacenter.dc.id
-  name              = var.cluster_name
-  folder            = var.folder_name == null ? "" : var.folder_name
-  tags              = var.tags
-  custom_attributes = var.custom_attributes == null ? {} : var.custom_attributes
+  for_each = var.cluster
+  datacenter_id     = each.value.datacenter_id
+  name              = each.key
+  folder            = each.value.folder
+  tags              = each.value.tags
+  custom_attributes = each.value.custom_attributes
 
-  host_system_ids           = [data.vsphere_host.hosts.*.id]
-  host_cluster_exit_timeout = ""
-  force_evacuate_on_destroy = ""
+  host_system_ids           = var.host_management.host_system_ids
+  host_cluster_exit_timeout = var.host_management.host_cluster_exit_timeout
+  force_evacuate_on_destroy = var.host_management.force_evacuate_on_destroy
+  host_managed              = var.host_management.host_managed
 
   drs_enabled               = var.drs.enabled
   drs_automation_level      = var.drs.automation_level

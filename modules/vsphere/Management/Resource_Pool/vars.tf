@@ -18,4 +18,5 @@ variable "config" {
     memory_shares      = optional(string)
     tags               = optional(list(string))
   })
+  default = {}
 }

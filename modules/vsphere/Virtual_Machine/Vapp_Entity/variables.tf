@@ -9,8 +9,8 @@ variable "container_id" {
 variable "start" {
   type = object({
     action = optional(string)
-    delay = optional(number)
-    order = optional(number)
+    delay  = optional(number)
+    order  = optional(number)
   })
   default = {}
 }
@@ -18,7 +18,7 @@ variable "start" {
 variable "stop" {
   type = object({
     action = optional(string)
-    delay = optional(number)
+    delay  = optional(number)
   })
   default = {}
 }

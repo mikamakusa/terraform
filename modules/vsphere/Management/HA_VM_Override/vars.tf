@@ -34,4 +34,5 @@ variable "monitoring_settings" {
     ha_vm_maximum_resets                  = optional(number)
     ha_vm_maximum_failure_window          = optional(string)
   })
+  default = {}
 }
