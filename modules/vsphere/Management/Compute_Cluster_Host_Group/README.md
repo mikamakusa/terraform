@@ -1,3 +1,5 @@
+# VSphere Compute Cluster Host Group Terraform module documentation
+
 ## Requirements
 
 | Name | Version |
@@ -31,3 +33,110 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_host_group"></a> [host\_group](#output\_host\_group) | n/a |
+
+## Usage
+### main.tf / No host_system_ids
+```hcl
+module "cluster" {
+  source = "../../../modules/vsphere/Management/Compute_Cluster"
+  cluster = {
+    cluster01 = {
+      datacenter_id     = module.datacenter[*].datacenter
+      folder            = "/servers/"
+      tags              = module.tags[*].tag
+      custom_attributes = module.custom_attribute[*].custom_attribute
+    }
+    host_management = {
+      host_system_ids           = module.host[*].host
+      force_evacute_on_destroy  = true
+    }
+    dpm = {
+      enabled           = true
+      automation_level  = "Automated"
+    }
+    drs = {
+      enabled           = true
+      automation_level  = "fullyAutomated"
+    }
+    ha = {
+      enabled = true
+      host = {
+        monitoring = "enabled"
+      }
+    }
+    proactive = {
+      enabled               = true
+      automation_level      = "Automated"
+      moderate_remediation  = "MaintenanceMode"
+    }
+  }
+}
+
+module "cluster_host_group" {
+  source = "../../../modules/vsphere/Management/Compute_Cluster_Host_Group"
+  host_group = {
+    group-1 = {
+      compute_cluster_id = module.cluster[*].vsphere_cluster
+    }
+  }
+}
+```
+
+### main.tf / No host_system_ids
+```hcl
+module "host" {
+  source = "../../../modules/vsphere/Management/Host"
+  host = {
+    host01 = {
+      datacenter_id = module.datacenter[*].datacenter
+      lockdown      = "normal"
+      tags          = module.tags[*].tag
+    }
+  }
+}
+
+module "cluster" {
+  source = "../../../modules/vsphere/Management/Compute_Cluster"
+  cluster = {
+    cluster01 = {
+      datacenter_id     = module.datacenter[*].datacenter
+      folder            = "/servers/"
+      tags              = module.tags[*].tag
+      custom_attributes = module.custom_attribute[*].custom_attribute
+    }
+    host_management = {
+      host_system_ids           = module.host[*].host
+      force_evacute_on_destroy  = true
+    }
+    dpm = {
+      enabled           = true
+      automation_level  = "Automated"
+    }
+    drs = {
+      enabled           = true
+      automation_level  = "fullyAutomated"
+    }
+    ha = {
+      enabled = true
+      host = {
+        monitoring = "enabled"
+      }
+    }
+    proactive = {
+      enabled               = true
+      automation_level      = "Automated"
+      moderate_remediation  = "MaintenanceMode"
+    }
+  }
+}
+
+module "cluster_host_group" {
+  source = "../../../modules/vsphere/Management/Compute_Cluster_Host_Group"
+  host_group = {
+    group-1 = {
+      compute_cluster_id = module.cluster[*].vsphere_cluster
+      host_system_ids = module.host[*].host
+    }
+  }
+}
+```
