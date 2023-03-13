@@ -82,7 +82,7 @@ module "cluster_host_group" {
 }
 ```
 
-### main.tf / No host_system_ids
+### main.tf
 ```hcl
 module "host" {
   source = "../../../modules/vsphere/Management/Host"
