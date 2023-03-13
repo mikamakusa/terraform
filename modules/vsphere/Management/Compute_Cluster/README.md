@@ -1,3 +1,5 @@
+# VSphere Compute Cluster Terraform module documentation
+
 ## Requirements
 
 | Name | Version |
@@ -37,3 +39,42 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_vsphere_cluster"></a> [vsphere\_cluster](#output\_vsphere\_cluster) | n/a |
+
+## Usage
+### main.tf
+```hcl
+module "cluster" {
+  source = "../../../modules/vsphere/Management/Compute_Cluster"
+  cluster = {
+    cluster01 = {
+      datacenter_id     = module.datacenter[*].datacenter
+      folder            = "/servers/"
+      tags              = module.tags[*].tag
+      custom_attributes = module.custom_attribute[*].custom_attribute
+    }
+    host_management = {
+      host_system_ids           = module.host[*].host
+      force_evacute_on_destroy  = true
+    }
+    dpm = {
+      enabled           = true
+      automation_level  = "Automated"
+    }
+    drs = {
+      enabled           = true
+      automation_level  = "fullyAutomated"
+    }
+    ha = {
+      enabled = true
+      host = {
+        monitoring = "enabled"
+      }
+    }
+    proactive = {
+      enabled               = true
+      automation_level      = "Automated"
+      moderate_remediation  = "MaintenanceMode"
+    }
+  }
+}
+```
