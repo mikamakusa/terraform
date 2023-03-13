@@ -71,15 +71,43 @@ module "cluster" {
   source = "../../../modules/vsphere/Management/Compute_Cluster"
   cluster = {
     cluster01 = {
-      datacenter_id = module.datacenter[*].datacenter
+      datacenter_id   = module.datacenter[*].datacenter
+      folder          = "/servers/"
+      tags            = module.tags[*].tag
+      custom_attributes = module.custom_attribute[*].custom_attribute
+    }
+    host_management = {
       host_system_ids = module.host[*].host
+      force_evacute_on_destroy = true
+    }
+    dpm = {
+      enabled = true
+      automation_level = "Automated"
     }
     drs = {
-      drs_enabled = true
-      drs_automation_level = "fullyAutomated"
+      enabled = true
+      automation_level = "fullyAutomated"
     }
     ha = {
-      ha_enabled = true
+      enabled = true
+      host = {
+        monitoring = "enabled"
+      }
+    }
+    proactive = {
+      enabled = true
+      automation_level = "Automated"
+      moderate_remediation = "MaintenanceMode"
+    }
+  }
+}
+
+module "cluster_host_group" {
+  source = "../../../modules/vsphere/Management/Compute_Cluster_Host_Group"
+  host_group = {
+    group-1 = {
+      compute_cluster_id = module.cluster[*].vsphere_cluster
+      host_system_ids = module.host[*].host
     }
   }
 }
