@@ -1,0 +1,3 @@
+variable "manufacturer" {
+  type = any
+}

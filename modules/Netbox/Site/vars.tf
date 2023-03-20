@@ -1,0 +1,3 @@
+variable "site" {
+  type = any
+}
