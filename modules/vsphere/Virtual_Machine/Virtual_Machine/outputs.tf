@@ -1,3 +1,3 @@
-output "virtual_machine" {
-  value = vsphere_virtual_machine.virtual_machine
+output "virtual_machine_id" {
+  value = vsphere_virtual_machine.virtual_machine.*.id
 }
