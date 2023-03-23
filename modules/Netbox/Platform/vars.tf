@@ -1,0 +1,3 @@
+variable "platform" {
+  type = any
+}

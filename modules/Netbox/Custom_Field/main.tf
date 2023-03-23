@@ -1,0 +1,16 @@
+resource "netbox_custom_field" "custom_field" {
+  count              = length(var.custom_field)
+  content_types      = lookup(var.custom_field[count.index], "content_types")
+  name               = lookup(var.custom_field[count.index], "name")
+  type               = lookup(var.custom_field[count.index], "type")
+  choices            = lookup(var.custom_field[count.index], "choices", null)
+  default            = lookup(var.custom_field[count.index], "default", null)
+  description        = lookup(var.custom_field[count.index], "description", null)
+  group_name         = lookup(var.custom_field[count.index], "group_name", null)
+  label              = lookup(var.custom_field[count.index], "label")
+  required           = tobool(lookup(var.custom_field[count.index], "required", false))
+  validation_maximum = tonumber(lookup(var.custom_field[count.index], "validation_maximum", null))
+  validation_minimum = tonumber(lookup(var.custom_field[count.index], "validation_minimum", null))
+  validation_regex   = lookup(var.custom_field[count.index], "validation_regex", null)
+  weigth             = tonumber(lookup(var.custom_field[count.index], "weight", null))
+}

@@ -1,0 +1,3 @@
+variable "token" {
+  type = any
+}
