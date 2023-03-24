@@ -1,0 +1,3 @@
+variable "rir" {
+  type = any
+}
