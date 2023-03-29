@@ -6,10 +6,18 @@ variable "device_type" {
   type = string
 }
 
-variable "role" {
+variable "role_id" {
   type = string
 }
 
-variable "site" {
+variable "site_id" {
+  type = string
+}
+
+variable "cluster_id" {
+  type = string
+}
+
+variable "location_id" {
   type = string
 }

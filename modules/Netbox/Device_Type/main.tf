@@ -5,4 +5,5 @@ resource "netbox_device_type" "device_type" {
   part_number     = lookup(var.device_type[count.index], "model")
   manufacturer_id = element(var.manufacturer, lookup(var.device_type[count.index], "manufacturer_id"))
   u_height        = lookup(var.device_type[count.index], "u_height")
+  tags            = lookup(var.device_type[count.index], "tags", [])
 }
