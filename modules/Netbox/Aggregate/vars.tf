@@ -7,9 +7,6 @@ variable "rir" {
 }
 
 variable "tenant" {
-  type = any
-}
-
-variable "tenant_group" {
-  type = any
+  type = string
+  default = null
 }

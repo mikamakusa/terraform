@@ -5,11 +5,3 @@ output "aggregate_id" {
 output "rir_id" {
   value = netbox_rir.rir.*.id
 }
-
-output "tenant_id" {
-  value = netbox_tenant.tenant.*.id
-}
-
-output "tenant_group_id" {
-  value = netbox_tenant_group.tenant_group.*.id
-}
