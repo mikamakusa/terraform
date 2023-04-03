@@ -1,0 +1,18 @@
+resource "aci_radius_provider" "radius_provider" {
+  count                           = length(var.radius_provider)
+  name                            = lookup(var.radius_provider[count.index], "name")
+  type                            = lookup(var.radius_provider[count.index], "type")
+  annotation                      = lookup(var.radius_provider[count.index], "annotation", null)
+  name_alias                      = lookup(var.radius_provider[count.index], "name_alias", null)
+  description                     = lookup(var.radius_provider[count.index], "description", null)
+  auth_port                       = lookup(var.radius_provider[count.index], "auth_port", "1812")
+  auth_protocol                   = lookup(var.radius_provider[count.index], "auth_protocol", "pap")
+  key                             = lookup(var.radius_provider[count.index], "key", null)
+  monitor_server                  = lookup(var.radius_provider[count.index], "monitor_server", "disabled")
+  monitoring_user                 = lookup(var.radius_provider[count.index], "monitoring_user", "default")
+  monitoring_password             = sensitive(lookup(var.radius_provider[count.index], "monitoring_password", null))
+  retries                         = lookup(var.radius_provider[count.index], "retries", "1")
+  timeout                         = lookup(var.radius_provider[count.index], "tiemout", "5")
+  relation_aaa_rs_prov_to_epp     = lookup(var.radius_provider[count.index], "relation_aaa_rs_prov_to_epp", null)
+  relation_aaa_rs_sec_prov_to_epg = lookup(var.radius_provider[count.index], "relation_aaa_rs_sec_prov_to_epg", null)
+}
