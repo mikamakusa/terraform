@@ -11,7 +11,7 @@ module "application_policies" {
     }
   }
   bridge_domain = {
-    prod_bd = {
+    prod = {
       tenant_dn              = "terraform-tenant"
       optimize_wan_bandwidth = "yes"
       ep_move_detect_mode    = "enable"
@@ -42,7 +42,7 @@ module "application_policies" {
     terraform-tenant = {}
   }
   vrf = {
-    prod_vrf = {
+    prod = {
       tenant_dn          = "terraform-tenant"
       bd_enforced_enable = "yes"
     }

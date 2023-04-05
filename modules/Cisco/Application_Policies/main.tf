@@ -8,7 +8,7 @@ resource "aci_tenant" "tenant" {
 
 resource "aci_vrf" "vrf" {
   for_each               = var.vrf
-  name                   = each.key
+  name                   = join("_", [each.key, "vrf"])
   tenant_dn              = aci_tenant.tenant[each.value.tenant_dn].id
   annotation             = each.value.annotation
   description            = each.value.description
@@ -22,7 +22,7 @@ resource "aci_vrf" "vrf" {
 
 resource "aci_bridge_domain" "bridge_domain" {
   for_each                    = var.bridge_domain
-  name                        = each.key
+  name                        = join("_",[each.key, "bd"])
   tenant_dn                   = aci_tenant.tenant[each.value.tenant_dn].id
   optimize_wan_bandwidth      = each.value.optimize_wan_bandwidth == null ? "no" : each.value.optimize_wan_bandwidth
   annotation                  = each.value.annotation
@@ -47,6 +47,7 @@ resource "aci_bridge_domain" "bridge_domain" {
   unk_mcast_act               = each.value.unk_mcast_act == null ? "flood" : each.value.unk_mcast_act
   v6unk_mcast_act             = each.value.v6unk_mcast_act == null ? "flood" : each.value.v6unk_mcast_act
   vmac                        = "not-applicable"
+  relation_fv_rs_ctx          = aci_vrf.vrf[join("_", [each.key, "vrf"].id
 }
 
 resource "aci_subnet" "subnet" {
