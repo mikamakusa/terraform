@@ -159,3 +159,376 @@ variable "leaf_breakout_port_group" {
     error_message = "Allowed values : '100g-2x', '100g-4x', '10g-4x', '25g-4x', '50g-8x' and 'none'."
   }
 }
+
+variable "lldp_interface_policy" {
+  type = map(object({
+    description = optional(string)
+    annotation  = optional(string)
+    name_alias  = optional(string)
+    admin_tx_st = optional(string)
+    admin_rx_st = optional(string)
+  }))
+
+  validation {
+    condition     = contains(["disabled", "enabled"], var.lldp_interface_policy.admin_rx_st)
+    error_message = "Allow values : 'disabled', 'enabled'."
+  }
+
+  validation {
+    condition     = contains(["disabled", "enabled"], var.lldp_interface_policy.admin_tx_st)
+    error_message = "Allow values : 'disabled', 'enabled'."
+  }
+}
+
+variable "mcp_instance_policy" {
+  type = map(object({
+    annotation       = optional(string)
+    description      = optional(string)
+    ctrl             = optional(list(string))
+    init_delay_time  = optional(string)
+    name_alias       = optional(string)
+    loop_detect_mult = optional(string)
+    loop_detect_act  = optional(string)
+    tx_freq          = optional(string)
+    tx_freq_msec     = optional(string)
+    admin_st         = optional(string)
+  }))
+
+  validation {
+    condition     = contains(["disabled", "enabled"], var.mcp_instance_policy.admin_st)
+    error_message = "Allow values : 'disabled', 'enabled'."
+  }
+
+  validation {
+    condition     = contains(["stateful-ha", "pdu-per-vlan"], var.mcp_instance_policy.ctrl)
+    error_message = "Allow values : 'stateful-ha', 'pdu-per-vlan'."
+  }
+
+  validation {
+    condition     = contains(["port-disable", "none"], var.mcp_instance_policy.ctrl)
+    error_message = "Allow values : 'port-disable', 'none'."
+  }
+
+  validation {
+    condition     = var.mcp_instance_policy.init_delay_time >= 0 && var.mcp_instance_policy.init_delay_time <= 1800
+    error_message = "Allow range : 0 to 1800."
+  }
+
+  validation {
+    condition     = var.mcp_instance_policy.loop_detect_mult >= 1 && var.mcp_instance_policy.loop_detect_mult <= 255
+    error_message = "Allow range : 1 to 255."
+  }
+
+  validation {
+    condition     = var.mcp_instance_policy.tx_freq >= 0 && var.mcp_instance_policy.tx_freq <= 300
+    error_message = "Allow range : 0 to 300."
+  }
+
+  validation {
+    condition     = var.mcp_instance_policy.init_delay_time >= 0 && var.mcp_instance_policy.init_delay_time <= 999
+    error_message = "Allow range : 0 to 999."
+  }
+}
+
+variable "vlan_pool" {
+  type = map(object({
+    alloc_mode  = string
+    description = optional(string)
+    annotation  = optional(string)
+    name_alias  = optional(string)
+    role        = optional(string)
+    from        = string
+    to          = string
+  }))
+
+  validation {
+    condition     = contains(["dynamic", "static", "inherit"], var.vlan_pool.alloc_mode)
+    error_message = "Allowed values : 'dynamic', 'static', inherit."
+  }
+
+  validation {
+    condition     = contains(["external", "internal"], var.vlan_pool.role)
+    error_message = "Allow values : 'external', 'internal'."
+  }
+
+  validation {
+    condition     = contains(["vlan-1", "vlan-4094"], var.vlan_pool.from)
+    error_message = "Allow values : min : 'vlan-1', max : 'vlan-4094'."
+  }
+
+  validation {
+    condition     = contains(["vlan-1", "vlan-4094"], var.vlan_pool.to)
+    error_message = "Allow values : min : 'vlan-1', max : 'vlan-4094'."
+  }
+}
+
+variable "spanning_tree_interface_policy" {
+  type = map(object({
+    ctrl        = optional(string)
+    description = optional(string)
+    annotation  = optional(string)
+    name_alias  = optional(string)
+  }))
+
+  validation {
+    condition     = contains(["bpdu-filter", "bpdu-guard", "unspecified"], var.spanning_tree_interface_policy.ctrl)
+    error_message = "Allow values : 'bpdu-filter', 'bpdu-guard', 'unspecified'."
+  }
+}
+
+variable "vmm_domain" {
+  type = map(object({
+    provider_profile_dn = string
+    access_mode         = optional(string)
+    annotation          = optional(string)
+    arp_learning        = optional(string)
+    enable_ave          = optional(string)
+    ave_time_out        = optional(string)
+    config_infra_pg     = optional(string)
+    ctrl_knob           = optional(string)
+    delimiter           = optional(string)
+    enable_tag          = optional(string)
+    enable_vm_folder    = optional(string)
+    encap_mode          = optional(string)
+    enf_pref            = optional(string)
+    ep_inventory_type   = optional(string)
+    ep_ret_time         = optional(string)
+    hv_avail_monitor    = optional(string)
+    mcast_addr          = optional(string)
+    mode                = optional(string)
+    name_alias          = optional(string)
+    pref_encap_mode     = optional(string)
+  }))
+
+  validation {
+    condition     = contains(["Microsoft", "CloudFoundry", "Openshift", "Openstack", "VMware", "Kubernetes", "Redhat"], var.vmm_domain.provider_profile_dn)
+    error_message = "Allowed values : \"Microsoft\", \"CloudFoundry\", \"Openshift\", \"Openstack\", \"VMware\", \"Kubernetes\", \"Redhat\"."
+  }
+
+  validation {
+    condition     = contains(["read-write", "read-only"], var.vmm_domain.access_mode)
+    error_message = "Allowed values : \"read-write\", \"read-only\"."
+  }
+
+  validation {
+    condition     = contains(["enabled", "disabled"], var.vmm_domain.arp_learning)
+    error_message = "Allowed values : \"enabled\", \"disabled\"."
+  }
+
+  validation {
+    condition     = contains(["yes", "no"], var.vmm_domain.config_infra_pg)
+    error_message = "Allowed values : \"yes\", \"no\"."
+  }
+
+  validation {
+    condition     = contains(["epDpVerify", "none"], var.vmm_domain.ctrl_knob)
+    error_message = "Allowed values : \"epDpVerify\", \"none\"."
+  }
+
+  validation {
+    condition     = contains(["yes", "no"], var.vmm_domain.enable_tag)
+    error_message = "Allowed values : \"yes\", \"no\"."
+  }
+
+  validation {
+    condition     = contains(["yes", "no"], var.vmm_domain.enable_ave)
+    error_message = "Allowed values : \"yes\", \"no\"."
+  }
+
+  validation {
+    condition     = contains(["yes", "no"], var.vmm_domain.enable_vm_folder)
+    error_message = "Allowed values : \"yes\", \"no\"."
+  }
+
+  validation {
+    condition     = contains(["unknown", "vlan", "vxlan"], var.vmm_domain.encap_mode)
+    error_message = "Allowed values : \"unknown\", \"vlan\", \"vxlan\"."
+  }
+
+  validation {
+    condition     = contains(["hw", "sw", "unknown"], var.vmm_domain.enf_pref)
+    error_message = "Allowed values : \"hw\", \"sw\", \"unknown\"."
+  }
+
+  validation {
+    condition     = contains(["none", "on-link"], var.vmm_domain.ep_inventory_type)
+    error_message = "Allowed values : \"none\", \"on-link\"."
+  }
+
+  validation {
+    condition     = contains(["yes", "no"], var.vmm_domain.hv_avail_monitor)
+    error_message = "Allowed values : \"yes\", \"no\"."
+  }
+
+  validation {
+    condition     = contains(["default", "n1kv", "unknown", "ovs", "k8s", "cf", "openshift"], var.vmm_domain.mode)
+    error_message = "Allowed values : \"default\", \"n1kv\", \"unknown\", \"ovs\", \"k8s\", \"cf\", \"openshift\"."
+  }
+
+  validation {
+    condition     = contains(["unspecified", "vlan", "vxlan"], var.vmm_domain.pref_encap_mode)
+    error_message = "Allowed values : \"unspecified\", \"vlan\", \"vxlan\"."
+  }
+
+  validation {
+    condition     = var.vmm_domain.ave_time_out >= 10 && var.vmm_domain.ave_time_out <= 300
+    error_message = "Allowed range value : 10 to 300."
+  }
+
+  validation {
+    condition     = var.vmm_domain.ep_ret_time >= 0 && var.vmm_domain.ep_ret_time <= 600
+    error_message = "Allowed range value : 0 to 600."
+  }
+}
+
+variable "vmm_controller" {
+  type = map(object({
+    host_or_ip          = string
+    root_cont_name      = string
+    annotation          = optional(string)
+    dvs_version         = optional(string)
+    inventory_trig_st   = optional(string)
+    mode                = optional(string)
+    msft_config_err_msg = optional(string)
+    msft_config_issues  = optional(list(string))
+    n1kv_stats_mode     = optional(string)
+    port                = optional(string)
+    scope               = optional(string)
+    stats_mode          = optional(string)
+    seq_num             = optional(string)
+    vxlan_depl_pref     = optional(string)
+  }))
+
+  validation {
+    condition     = contains(["5.1", "5.5", "6.0", "6.5", "6.6", "7.0", "unmanaged"], var.vmm_controller.dvs_version)
+    error_message = "Allowed values : \"5.1\", \"5.5\", \"6.0\", \"6.5\", \"6.6\", \"7.0\" and \"unmanaged\"."
+  }
+
+  validation {
+    condition     = contains(["autoTriggered", "triggered", "untriggered"], var.vmm_controller.inventory_trig_st)
+    error_message = "Allowed values : \"autoTriggered\", \"triggered\", \"untriggered\"."
+  }
+
+  validation {
+    condition     = contains(["cf", "default", "k8s", "n1kv", "nsx", "openshift", "ovs", "rancher", "rhev", "unknown"], var.vmm_controller.mode)
+    error_message = "Allowed values : \"cf\", \"default\", \"k8s\", \"n1kv\", \"nsx\", \"openshift\", \"ovs\", \"rancher\", \"rhev\", \"unknown\"."
+  }
+
+  validation {
+    condition     = contains(["aaacert-invalid", "duplicate-mac-in-inventory", "duplicate-rootContName", "invalid-object-in-inventory", "invalid-rootContName", "inventory-failed", "missing-hostGroup-in-cloud", "missing-rootContName", "not-applicable", "zero-mac-in-inventory"], var.vmm_controller.msft_config_issues)
+    error_message = "Allowed values : \"aaacert-invalid\", \"duplicate-mac-in-inventory\", \"duplicate-rootContName\", \"invalid-object-in-inventory\", \"invalid-rootContName\", \"inventory-failed\", \"missing-hostGroup-in-cloud\", \"missing-rootContName\", \"not-applicable\", \"zero-mac-in-inventory\"."
+  }
+
+  validation {
+    condition     = contains(["disabled", "enabled", "unknown"], var.vmm_controller.n1kv_stats_mode)
+    error_message = "Allowed values : \"disabled\", \"enabled\", \"unknown\"."
+  }
+
+  validation {
+    condition     = contains(["MicrosoftSCVMM", "cloudfoundry", "iaas", "kubernetes", "network", "nsx", "openshift", "openstack", "rhev", "unmanaged", "vm"], var.vmm_controller.scope)
+    error_message = "Allowed values : \"MicrosoftSCVMM\", \"cloudfoundry\", \"iaas\", \"kubernetes\", \"network\", \"nsx\", \"openshift\", \"openstack\", \"rhev\", \"unmanaged\", \"vm\"."
+  }
+
+  validation {
+    condition     = contains(["disabled", "enabled", "unknown"], var.vmm_controller.stats_mode)
+    error_message = "Allowed values : \"disabled\", \"enabled\", \"unknown\"."
+  }
+
+  validation {
+    condition     = contains(["nsx", "vxlan"], var.vmm_controller.vxlan_depl_pref)
+    error_message = "Allowed values : \"nsx\", \"vxlan\"."
+  }
+}
+
+variable "vmm_credential" {
+  type = map(object({
+    annotation    = optional(string)
+    description   = optional(string)
+    name_alias    = optional(string)
+    pwd           = optional(string)
+    usr           = optional(string)
+  }))
+}
+
+variable "vpc_domain_policy" {
+  type = map(object({
+    annotation  = optional(string)
+    dead_intvl  = optional(string)
+    name_alias  = optional(string)
+    description = optional(string)
+  }))
+
+  validation {
+    condition     = var.vpc_domain_policy.dead_intvl >= 5 && var.vpc_domain_policy.dead_intvl <= 600
+    error_message = "Allowed range value : 5 to 600."
+  }
+}
+
+variable "vswitch_policy" {
+  type = map(object({
+    annotation    = optional(string)
+    description   = optional(string)
+    name_alias    = optional(string)
+  }))
+}
+
+variable "port_security_policy" {
+  type = map(object({
+    annotation  = optional(string)
+    description = optional(string)
+    name_alias  = optional(string)
+    maximum     = optional(string)
+    timeout     = optional(string)
+  }))
+
+  validation {
+    condition     = var.port_security_policy.maximum >= 0 && var.port_security_policy.maximum <= 12000
+    error_message = "Allowed range value : 0 to 12000."
+  }
+
+  validation {
+    condition     = var.port_security_policy.timeout >= 60 && var.port_security_policy.timeout <= 3600
+    error_message = "Allowed range value : 60 to 3600."
+  }
+}
+
+variable "qos_instance_policy" {
+  type = map(object({
+    description           = optional(string)
+    etrap_age_timer       = optional(string)
+    etrap_bw_thresh       = optional(string)
+    etrap_byte_ct         = optional(string)
+    etrap_st              = optional(string)
+    fabric_flush_interval = optional(string)
+    fabric_flush_st       = optional(string)
+    annotation            = optional(string)
+    ctrl                  = optional(string)
+    uburst_spine_queues   = optional(string)
+    uburst_tor_queues     = optional(string)
+  }))
+
+  validation {
+    condition     = var.qos_instance_policy.fabric_flush_interval >= 100 && var.qos_instance_policy.fabric_flush_interval <= 1000
+    error_message = "Allowed range value : 100 to 1000."
+  }
+
+  validation {
+    condition     = var.qos_instance_policy.uburst_spine_queues >= 0 && var.qos_instance_policy.uburst_spine_queues <= 100
+    error_message = "Allowed range value : 0 to 100."
+  }
+
+  validation {
+    condition     = var.qos_instance_policy.uburst_tor_queues >= 0 && var.qos_instance_policy.uburst_tor_queues <= 100
+    error_message = "Allowed range value : 0 to 100."
+  }
+
+  validation {
+    condition     = contains(["dot1p-preserve", "none"], var.qos_instance_policy.ctrl)
+    error_message = "Allowed values : \"dot1p-preserve\", \"none\"."
+  }
+
+  validation {
+    condition     = contains(["no", "yes"], var.qos_instance_policy.fabric_flush_st)
+    error_message = "Allowed values : \"yes\", \"no\"."
+  }
+}
