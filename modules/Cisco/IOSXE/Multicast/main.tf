@@ -1,5 +1,5 @@
 resource "iosxe_interface_pim" "multicast" {
-  for_each          = local.interfaces == "interface_pim" ? 1 : 0
+  for_each          = local.interfaces
   type              = lookup(local.interfaces, "type")
   name              = lookup(local.interfaces, "name")
   passive           = lookup(local.interfaces, "passive", false)
@@ -10,13 +10,13 @@ resource "iosxe_interface_pim" "multicast" {
   border            = lookup(local.interfaces, "border", false)
   bsr_border        = lookup(local.interfaces, "bsr_border", false)
   dr_priority       = lookup(local.interfaces, "dr_priority", 0)
-  device            = [for device in local.devices : lookup(local.interfaces, "device") if local.devices == lookup(local.interfaces, "device")]
+  device            = element(local.devices, lookup(local.interfaces, "device", null))
 }
 
 resource "iosxe_msdp" "multicast" {
-  for_each      = local.interfaces == "msdp" ? 1 : 0
+  for_each      = local.interfaces
   originator_id = lookup(local.interfaces, "originator_id", null)
-  device        = [for device in local.devices : lookup(local.interfaces, "device") if local.devices == lookup(local.interfaces, "device")]
+  device        = element(local.devices, lookup(local.interfaces, "device", null))
 
   dynamic "peers" {
     for_each = lookup(local.interfaces, "peers", null) == null ? [] : lookup(local.interfaces, "peers", null)
@@ -38,10 +38,10 @@ resource "iosxe_msdp" "multicast" {
 }
 
 resource "iosxe_msdp_vrf" "multicast" {
-  for_each      = local.interfaces == "msdp_vrf" ? 1 : 0
+  for_each      = local.interfaces
   vrf           = lookup(local.interfaces, "vrf")
   originator_id = lookup(local.interfaces, "orginator_id", null)
-  device        = [for device in local.devices : lookup(local.interfaces, "device") if local.devices == lookup(local.interfaces, "device")]
+  device        = element(local.devices, lookup(local.interfaces, "device", null))
 
   dynamic "peers" {
     for_each = lookup(local.interfaces, "peers", null) == null ? [] : lookup(local.interfaces, "peers", null)
@@ -63,10 +63,10 @@ resource "iosxe_msdp_vrf" "multicast" {
 }
 
 resource "iosxe_pim" "multicast" {
-  for_each                          = local.interfaces == "pim" ? 1 : 0
+  for_each                          = local.interfaces
   autorp                            = lookup(local.interfaces, "autorp", false)
   autorp_listener                   = lookup(local.interfaces, "autorp_listener", false)
-  device                            = [for device in local.devices : lookup(local.interfaces, "device") if local.devices == lookup(local.interfaces, "device")]
+  device                            = element(local.devices, lookup(local.interfaces, "device", null))
   bsr_candidate_loopback            = lookup(local.interfaces, "bsr_candidate_loopback", 100)
   bsr_candidate_mask                = lookup(local.interfaces, "bsr_candidate_mask", 30)
   bsr_candidate_priority            = lookup(local.interfaces, "bsr_candidate_priority", 0)
@@ -102,11 +102,11 @@ resource "iosxe_pim" "multicast" {
 }
 
 resource "iosxe_pim_vrf" "multicast" {
-  for_each                          = local.interfaces == "pim_vrf" ? 1 : 0
+  for_each                          = local.interfaces
   vrf                               = lookup(local.interfaces, "vrf")
   autorp                            = lookup(local.interfaces, "autorp", false)
   autorp_listener                   = lookup(local.interfaces, "autorp_listener", false)
-  device                            = [for device in local.devices : lookup(local.interfaces, "device") if local.devices == lookup(local.interfaces, "device")]
+  device                            = element(local.devices, lookup(local.interfaces, "device", null))
   bsr_candidate_loopback            = lookup(local.interfaces, "bsr_candidate_loopback", 100)
   bsr_candidate_mask                = lookup(local.interfaces, "bsr_candidate_mask", 30)
   bsr_candidate_priority            = lookup(local.interfaces, "bsr_candidate_priority", 0)
