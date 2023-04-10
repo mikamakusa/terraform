@@ -16,7 +16,7 @@ resource "iosxe_bgp_address_family_ipv4_vrf" "address_family" {
   device  = each.key
 
   dynamic "vrfs" {
-    for_each = each.value.vrf
+    for_each = each.value.vrfs == null ? [] : each.value.vrfs
     content {
       name                   = vrfs.value.name
       advertise_l2vpn_evpn   = vrfs.value.advertise_l2vpn_evpn

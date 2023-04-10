@@ -1,28 +1,28 @@
 resource "iosxe_interface_ospf" "ospf" {
-  for_each                         = local.ospf
-  type                             = lookup(local.ospf, "type")
-  name                             = lookup(local.ospf, "name")
-  cost                             = lookup(local.ospf, "cost", 1)
-  dead_interval                    = lookup(local.ospf, "dead_interval", 1)
-  hello_interval                   = lookup(local.ospf, "hello_interval", 1)
-  mtu_ignore                       = lookup(local.ospf, "mtu_ignore", false)
-  network_type_broadcast           = lookup(local.ospf, "network_type_broadcast", false)
-  network_type_non_broadcast       = lookup(local.ospf, "network_type_non_broadcast", false)
-  network_type_point_to_multipoint = lookup(local.ospf, "network_type_point_to_multipoint", false)
-  network_type_point_to_point      = lookup(local.ospf, "network_type_point_to_point", false)
-  priority                         = lookup(local.ospf, "priority", 0)
-  device                           = lookup(local.ospf, "device", null)
+  for_each                         = var.interface
+  type                             = each.value.type
+  name                             = each.key
+  cost                             = each.value.cost
+  dead_interval                    = each.value.dead_interval
+  hello_interval                   = each.value.hello_interval
+  mtu_ignore                       = each.value.mtu_ignore
+  network_type_broadcast           = each.value.network_type_broadcast
+  network_type_non_broadcast       = each.value.network_type_non_broadcast
+  network_type_point_to_multipoint = each.value.network_type_point_to_multipoint
+  network_type_point_to_point      = each.value.network_type_point_to_point
+  priority                         = each.value.priority
+  device                           = each.value.device
 }
 
 resource "iosxe_interface_ospf_process" "ospf" {
-  for_each   = local.ospf
-  type       = lookup(local.ospf, "type")
-  name       = lookup(local.ospf, "name")
-  process_id = lookup(local.ospf, "process_id", 1)
-  device     = lookup(local.ospf, "device", null)
+  for_each   = var.ospf_process
+  type       = each.value.type
+  name       = each.key
+  process_id = each.value.process_id
+  device     = each.value.device
 
   dynamic "area" {
-    for_each = lookup(local.ospf, "area", null)
+    for_each = each.value.area
     content {
       area_id = area.value.area_id
     }
@@ -30,23 +30,26 @@ resource "iosxe_interface_ospf_process" "ospf" {
 }
 
 resource "iosxe_ospf" "ospf" {
-  for_each                             = local.ospf
-  process_id                           = lookup(local.ospf, "process_id")
-  device                               = lookup(local.ospf, "device", null)
-  bfd_all_interfaces                   = lookup(local.ospf, "bfd_all_interfaces", true)
-  default_information_originate        = lookup(local.ospf, "default_information_originate", true)
-  default_information_originate_always = lookup(local.ospf, "default_information_originate_always", true)
-  default_metric                       = lookup(local.ospf, "default_metric", 1)
-  distance                             = lookup(local.ospf, "distance", 1)
-  domain_tag                           = lookup(local.ospf, "domain_tag", 1)
-  mpls_ldp_autoconfig                  = lookup(local.ospf, "mpls_ldp_autoconfig", true)
-  mpls_ldp_sync                        = lookup(local.ospf, "mpls_ldp_sync", true)
-  priority                             = lookup(local.ospf, "priority", 0)
-  router_id                            = lookup(local.ospf, "router_id", null)
-  shutdown                             = lookup(local.ospf, "shutdown", false)
+  for_each = {
+    for key, value in var.ospf : key => value
+    if lookup(value, "vrf", null) == false
+  }
+  process_id                           = tonumber(each.key)
+  device                               = each.value.device
+  bfd_all_interfaces                   = each.value.bfd_all_interfaces
+  default_information_originate        = each.value.default_information_originate
+  default_information_originate_always = each.value.default_information_originate_always
+  default_metric                       = each.value.default_metric
+  distance                             = each.value.distance
+  domain_tag                           = each.value.domain_tag
+  mpls_ldp_autoconfig                  = each.value.mpls_ldp_autoconfig
+  mpls_ldp_sync                        = each.value.mpls_ldp_sync
+  priority                             = each.value.priority
+  router_id                            = each.value.router_id
+  shutdown                             = each.value.shutdown
 
   dynamic "neighbor" {
-    for_each = lookup(local.ospf, "neighbor", null)
+    for_each = each.value.neighbor
     content {
       ip       = neighbor.value.ip
       priority = neighbor.value.priority
@@ -55,7 +58,7 @@ resource "iosxe_ospf" "ospf" {
   }
 
   dynamic "network" {
-    for_each = lookup(local.ospf, "network", null)
+    for_each = each.value.network
     content {
       ip       = network.value.ip
       wildcard = network.value.wildcard
@@ -64,7 +67,7 @@ resource "iosxe_ospf" "ospf" {
   }
 
   dynamic "summary_address" {
-    for_each = lookup(local.ospf, "summary_address", null)
+    for_each = each.value.summary_address
     content {
       ip   = summary_address.value.ip
       mask = summary_address.value.mask
@@ -73,24 +76,27 @@ resource "iosxe_ospf" "ospf" {
 }
 
 resource "iosxe_ospf_vrf" "ospf" {
-  for_each                             = local.ospf
-  process_id                           = lookup(local.ospf, "process_id", 1)
-  device                               = lookup(local.ospf, "device", null)
-  vrf                                  = lookup(local.ospf, "vrf")
-  bfd_all_interfaces                   = lookup(local.ospf, "bfd_all_interfaces", true)
-  default_information_originate        = lookup(local.ospf, "default_information_originate", true)
-  default_information_originate_always = lookup(local.ospf, "default_information_originate_always", true)
-  default_metric                       = lookup(local.ospf, "default_metric", 1)
-  distance                             = lookup(local.ospf, "distance", 1)
-  domain_tag                           = lookup(local.ospf, "domain_tag", 1)
-  mpls_ldp_autoconfig                  = lookup(local.ospf, "mpls_ldp_autoconfig", true)
-  mpls_ldp_sync                        = lookup(local.ospf, "mpls_ldp_sync", true)
-  priority                             = lookup(local.ospf, "priority", 0)
-  router_id                            = lookup(local.ospf, "router_id", null)
-  shutdown                             = lookup(local.ospf, "shutdown", false)
+  for_each = {
+    for key, value in var.ospf : key => value
+    if lookup(value, "vrf", null) == true
+  }
+  vrf                                  = each.value.vrf
+  process_id                           = tonumber(each.key)
+  device                               = each.value.device
+  bfd_all_interfaces                   = each.value.bfd_all_interfaces
+  default_information_originate        = each.value.default_information_originate
+  default_information_originate_always = each.value.default_information_originate_always
+  default_metric                       = each.value.default_metric
+  distance                             = each.value.distance
+  domain_tag                           = each.value.domain_tag
+  mpls_ldp_autoconfig                  = each.value.mpls_ldp_autoconfig
+  mpls_ldp_sync                        = each.value.mpls_ldp_sync
+  priority                             = each.value.priority
+  router_id                            = each.value.router_id
+  shutdown                             = each.value.shutdown
 
   dynamic "neighbor" {
-    for_each = lookup(local.ospf, "neighbor", null)
+    for_each = each.value.neighbor
     content {
       ip       = neighbor.value.ip
       priority = neighbor.value.priority
@@ -99,7 +105,7 @@ resource "iosxe_ospf_vrf" "ospf" {
   }
 
   dynamic "network" {
-    for_each = lookup(local.ospf, "network", null)
+    for_each = each.value.network
     content {
       ip       = network.value.ip
       wildcard = network.value.wildcard
@@ -108,7 +114,7 @@ resource "iosxe_ospf_vrf" "ospf" {
   }
 
   dynamic "summary_address" {
-    for_each = lookup(local.ospf, "summary_address", null)
+    for_each = each.value.summary_address
     content {
       ip   = summary_address.value.ip
       mask = summary_address.value.mask

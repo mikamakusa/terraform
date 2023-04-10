@@ -8,7 +8,7 @@ variable "devices" {
       device       = string
       ipv4_address = string
     }))
-    vrf = object({
+    vrfs = object({
       name                   = string
       advertise_l2vpn_evpn   = optional(bool)
       redistribute_connected = optional(bool)
