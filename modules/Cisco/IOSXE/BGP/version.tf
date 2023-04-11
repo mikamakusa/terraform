@@ -6,9 +6,5 @@ terraform {
       source  = "netascode/iosxe"
       version = ">=0.1.13"
     }
-    utils = {
-      source  = "netascode/utils"
-      version = ">= 0.2.4"
-    }
   }
 }
