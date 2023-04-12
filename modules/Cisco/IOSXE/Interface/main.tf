@@ -1,5 +1,5 @@
 resource "iosxe_interface_ethernet" "interface" {
-  for_each                       = { for key, value in var.interface : key => value if lookup(value, "description") == "ethernet" }
+  for_each                       = var.ethernet
   type                           = each.value.type
   name                           = each.key
   description                    = each.value.description
@@ -20,7 +20,7 @@ resource "iosxe_interface_ethernet" "interface" {
   vrf_forwarding                 = each.value.vrf_forwarding
 
   dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses == null ? [] : each.value.helper_addresses
+    for_each = each.value.helper_addresses
     content {
       address = helper_addresses.value.address
       global  = helper_addresses.value.global
@@ -29,7 +29,7 @@ resource "iosxe_interface_ethernet" "interface" {
   }
 
   dynamic "source_template" {
-    for_each = each.value.source_template == null ? [] : each.value.source_template
+    for_each = each.value.source_template
     content {
       template_name = source_template.value.template_name
       merge         = source_template.value.merge
@@ -38,8 +38,8 @@ resource "iosxe_interface_ethernet" "interface" {
 }
 
 resource "iosxe_interface_loopback" "interface" {
-  for_each                   = { for key, value in var.interface : key => value if lookup(value, "description") == "loopback" }
-  name                       = tonumber(each.key)
+  for_each                   = var.loopback
+  name                       = each.key
   description                = each.value.description
   shutdown                   = each.value.shutdown
   vrf_forwarding             = each.value.vrf_forwarding
@@ -52,7 +52,7 @@ resource "iosxe_interface_loopback" "interface" {
 }
 
 resource "iosxe_interface_nve" "interface" {
-  for_each                       = { for key, value in var.interface : key => value if lookup(value, "description") == "nve" }
+  for_each                       = var.nve
   name                           = tonumber(each.key)
   description                    = each.value.description
   shutdown                       = each.value.shutdown
@@ -60,7 +60,7 @@ resource "iosxe_interface_nve" "interface" {
   source_interface_loopback      = each.value.source_interface_loopback
 
   dynamic "vnis" {
-    for_each = each.value.vnis == null ? [] : each.value.vnis
+    for_each = each.value.vnis
     content {
       ingress_replication  = vnis.value.ingress_replication
       vni_range            = vnis.value.vni_range
@@ -69,7 +69,7 @@ resource "iosxe_interface_nve" "interface" {
   }
 
   dynamic "vni_rfs" {
-    for_each = each.value.vni_rfs == null ? [] : each.value.vni_rfs
+    for_each = each.value.vni_vrfs
     content {
       vni_range = vni_rfs.value.vni_range
       vrf       = vni_rfs.value.vrf
@@ -78,8 +78,8 @@ resource "iosxe_interface_nve" "interface" {
 }
 
 resource "iosxe_interface_port_channel" "interface" {
-  for_each                       = { for key, value in var.interface : key => value if lookup(value, "description") == "port-channel" }
-  name                           = tonumber(each.key)
+  for_each                       = var.port_channel
+  name                           = each.key
   description                    = each.value.description
   shutdown                       = each.value.shutdown
   vrf_forwarding                 = each.value.vrf_forwarding
@@ -92,7 +92,7 @@ resource "iosxe_interface_port_channel" "interface" {
   ip_dhcp_relay_source_interface = each.value.ip_dhcp_relay_source_interface
 
   dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses == null ? [] : each.value.helper_addresses
+    for_each = each.value.helper_addresses
     content {
       address = helper_addresses.value.address
       global  = helper_addresses.value.global
@@ -102,7 +102,7 @@ resource "iosxe_interface_port_channel" "interface" {
 }
 
 resource "iosxe_interface_port_channel_subinterface" "interface" {
-  for_each                       = { for key, value in var.interface : key => value if lookup(value, "description") == "subinterface" }
+  for_each                       = var.port_channel
   name                           = each.key
   description                    = each.value.description
   shutdown                       = each.value.shutdown
@@ -117,7 +117,7 @@ resource "iosxe_interface_port_channel_subinterface" "interface" {
   encapsulation_dot1q_vlan_id    = each.value.encapsulation_dot1q_vlan_id
 
   dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses == null ? [] : each.value.helper_addresses
+    for_each = each.value.helper_addresses
     content {
       address = helper_addresses.value.address
       global  = helper_addresses.value.global
@@ -127,9 +127,9 @@ resource "iosxe_interface_port_channel_subinterface" "interface" {
 }
 
 resource "iosxe_interface_vlan" "interface" {
-  for_each                       = { for key, value in var.interface : key => value if lookup(value, "description") == "vlan" }
+  for_each                       = var.vlan
   autostate                      = each.value.autostate
-  name                           = tonumber(each.key)
+  name                           = each.key
   description                    = each.value.description
   shutdown                       = each.value.shutdown
   vrf_forwarding                 = each.value.vrf_forwarding
@@ -142,7 +142,7 @@ resource "iosxe_interface_vlan" "interface" {
   ip_dhcp_relay_source_interface = each.value.ip_dhcp_relay_source_interface
 
   dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses == null ? [] : each.value.helper_addresses
+    for_each = each.value.helper_addresses
     content {
       address = helper_addresses.value.address
       global  = helper_addresses.value.global

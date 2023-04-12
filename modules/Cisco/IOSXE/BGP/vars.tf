@@ -6,12 +6,8 @@ variable "bgp" {
     router_id_loopback   = optional(number)
     devices              = optional(string)
   }))
-  default = []
 
-  validation {
-    condition     = var.bgp.router_id_loopback >= 0 && var.bgp.router_id_loopback <= 2147483647
-    error_message = "`Must be a value between `0` and `2147483647`."
-  }
+  default = []
 
   description = "This resource can manage the BGP configuration."
 }
@@ -34,11 +30,6 @@ variable "address_family" {
   default = []
 
   description = "This resource can manage the BGP Address Family IPv4 / IPv6 VRF configuration."
-
-  validation {
-    condition     = contains(["flowspec", "labeled-unicast", "mdt", "multicast", "mvpn", "sr-policy", "tunnel", "unicast"], var.address_family.af_name)
-    error_message = "Allowed values : flowspec, labeled-unicast, mdt, multicast, mvpn, sr-policy, tunnel, unicast."
-  }
 }
 
 variable "l2vpn" {
@@ -51,11 +42,6 @@ variable "l2vpn" {
   default = []
 
   description = "This resource can manage the BGP Address Family L2VPN configuration."
-
-  validation {
-    condition     = contains(["evpn", "vpls"], var.l2vpn.af_name)
-    error_message = "Allowed values : evpn, vpls."
-  }
 }
 
 variable "neighbor" {
@@ -78,9 +64,4 @@ variable "neighbor" {
   default = []
 
   description = "This resource can manage the BGP IPv4 Unicast VRF  or eVPN Neighbor configuration."
-
-  validation {
-    condition     = contains(["both", "extended", "standard"], var.neighbor.send_community)
-    error_message = "Allewd values : both, extended, standard."
-  }
 }

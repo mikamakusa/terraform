@@ -49,14 +49,4 @@ variable "acl" {
     tos                           = optional(string)
     standard                      = bool
   }))
-
-  validation {
-    condition     = contains(["deny", "permit"], var.acl.ace_rule_action)
-    error_message = "Allowed values : 'deny', 'permit'."
-  }
-
-  validation {
-    condition     = var.acl.sequence >= 1 && var.acl.sequence <= 2147483647
-    error_message = "Allowed range value : 1 to 2147483647."
-  }
 }
