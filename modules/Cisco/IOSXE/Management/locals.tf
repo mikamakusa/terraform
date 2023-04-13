@@ -1,3 +1,4 @@
+/*
 locals {
   logging = defaults(var.logging, {
     buffered_size  = 16000
@@ -30,4 +31,4 @@ locals {
     v3_auth_priv_des3_access_standard_acl = 1
     v3_auth_priv_des_access_standard_acl  = 1
   })
-}
+}*/

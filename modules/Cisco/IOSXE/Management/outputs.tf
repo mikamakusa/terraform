@@ -8,10 +8,11 @@ output "logging" {
   )
 }
 
+/*
 output "snmp" {
   value = try(
     iosxe_snmp_server.snmp,
     iosxe_snmp_server_group.snmp,
     iosxe_snmp_server_user.snmp
   )
-}
+}*/
