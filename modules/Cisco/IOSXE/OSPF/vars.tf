@@ -23,9 +23,9 @@ variable "ospf_process" {
     type       = string
     process_id = optional(number)
     device     = optional(string)
-    area = optional(object({
+    area = optional(list(object({
       area_id = optional(string)
-    }))
+    })))
   }))
 
   default = {}
@@ -48,20 +48,20 @@ variable "ospf" {
     router_id                            = optional(string)
     shutdown                             = optional(bool)
     vrf                                  = optional(bool)
-    neighbor = optional(object({
+    neighbor = optional(list(object({
       ip       = optional(string)
       cost     = optional(number)
       priority = optional(number)
-    }))
-    network = optional(object({
+    })))
+    network = optional(list(object({
       area     = optional(string)
       ip       = optional(string)
       wildcard = optional(string)
-    }))
-    summary_address = optional(object({
+    })))
+    summary_address = optional(list(object({
       ip   = optional(string)
       mask = optional(string)
-    }))
+    })))
   }))
 
   default = {}

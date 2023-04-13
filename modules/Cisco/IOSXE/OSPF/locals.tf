@@ -1,3 +1,4 @@
+/*
 locals {
   interface = defaults(var.interface, {
     type                             = "GigabitEthernet"
@@ -23,4 +24,4 @@ locals {
     priority = 10
     cost     = 100
   })
-}
+}*/

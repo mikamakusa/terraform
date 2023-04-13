@@ -20,13 +20,7 @@ resource "iosxe_interface_ospf_process" "ospf" {
   name       = each.key
   process_id = each.value.process_id
   device     = each.value.device
-
-  dynamic "area" {
-    for_each = each.value.area
-    content {
-      area_id = area.value.area_id
-    }
-  }
+  area       = each.value.area
 }
 
 resource "iosxe_ospf" "ospf" {
@@ -47,32 +41,9 @@ resource "iosxe_ospf" "ospf" {
   priority                             = each.value.priority
   router_id                            = each.value.router_id
   shutdown                             = each.value.shutdown
-
-  dynamic "neighbor" {
-    for_each = each.value.neighbor
-    content {
-      ip       = neighbor.value.ip
-      priority = neighbor.value.priority
-      cost     = neighbor.value.cost
-    }
-  }
-
-  dynamic "network" {
-    for_each = each.value.network
-    content {
-      ip       = network.value.ip
-      wildcard = network.value.wildcard
-      area     = network.value.area
-    }
-  }
-
-  dynamic "summary_address" {
-    for_each = each.value.summary_address
-    content {
-      ip   = summary_address.value.ip
-      mask = summary_address.value.mask
-    }
-  }
+  neighbor                             = each.value.neighbor
+  network                              = each.value.network
+  summary_address                      = each.value.summary_address
 }
 
 resource "iosxe_ospf_vrf" "ospf" {
@@ -94,30 +65,7 @@ resource "iosxe_ospf_vrf" "ospf" {
   priority                             = each.value.priority
   router_id                            = each.value.router_id
   shutdown                             = each.value.shutdown
-
-  dynamic "neighbor" {
-    for_each = each.value.neighbor
-    content {
-      ip       = neighbor.value.ip
-      priority = neighbor.value.priority
-      cost     = neighbor.value.cost
-    }
-  }
-
-  dynamic "network" {
-    for_each = each.value.network
-    content {
-      ip       = network.value.ip
-      wildcard = network.value.wildcard
-      area     = network.value.area
-    }
-  }
-
-  dynamic "summary_address" {
-    for_each = each.value.summary_address
-    content {
-      ip   = summary_address.value.ip
-      mask = summary_address.value.mask
-    }
-  }
+  neighbor                             = each.value.neighbor
+  network                              = each.value.network
+  summary_address                      = each.value.summary_address
 }
