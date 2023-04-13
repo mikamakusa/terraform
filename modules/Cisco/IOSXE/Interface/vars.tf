@@ -17,15 +17,15 @@ variable "ethernet" {
     switch_port                    = optional(bool)
     unnumbered                     = optional(string)
     vrf_forwarding                 = optional(bool)
-    helper_addresses = optional(object({
+    helper_addresses = optional(list(object({
       address = optional(string)
       global  = optional(bool)
       vrf     = optional(string)
-    }))
-    source_template = optional(object({
+    })))
+    source_template = optional(list(object({
       merge         = optional(bool)
       template_name = optional(string)
-    }))
+    })))
   }))
 
   default = {}

@@ -18,23 +18,8 @@ resource "iosxe_interface_ethernet" "interface" {
   switch_port                    = each.value.switch_port
   unnumbered                     = each.value.unnumbered
   vrf_forwarding                 = each.value.vrf_forwarding
-
-  dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses
-    content {
-      address = helper_addresses.value.address
-      global  = helper_addresses.value.global
-      vrf     = helper_addresses.value.vrf
-    }
-  }
-
-  dynamic "source_template" {
-    for_each = each.value.source_template
-    content {
-      template_name = source_template.value.template_name
-      merge         = source_template.value.merge
-    }
-  }
+  helper_addresses               = each.value.helper_addresses
+  source_template                = each.value.source_template
 }
 
 resource "iosxe_interface_loopback" "interface" {
@@ -58,23 +43,8 @@ resource "iosxe_interface_nve" "interface" {
   shutdown                       = each.value.shutdown
   host_reachability_protocol_bgp = each.value.host_reachability_protocol_bgp
   source_interface_loopback      = each.value.source_interface_loopback
-
-  dynamic "vnis" {
-    for_each = each.value.vnis
-    content {
-      ingress_replication  = vnis.value.ingress_replication
-      vni_range            = vnis.value.vni_range
-      ipv4_multicast_group = vnis.value.ipv4_multicast_group
-    }
-  }
-
-  dynamic "vni_rfs" {
-    for_each = each.value.vni_vrfs
-    content {
-      vni_range = vni_rfs.value.vni_range
-      vrf       = vni_rfs.value.vrf
-    }
-  }
+  vnis                           = each.value.vnis
+  vni_rfs                        = each.value.vni_vrfs
 }
 
 resource "iosxe_interface_port_channel" "interface" {
@@ -90,15 +60,7 @@ resource "iosxe_interface_port_channel" "interface" {
   ip_access_group_out            = each.value.ip_access_group_out
   ip_access_group_out_enable     = each.value.ip_access_group_out_enable
   ip_dhcp_relay_source_interface = each.value.ip_dhcp_relay_source_interface
-
-  dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses
-    content {
-      address = helper_addresses.value.address
-      global  = helper_addresses.value.global
-      vrf     = helper_addresses.value.vrf
-    }
-  }
+  helper_addresses               = each.value.helper_addresses
 }
 
 resource "iosxe_interface_port_channel_subinterface" "interface" {
@@ -115,15 +77,7 @@ resource "iosxe_interface_port_channel_subinterface" "interface" {
   ip_access_group_out_enable     = each.value.ip_access_group_out_enable
   ip_dhcp_relay_source_interface = each.value.ip_dhcp_relay_source_interface
   encapsulation_dot1q_vlan_id    = each.value.encapsulation_dot1q_vlan_id
-
-  dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses
-    content {
-      address = helper_addresses.value.address
-      global  = helper_addresses.value.global
-      vrf     = helper_addresses.value.vrf
-    }
-  }
+  helper_addresses               = each.value.helper_addresses
 }
 
 resource "iosxe_interface_vlan" "interface" {
@@ -140,13 +94,5 @@ resource "iosxe_interface_vlan" "interface" {
   ip_access_group_out            = each.value.ip_access_group_out
   ip_access_group_out_enable     = each.value.ip_access_group_out_enable
   ip_dhcp_relay_source_interface = each.value.ip_dhcp_relay_source_interface
-
-  dynamic "helper_addresses" {
-    for_each = each.value.helper_addresses
-    content {
-      address = helper_addresses.value.address
-      global  = helper_addresses.value.global
-      vrf     = helper_addresses.value.vrf
-    }
-  }
+  helper_addresses               = each.value.helper_addresses
 }

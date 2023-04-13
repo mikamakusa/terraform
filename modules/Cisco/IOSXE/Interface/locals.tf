@@ -1,3 +1,4 @@
+/*
 locals {
   ethernet = defaults(var.ethernet, {
     type                        = "GigabitEthernet"
@@ -28,4 +29,4 @@ locals {
     ip_access_group_in_enable      = true
     ip_access_group_out_enable     = true
   })
-}
+}*/
