@@ -1,3 +1,4 @@
+/*
 locals {
   bgp = defaults(var.bgp, {
     router_id_loopback = 0
@@ -11,4 +12,4 @@ locals {
   neighbor = defaults(var.neighbor, {
     send_community = "both"
   })
-}
+}*/

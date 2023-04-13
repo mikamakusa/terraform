@@ -18,13 +18,12 @@ variable "address_family" {
     asn     = string
     ipv4    = bool
     device  = optional(string)
-    vrfs = optional(
-      object({
-        name                   = optional(string)
-        advertise_l2vpn_evpn   = optional(bool)
-        redistribute_connected = optional(bool)
-        redistribute_static    = optional(bool)
-    }))
+    vrfs = optional(list(object({
+      name                   = optional(string)
+      advertise_l2vpn_evpn   = optional(bool)
+      redistribute_connected = optional(bool)
+      redistribute_static    = optional(bool)
+    })))
   }))
 
   default = []
@@ -59,6 +58,10 @@ variable "neighbor" {
     shutdown               = optional(bool)
     update_source_loopback = optional(string)
     send_community         = optional(string)
+    route_maps = optional(list(object({
+      in_out         = optional(string)
+      route_map_name = optional(string)
+    })))
   }))
 
   default = []

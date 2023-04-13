@@ -2,7 +2,7 @@ output "address_family" {
   value = try(
     iosxe_bgp_address_family_ipv4_vrf.address_family,
     iosxe_bgp_address_family_ipv6_vrf.address_family,
-    iosxe_bgp_address_family_l2vpn.address_family
+    iosxe_bgp_address_family_l2vpn.l2vpn
   )
 }
 
