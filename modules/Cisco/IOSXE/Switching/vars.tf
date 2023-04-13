@@ -15,6 +15,7 @@ variable "switchport" {
     host                          = optional(bool)
     device                        = optional(string)
   }))
+
   default = {}
 
   validation {
@@ -43,6 +44,7 @@ variable "vlan" {
     evpn_instance            = optional(number)
     evpn_instance_vni        = optional(number)
   }))
+
   default = {}
 
   validation {

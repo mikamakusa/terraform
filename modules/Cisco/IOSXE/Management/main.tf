@@ -1,15 +1,15 @@
 resource "iosxe_logging" "logging" {
   for_each          = var.logging
   origin_id_name    = each.key
-  monitor_severity  = each.value.severity
+  monitor_severity  = each.value.monitor_severity
   buffered_size     = each.value.buffered_size
-  buffered_severity = each.value.severity
-  console_severity  = each.value.severity
+  buffered_severity = each.value.buffered_severity
+  console_severity  = each.value.console_severity
   facility          = each.value.facility
   history_size      = each.value.history_size
-  history_severity  = each.value.severity
+  history_severity  = each.value.history_severity
   trap              = each.value.trap
-  trap_severity     = each.value.severity
+  trap_severity     = each.value.trap_severity
   origin_id_type    = each.value.origin_id_type
   source_interface  = each.value.source_interface
   device            = each.value.device

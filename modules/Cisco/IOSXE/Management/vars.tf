@@ -1,15 +1,20 @@
 variable "logging" {
-  type = map(object({
-    severity         = optional(string)
-    buffered_size    = optional(number)
-    facility         = optional(string)
-    history_size     = optional(number)
-    trap             = optional(bool)
-    origin_id_type   = optional(string)
-    source_interface = optional(string)
-    file_max_size    = optional(number)
-    file_min_size    = optional(number)
-    device           = optional(string)
+  type = list(object({
+    origin_id_name    = optional(string)
+    monitor_severity  = optional(string)
+    buffered_severity = optional(string)
+    console_severity  = optional(string)
+    history_severity  = optional(string)
+    trap_severity     = optional(string)
+    buffered_size     = optional(number)
+    facility          = optional(string)
+    history_size      = optional(number)
+    trap              = optional(bool)
+    origin_id_type    = optional(string)
+    source_interface  = optional(string)
+    file_max_size     = optional(number)
+    file_min_size     = optional(number)
+    device            = optional(string)
     source_interfaces_vrf = optional(map(object({
       vrf = optional(string)
     })))
@@ -27,25 +32,7 @@ variable "logging" {
     }))
   }))
 
-  validation {
-    condition     = contains(["auth", "cron", "daemon", "kern", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7", "lpr", "mail", "news", "sys10", "sys11", "sys12", "sys13", "sys14", "sys9", "syslog", "user", "uucp"], var.logging.facility)
-    error_message = "Allowed values : auth, cron, daemon, kern, local0, local1, local2, local3, local4, local5, local6, local7, lpr, mail, news, sys10, sys11, sys12, sys13, sys14, sys9, syslog, user, uucp."
-  }
-
-  validation {
-    condition     = var.logging.buffered_size >= 4096 && var.logging.buffered_size <= 2147483647
-    error_message = "Allowed range value : 4096 to 2147483647."
-  }
-
-  validation {
-    condition     = var.logging.file_max_size >= 0 && var.logging.file_max_size <= 4294967295
-    error_message = "Allowed range value : 0 to 4294967295."
-  }
-
-  validation {
-    condition     = var.logging.file_min_size >= 0 && var.logging.file_min_size <= 4294967295
-    error_message = "Allowed range value : 0 to 4294967295."
-  }
+  default = []
 }
 
 variable "ip_logging" {
@@ -67,20 +54,7 @@ variable "ip_logging" {
     }))
   }))
 
-  validation {
-    condition     = var.ip_logging.transport_tls_ports.port_number >= 1025 && var.ip_logging.transport_tls_ports.port_number <= 65535
-    error_message = "Allowed range value : 1025 to 65535."
-  }
-
-  validation {
-    condition     = var.ip_logging.transport_tcp_ports.port_number >= 1 && var.ip_logging.transport_tcp_ports.port_number <= 65535
-    error_message = "Allowed range value : 1 to 65535."
-  }
-
-  validation {
-    condition     = var.ip_logging.transport_udp_ports.port_number >= 1 && var.ip_logging.transport_udp_ports.port_number <= 65535
-    error_message = "Allowed range value : 1 to 65535."
-  }
+  default = {}
 }
 
 variable "snmp" {
@@ -168,88 +142,5 @@ variable "snmp" {
     })))
   }))
 
-  validation {
-    condition     = var.snmp.packetsize >= 484 && var.snmp.packetsize <= 17892
-    error_message = "Allowed range value : 484 to 17892."
-  }
-
-  validation {
-    condition     = var.snmp.queue_length >= 1 && var.snmp.queue_length <= 5000
-    error_message = "Allowed range value = 1 to 5000."
-  }
-
-  validation {
-    condition     = var.snmp.source_interface_informs_loopback >= 0 && var.snmp.source_interface_informs_loopback <= 2147483647
-    error_message = "Allowed range value : 0 to 2147483647."
-  }
-
-  validation {
-    condition     = var.snmp.source_interface_informs_port_channel >= 0 && var.snmp.source_interface_informs_port_channel <= 4294967295
-    error_message = "Allowed range value : 0 to 4294967295."
-  }
-
-  validation {
-    condition     = var.snmp.source_interface_traps_vlan >= 0 && var.snmp.source_interface_traps_vlan <= 65535
-    error_message = "Allowed range value : 0 to 65535."
-  }
-
-  validation {
-    condition     = var.snmp.trap_source_loopback >= 0 && var.snmp.trap_source_loopback <= 2147483647
-    error_message = "Allowed range value : 0 to 2147483647."
-  }
-
-  validation {
-    condition     = var.snmp.trap_source_port_channel >= 0 && var.snmp.trap_source_port_channel <= 4294967295
-    error_message = "Allowed range value : 0 to 4294967295."
-  }
-
-  validation {
-    condition     = var.snmp.trap_source_vlan >= 0 && var.snmp.trap_source_vlan <= 65535
-    error_message = "Allowed range value : 0 to 65535."
-  }
-
-  validation {
-    condition     = var.snmp.group.v3_security.access_standard_acl >= 1 && var.snmp.group.v3_security.access_standard_acl <= 99
-    error_message = "Allowed range value : 1 to 99."
-  }
-
-  validation {
-    condition     = contains(["exact", "prefix"], var.snmp.group.v3_security.match_node)
-    error_message = "Allowed values : exact or prefix."
-  }
-
-  validation {
-    condition     = contains(["auth", "noauth", "priv"], var.snmp.group.v3_security.security_level)
-    error_message = "Allowed values : auth, noauth, priv."
-  }
-
-  validation {
-    condition     = contains(["md5", "sha"], var.snmp.user.v3_auth_algoritm)
-    error_message = "Allowed values : md5 or sha."
-  }
-
-  validation {
-    condition     = var.snmp.user.v3_auth_access_standard_acl >= 1 && var.snmp.user.v3_auth_access_standard_acl <= 99
-    error_message = "Allowed range values : 1 to 99."
-  }
-
-  validation {
-    condition     = var.snmp.user.v3_auth_priv_aes_access_standard_acl >= 1 && var.snmp.user.v3_auth_priv_aes_access_standard_acl <= 99
-    error_message = "Allowed range values : 1 to 99."
-  }
-
-  validation {
-    condition     = contains([128, 192, 256], var.snmp.user.v3_auth_priv_aes_algorithm)
-    error_message = "allowed values : 128, 192, 256."
-  }
-
-  validation {
-    condition     = var.snmp.user.v3_auth_priv_des3_access_standard_acl >= 1 && var.snmp.user.v3_auth_priv_des3_access_standard_acl <= 99
-    error_message = "Allowed range values : 1 to 99."
-  }
-
-  validation {
-    condition     = var.snmp.user.v3_auth_priv_des_access_standard_acl >= 1 && var.snmp.user.v3_auth_priv_des_access_standard_acl <= 99
-    error_message = "Allowed range values : 1 to 99."
-  }
+  default = {}
 }
