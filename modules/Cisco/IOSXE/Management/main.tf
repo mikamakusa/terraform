@@ -1,50 +1,61 @@
 resource "iosxe_logging" "logging" {
-  for_each          = toset(keys({ for k, v in var.logging : k => v }))
-  origin_id_name    = var.logging[each.value]["origin_id_name"]
-  monitor_severity  = var.logging[each.value]["monitor_severity"]
-  buffered_size     = var.logging[each.value]["buffered_size"]
-  buffered_severity = var.logging[each.value]["buffered_severity"]
-  console_severity  = var.logging[each.value]["console_severity"]
-  facility          = var.logging[each.value]["facility"]
-  history_size      = var.logging[each.value]["history_size"]
-  history_severity  = var.logging[each.value]["history_severity"]
-  trap              = var.logging[each.value]["trap"]
-  trap_severity     = var.logging[each.value]["trap_severity"]
-  origin_id_type    = var.logging[each.value]["origin_id_type"]
-  source_interface  = var.logging[each.value]["source_interface"]
-  device            = var.logging[each.value]["device"]
-
-  ipv4_hosts = [
-    {
-      ipv4_host = "2.2.2.2"
-    }
-  ]
+  for_each              = toset(keys({ for k, v in var.logging : k => v }))
+  origin_id_name        = var.logging[each.value]["origin_id_name"]
+  monitor_severity      = var.logging[each.value]["monitor_severity"]
+  buffered_size         = var.logging[each.value]["buffered_size"]
+  buffered_severity     = var.logging[each.value]["buffered_severity"]
+  console_severity      = var.logging[each.value]["console_severity"]
+  facility              = var.logging[each.value]["facility"]
+  history_size          = var.logging[each.value]["history_size"]
+  history_severity      = var.logging[each.value]["history_severity"]
+  trap                  = var.logging[each.value]["trap"]
+  trap_severity         = var.logging[each.value]["trap_severity"]
+  origin_id_type        = var.logging[each.value]["origin_id_type"]
+  source_interface      = var.logging[each.value]["source_interface"]
+  device                = var.logging[each.value]["device"]
+  source_interfaces_vrf = var.logging[each.value]["source_interfaces_vrf"]
+  ipv4_hosts            = var.logging[each.value]["ipv4_hosts"]
+  ipv4_vrf_hosts        = var.logging[each.value]["ipv4_vrf_hosts"]
+  ipv6_hosts            = var.logging[each.value]["ipv6_hosts"]
+  ipv6_vrf_hosts        = var.logging[each.value]["ipv6_vrf_hosts"]
 }
 
 resource "iosxe_logging_ipv4_host_transport" "logging" {
-  for_each  = toset(keys({ for key, value in var.ipv4_logging : key => value }))
-  ipv4_host = var.ipv4_logging[each.value]["ipv4_host"]
-  device    = var.ipv4_logging[each.value]["device"]
+  for_each            = toset(keys({ for key, value in var.ipv4_logging : key => value }))
+  ipv4_host           = var.ipv4_logging[each.value]["ipv4_host"]
+  device              = var.ipv4_logging[each.value]["device"]
+  transport_udp_ports = var.ipv4_logging[each.value]["transport_udp_ports"]
+  transport_tcp_ports = var.ipv4_logging[each.value]["transport_tcp_ports"]
+  transport_tls_ports = var.ipv4_logging[each.value]["transport_tls_ports"]
 }
 
 resource "iosxe_logging_ipv4_host_vrf_transport" "logging" {
-  for_each  = toset(keys({ for key, value in var.ipv4_vrf_logging : key => value }))
-  ipv4_host = var.ipv4_logging[each.value]["ipv4_host"]
-  device    = var.ipv4_logging[each.value]["device"]
-  vrf       = var.ipv4_vrf_logging[each.value]["vrf"]
+  for_each            = toset(keys({ for key, value in var.ipv4_vrf_logging : key => value }))
+  ipv4_host           = var.ipv4_vrf_logging[each.value]["ipv4_host"]
+  device              = var.ipv4_vrf_logging[each.value]["device"]
+  vrf                 = var.ipv4_vrf_logging[each.value]["vrf"]
+  transport_udp_ports = var.ipv4_vrf_logging[each.value]["transport_udp_ports"]
+  transport_tcp_ports = var.ipv4_vrf_logging[each.value]["transport_tcp_ports"]
+  transport_tls_ports = var.ipv4_vrf_logging[each.value]["transport_tls_ports"]
 }
 
 resource "iosxe_logging_ipv6_host_transport" "logging" {
-  for_each  = toset(keys({ for key, value in var.ipv6_logging : key => value }))
-  ipv6_host = var.ipv6_logging[each.value]["ipv6_host"]
-  device    = var.ipv6_logging[each.value]["device"]
+  for_each            = toset(keys({ for key, value in var.ipv6_logging : key => value }))
+  ipv6_host           = var.ipv6_logging[each.value]["ipv6_host"]
+  device              = var.ipv6_logging[each.value]["device"]
+  transport_udp_ports = var.ipv6_logging[each.value]["transport_udp_ports"]
+  transport_tcp_ports = var.ipv6_logging[each.value]["transport_tcp_ports"]
+  transport_tls_ports = var.ipv6_logging[each.value]["transport_tls_ports"]
 }
 
 resource "iosxe_logging_ipv6_host_vrf_transport" "logging" {
-  for_each  = toset(keys({ for key, value in var.ipv6_vrf_logging : key => value }))
-  ipv6_host = var.ipv6_vrf_logging[each.value]["ipv6_host"]
-  device    = var.ipv6_vrf_logging[each.value]["device"]
-  vrf       = var.ipv6_vrf_logging[each.value]["vrf"]
+  for_each            = toset(keys({ for key, value in var.ipv6_vrf_logging : key => value }))
+  ipv6_host           = var.ipv6_vrf_logging[each.value]["ipv6_host"]
+  device              = var.ipv6_vrf_logging[each.value]["device"]
+  vrf                 = var.ipv6_vrf_logging[each.value]["vrf"]
+  transport_udp_ports = var.ipv6_vrf_logging[each.value]["transport_udp_ports"]
+  transport_tcp_ports = var.ipv6_vrf_logging[each.value]["transport_tcp_ports"]
+  transport_tls_ports = var.ipv6_vrf_logging[each.value]["transport_tls_ports"]
 }
 
 

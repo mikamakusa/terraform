@@ -15,22 +15,24 @@ variable "logging" {
     file_max_size     = optional(number)
     file_min_size     = optional(number)
     device            = optional(string)
-    /*source_interfaces_vrf = optional(list(object({
+    source_interfaces_vrf = optional(list(object({
       vrf            = optional(string)
       interface_name = optional(string)
     })))
-    ipv4_hosts = optional(object({
+    ipv4_hosts = optional(list(object({
       ipv4_host = optional(string)
-    }))
-    ipv4_vrf_hosts = optional(object({
+    })))
+    ipv4_vrf_hosts = optional(list(object({
       ipv4_host = optional(string)
-    }))
-    ipv6_hosts = optional(object({
+      vrf = optional(string)
+    })))
+    ipv6_hosts = optional(list(object({
       ipv6_host = optional(string)
-    }))
-    ipv6_vrf_hosts = optional(object({
+    })))
+    ipv6_vrf_hosts = optional(list(object({
       ipv6_host = optional(string)
-    }))*/
+      vrf = optional(string)
+    })))
   }))
 
   description = "This resource can manage the Logging configuration."
@@ -42,16 +44,17 @@ variable "ipv4_logging" {
   type = list(object({
     ipv4_host = string
     device    = optional(string)
-    transport_tcp_ports = optional(object({
+    transport_tcp_ports = optional(list(object({
       port_number = optional(number)
-    }))
-    transport_tls_ports = optional(object({
+    })))
+    transport_tls_ports = optional(list(object({
       port_number = optional(number)
       profile     = optional(string)
-    }))
-    transport_udp_ports = optional(object({
+    })))
+    transport_udp_ports = optional(list(object({
       port_number = optional(number)
-    }))
+      profile     = optional(string)
+    })))
   }))
 
   description = "This resource can manage the Logging IPv4 /IPv4 VRF / IPv6 / IPv6 VRF Host Transport configuration."
@@ -64,16 +67,17 @@ variable "ipv4_vrf_logging" {
     ipv4_host = string
     vrf       = string
     device    = optional(string)
-    transport_tcp_ports = optional(object({
+    ransport_tcp_ports = optional(list(object({
       port_number = optional(number)
-    }))
-    transport_tls_ports = optional(object({
+    })))
+    transport_tls_ports = optional(list(object({
       port_number = optional(number)
       profile     = optional(string)
-    }))
-    transport_udp_ports = optional(object({
+    })))
+    transport_udp_ports = optional(list(object({
       port_number = optional(number)
-    }))
+      profile     = optional(string)
+    })))
   }))
 
   description = "This resource can manage the Logging IPv4 /IPv4 VRF / IPv6 / IPv6 VRF Host Transport configuration."
@@ -86,16 +90,17 @@ variable "ipv6_logging" {
     ipv4_host = string
     vrf       = string
     device    = optional(string)
-    transport_tcp_ports = optional(object({
+    ransport_tcp_ports = optional(list(object({
       port_number = optional(number)
-    }))
-    transport_tls_ports = optional(object({
+    })))
+    transport_tls_ports = optional(list(object({
       port_number = optional(number)
       profile     = optional(string)
-    }))
-    transport_udp_ports = optional(object({
+    })))
+    transport_udp_ports = optional(list(object({
       port_number = optional(number)
-    }))
+      profile     = optional(string)
+    })))
   }))
 
   description = "This resource can manage the Logging IPv4 /IPv4 VRF / IPv6 / IPv6 VRF Host Transport configuration."
@@ -108,16 +113,17 @@ variable "ipv6_vrf_logging" {
     ipv4_host = string
     vrf       = optional(string)
     device    = string
-    transport_tcp_ports = optional(object({
+    ransport_tcp_ports = optional(list(object({
       port_number = optional(number)
-    }))
-    transport_tls_ports = optional(object({
+    })))
+    transport_tls_ports = optional(list(object({
       port_number = optional(number)
       profile     = optional(string)
-    }))
-    transport_udp_ports = optional(object({
+    })))
+    transport_udp_ports = optional(list(object({
       port_number = optional(number)
-    }))
+      profile     = optional(string)
+    })))
   }))
 
   description = "This resource can manage the Logging IPv4 /IPv4 VRF / IPv6 / IPv6 VRF Host Transport configuration."
