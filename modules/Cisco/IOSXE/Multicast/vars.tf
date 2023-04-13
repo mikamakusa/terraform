@@ -89,6 +89,8 @@ variable "pim" {
     }))
   }))
 
+  default = []
+
   description = "This resource can manage the PIM configuration."
 }
 
@@ -121,6 +123,8 @@ variable "pim_vrf" {
       priority   = optional(number)
     }))
   }))
+
+  default = []
 
   description = "This resource can manage the PIM VRF configuration."
 }

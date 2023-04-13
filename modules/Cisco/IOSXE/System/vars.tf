@@ -188,8 +188,6 @@ variable "system" {
     multicast_routing_distributed = optional(bool)
     multicast_routing_switch      = optional(string)
     ip_routing                    = optional(bool)
-    ip_source_route               = optional(bool)
-    ipv6_unicast_routing          = optional(bool)
     mtu                           = optional(number)
     multicast_routing_vrfs = optional(list(object({
       distributed = optional(bool)

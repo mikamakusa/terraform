@@ -1,0 +1,44 @@
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1.0 |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >=0.1.13 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >=0.1.13 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [iosxe_logging.logging](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/logging) | resource |
+| [iosxe_logging_ipv4_host_transport.logging](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/logging_ipv4_host_transport) | resource |
+| [iosxe_logging_ipv4_host_vrf_transport.logging](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/logging_ipv4_host_vrf_transport) | resource |
+| [iosxe_logging_ipv6_host_transport.logging](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/logging_ipv6_host_transport) | resource |
+| [iosxe_logging_ipv6_host_vrf_transport.logging](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/logging_ipv6_host_vrf_transport) | resource |
+| [iosxe_snmp_server.snmp](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/snmp_server) | resource |
+| [iosxe_snmp_server_group.snmp](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/snmp_server_group) | resource |
+| [iosxe_snmp_server_user.snmp](https://registry.terraform.io/providers/netascode/iosxe/latest/docs/resources/snmp_server_user) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_ip_logging"></a> [ip\_logging](#input\_ip\_logging) | This resource can manage the Logging IPv4 /IPv4 VRF / IPv6 / IPv6 VRF Host Transport configuration. | <pre>map(object({<br>    ipv4_host = string<br>    vrf       = bool<br>    ipv4      = bool<br>    vrf_name  = optional(string)<br>    device    = optional(string)<br>    transport_tcp_ports = optional(object({<br>      port_number = optional(number)<br>    }))<br>    transport_tls_ports = optional(object({<br>      port_number = optional(number)<br>      profile     = optional(string)<br>    }))<br>    transport_udp_ports = optional(object({<br>      port_number = optional(number)<br>    }))<br>  }))</pre> | `{}` | no |
+| <a name="input_logging"></a> [logging](#input\_logging) | This resource can manage the Logging configuration. | <pre>list(object({<br>    origin_id_name    = optional(string)<br>    monitor_severity  = optional(string)<br>    buffered_severity = optional(string)<br>    console_severity  = optional(string)<br>    history_severity  = optional(string)<br>    trap_severity     = optional(string)<br>    buffered_size     = optional(number)<br>    facility          = optional(string)<br>    history_size      = optional(number)<br>    trap              = optional(bool)<br>    origin_id_type    = optional(string)<br>    source_interface  = optional(string)<br>    file_max_size     = optional(number)<br>    file_min_size     = optional(number)<br>    device            = optional(string)<br>    source_interfaces_vrf = optional(map(object({<br>      vrf = optional(string)<br>    })))<br>    ipv4_hosts = optional(object({<br>      ipv4_host = optional(string)<br>    }))<br>    ipv4_vrf_hosts = optional(object({<br>      ipv4_host = optional(string)<br>    }))<br>    ipv6_hosts = optional(object({<br>      ipv6_host = optional(string)<br>    }))<br>    ipv6_vrf_hosts = optional(object({<br>      ipv6_host = optional(string)<br>    }))<br>  }))</pre> | `[]` | no |
+| <a name="input_snmp"></a> [snmp](#input\_snmp) | This resource can manage the SNMP Server / Group / User configuration. | <pre>map(object({<br>    device                                           = optional(string)<br>    contact                                          = optional(string)<br>    ifindex_persist                                  = optional(bool)<br>    location                                         = optional(string)<br>    packetsize                                       = optional(number)<br>    queue_length                                     = optional(number)<br>    enable_informs                                   = optional(bool)<br>    enable_logging_getop                             = optional(bool)<br>    enable_logging_setop                             = optional(bool)<br>    enable_traps                                     = optional(bool)<br>    enable_traps_snmp_authentication                 = optional(bool)<br>    enable_traps_snmp_coldstart                      = optional(bool)<br>    enable_traps_snmp_linkdown                       = optional(bool)<br>    enable_traps_snmp_linkup                         = optional(bool)<br>    enable_traps_snmp_warmstart                      = optional(bool)<br>    ifindex_persist                                  = optional(bool)<br>    source_interface_informs_forty_gigabit_ethernet  = optional(string)<br>    source_interface_informs_gigabit_ethernet        = optional(string)<br>    source_interface_informs_hundred_gig_e           = optional(string)<br>    source_interface_informs_loopback                = optional(number)<br>    source_interface_informs_port_channel            = optional(number)<br>    source_interface_traps_gigabit_ethernet          = optional(string)<br>    source_interface_traps_port_channel              = optional(number)<br>    source_interface_traps_port_channel_subinterface = optional(string)<br>    source_interface_traps_ten_gigabit_ethernet      = optional(string)<br>    source_interface_traps_vlan                      = optional(number)<br>    trap_source_forty_gigabit_ethernet               = optional(string)<br>    trap_source_gigabit_ethernet                     = optional(string)<br>    trap_source_hundred_gig_e                        = optional(string)<br>    trap_source_loopback                             = optional(number)<br>    trap_source_port_channel                         = optional(number)<br>    trap_source_port_channel_subinterface            = optional(string)<br>    trap_source_ten_gigabit_ethernet                 = optional(string)<br>    trap_source_vlan                                 = optional(number)<br>    views = optional(map(object({<br>      inc_exl = optional(string)<br>      mib     = optional(string)<br>    })))<br>    context = optional(list(string))<br>    snmp_communities = optional(map(object({<br>      access_list_name = optional(string)<br>      ipv6             = optional(string)<br>      permission       = optional(string)<br>      view             = optional(string)<br>    })))<br>    group = optional(map(object({<br>      device = optional(string)<br>      v3_security = optional(object({<br>        access_acl_name     = optional(string)<br>        access_ipv6_acl     = optional(string)<br>        access_standard_acl = optional(number)<br>        context_node        = optional(string)<br>        match_node          = optional(string)<br>        notify_node         = optional(string)<br>        read_node           = optional(string)<br>        security_level      = optional(string)<br>        write_node          = optional(string)<br>      }))<br>    })))<br>    user = optional(map(object({<br>      device                                = optional(string)<br>      grp_name                              = string<br>      v3_auth_algorithm                     = string<br>      v3_auth_password                      = string<br>      v3_auth_access_acl_name               = optional(string)<br>      v3_auth_access_ipv6_acl               = optional(string)<br>      v3_auth_access_standard_acl           = optional(number)<br>      v3_auth_priv_aes_access_acl_name      = optional(string)<br>      v3_auth_priv_aes_access_ipv6_acl      = optional(string)<br>      v3_auth_priv_aes_access_standard_acl  = optional(number)<br>      v3_auth_priv_aes_algorithm            = optional(string)<br>      v3_auth_priv_aes_password             = optional(string)<br>      v3_auth_priv_des3_access_acl_name     = optional(string)<br>      v3_auth_priv_des3_access_ipv6_acl     = optional(string)<br>      v3_auth_priv_des3_access_standard_acl = optional(number)<br>      v3_auth_priv_des3_password            = optional(string)<br>      v3_auth_priv_des_access_acl_name      = optional(string)<br>      v3_auth_priv_des_access_ipv6_acl      = optional(string)<br>      v3_auth_priv_des_access_standard_acl  = optional(number)<br>      v3_auth_priv_des_password             = optional(string)<br>    })))<br>  }))</pre> | `{}` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_logging"></a> [logging](#output\_logging) | n/a |
+| <a name="output_snmp"></a> [snmp](#output\_snmp) | n/a |

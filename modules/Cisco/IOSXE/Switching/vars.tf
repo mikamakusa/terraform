@@ -18,15 +18,7 @@ variable "switchport" {
 
   default = {}
 
-  validation {
-    condition     = contains(["GigabitEthernet", "TwoGigabitEthernet", "FiveGigabitEthernet", "TenGigabitEthernet", "TwentyFiveGigE", "FortyGigabitEthernet", "HundredGigE", "TwoHundredGigE", "FourHundredGigE"], var.switchport.type)
-    error_message = "Allowed values : GigabitEthernet, TwoGigabitEthernet, FiveGigabitEthernet, TenGigabitEthernet, TwentyFiveGigE, FortyGigabitEthernet, HundredGigE, TwoHundredGigE, FourHundredGigE."
-  }
-
-  validation {
-    condition     = var.switchport.trunk_native_vlan >= 1 && var.switchport.trunk_native_vlan <= 4094
-    error_message = "Allowed range value : 1 to 4094."
-  }
+  description = "This data source can read the Interface Switchport configuration."
 }
 
 variable "vlan" {
@@ -47,23 +39,5 @@ variable "vlan" {
 
   default = {}
 
-  validation {
-    condition     = var.vlan.vlan_id >= 1 && var.vlan.vlan_id <= 4094
-    error_message = "Allowed range value : 1 to 4094."
-  }
-
-  validation {
-    condition     = var.vlan.evpn_instance >= 1 && var.vlan.evpn_instance <= 65535
-    error_message = "Allowed range value : 1 to 65535."
-  }
-
-  validation {
-    condition     = var.vlan.evpn_instance_vni >= 4096 && var.vlan.evpn_instance_vni <= 16777215
-    error_message = "Allowed range value : 4096 to 16777215."
-  }
-
-  validation {
-    condition     = var.vlan.vni >= 4096 && var.vlan.vni <= 16777215
-    error_message = "Allowed range value : 4096 to 16777215."
-  }
+  description = "This data source can read the VLAN configuration."
 }

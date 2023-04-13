@@ -175,8 +175,6 @@ resource "iosxe_system" "system" {
   multicast_routing_distributed = each.value.multicast_routing_distributed
   multicast_routing_switch      = each.value.multicast_routing_switch
   ip_routing                    = each.value.ip_routing
-  ip_source_route               = each.value.ip_source_route
-  ipv6_unicast_routing          = each.value.ipv6_unicast_routing
   mtu                           = each.value.mtu
 
   dynamic "multicast_routing_vrfs" {

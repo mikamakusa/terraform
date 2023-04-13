@@ -12,4 +12,8 @@ variable "static_route" {
       tag       = optional(number)
     }))
   }))
+
+  default = {}
+
+  description = "This resource can manage the Static Route configuration."
 }

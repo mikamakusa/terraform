@@ -32,6 +32,8 @@ variable "logging" {
     }))
   }))
 
+  description = "This resource can manage the Logging configuration."
+
   default = []
 }
 
@@ -53,6 +55,8 @@ variable "ip_logging" {
       port_number = optional(number)
     }))
   }))
+
+  description = "This resource can manage the Logging IPv4 /IPv4 VRF / IPv6 / IPv6 VRF Host Transport configuration."
 
   default = {}
 }
@@ -141,6 +145,8 @@ variable "snmp" {
       v3_auth_priv_des_password             = optional(string)
     })))
   }))
+
+  description = "This resource can manage the SNMP Server / Group / User configuration."
 
   default = {}
 }
