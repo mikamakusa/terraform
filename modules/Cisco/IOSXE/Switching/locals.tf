@@ -1,3 +1,4 @@
+/*
 locals {
   switchport = defaults(var.switchport, {
     type                          = "GigabitEthernet"
@@ -22,4 +23,4 @@ locals {
     evpn_instance_vni      = 4096
     vni                    = 4096
   })
-}
+}*/

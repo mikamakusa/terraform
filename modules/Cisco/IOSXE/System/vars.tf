@@ -34,14 +34,14 @@ variable "dhcp" {
 variable "prefix_list" {
   type = list(object({
     device = optional(string)
-    prefixes = optional(object({
+    prefixes = optional(list(object({
       name   = optional(string)
       seq    = optional(number)
       action = optional(string)
       ip     = optional(string)
       ge     = optional(number)
       le     = optional(number)
-    }))
+    })))
   }))
 
   default = []
@@ -52,7 +52,7 @@ variable "prefix_list" {
 variable "route_map" {
   type = map(object({
     device = optional(string)
-    entries = optional(object({
+    entries = optional(list(object({
       continue                                   = optional(bool)
       continue_sequence_number                   = optional(number)
       description                                = optional(string)
@@ -132,7 +132,7 @@ variable "route_map" {
       set_tag                                    = optional(number)
       set_vrf                                    = optional(string)
       set_weight                                 = optional(number)
-    }))
+    })))
   }))
 
   default = {}
