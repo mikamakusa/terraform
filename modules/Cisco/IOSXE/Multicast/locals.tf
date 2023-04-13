@@ -1,3 +1,4 @@
+/*
 locals {
   interface_pim = defaults(var.interface_pim, {
     passive           = false
@@ -60,4 +61,4 @@ locals {
     priority = 10
     bidir    = false
   })
-}
+}*/

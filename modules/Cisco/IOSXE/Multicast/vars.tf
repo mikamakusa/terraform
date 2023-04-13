@@ -21,16 +21,16 @@ variable "msdp" {
   type = list(object({
     device        = optional(string)
     originator_id = optional(string)
-    passwords = list(object({
+    passwords = optional(list(object({
       password   = string
       addr       = optional(string)
       encryption = optional(number)
-    }))
-    peers = list(object({
+    })))
+    peers = optional(list(object({
       addr                    = optional(string)
       connect_source_loopback = optional(number)
       remote_as               = optional(number)
-    }))
+    })))
   }))
 
   default = []
@@ -43,16 +43,16 @@ variable "msdp_vrf" {
     device        = optional(string)
     originator_id = optional(string)
     vrf           = optional(string)
-    passwords = list(object({
+    passwords = optional(list(object({
       password   = string
       addr       = optional(string)
       encryption = optional(number)
-    }))
-    peers = list(object({
+    })))
+    peers = optional(list(object({
       addr                    = optional(string)
       connect_source_loopback = optional(number)
       remote_as               = optional(number)
-    }))
+    })))
   }))
 
   default = []
@@ -74,19 +74,19 @@ variable "pim" {
     rp_address                        = optional(string)
     rp_address_override               = optional(bool)
     rp_address_bidir                  = optional(bool)
-    rp_addresses = optional(object({
+    rp_addresses = optional(list(object({
       access_list = optional(string)
       bidir       = optional(bool)
       override    = optional(bool)
       rp_address  = optional(string)
-    }))
-    rp_candidates = optional(object({
+    })))
+    rp_candidates = optional(list(object({
       bidir      = optional(bool)
       group_list = optional(string)
       interface  = optional(string)
       interval   = optional(number)
       priority   = optional(number)
-    }))
+    })))
   }))
 
   default = []
@@ -109,19 +109,19 @@ variable "pim_vrf" {
     rp_address                        = optional(string)
     rp_address_override               = optional(bool)
     rp_address_bidir                  = optional(bool)
-    rp_addresses = optional(object({
+    rp_addresses = optional(list(object({
       access_list = optional(string)
       bidir       = optional(bool)
       override    = optional(bool)
       rp_address  = optional(string)
-    }))
-    rp_candidates = optional(object({
+    })))
+    rp_candidates = optional(list(object({
       bidir      = optional(bool)
       group_list = optional(string)
       interface  = optional(string)
       interval   = optional(number)
       priority   = optional(number)
-    }))
+    })))
   }))
 
   default = []
