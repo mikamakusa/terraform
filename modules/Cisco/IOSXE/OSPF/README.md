@@ -1,14 +1,59 @@
+# OSPF Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "OSPF" {
+  source       = "./OSPF"
+  interface    = {
+    150 = {
+      cost                             = 10
+      dead_interval                    = 30
+      hello_interval                   = 5
+      mtu_ignore                       = false
+      network_type_broadcast           = false
+      network_type_non_broadcast       = false
+      network_type_point_to_multipoint = false
+      network_type_point_to_point      = true
+    }
+  }
+  ospf         = {
+    10 = {
+      bfd_all_interfaces                   = true
+      default_information_originate        = true
+      default_information_originate_always = true
+      default_metric                       = 21
+      distance                             = 120
+    }
+  }
+  ospf_process = {
+    10 = {
+      process_id  = 10
+      type        = "GigabitEthernet"
+    }
+  }
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 

@@ -1,15 +1,46 @@
+# ACL Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "ACL" {
+  source = "./ACL"
+  acl    = {
+    acl1 = {
+      sequence                    = 10
+      remark                      = "Description"
+      ace_rule_action             = "permit"
+      ace_rule_protocol           = "tcp"
+      source_prefix               = "10.0.0.0"
+      source_prefix_mask          = "0.0.0.255"
+      source_port_equal           = "1000"
+      destination_host            = "10.1.1.1"
+      destination_port_range_from = "1000"
+      destination_port_range_to   = "2000"
+    }
+  }
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >=0.1.13 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >=0.1.13 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 

@@ -1,15 +1,71 @@
+# Management Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "management" {
+  source = "../../modules/Cisco/IOSXE/Management"
+  logging = [
+    {
+      monitor_severity  = "informational"
+      buffered_size     = 16000
+      buffered_severity = "informational"
+      console_severity  = "informational"
+      facility          = "local0"
+      history_size      = 100
+      history_severity  = "informational"
+      trap              = true
+      trap_severity     = "informational"
+    }
+  ]
+  ipv4_logging = [
+    {
+      ipv4_host = "2.2.2.2"
+    }
+  ]
+  group = {
+    grp1 = {
+      v3_security = [
+        {
+          security_level  = "priv"
+          context_node    = "CON1"
+          match_node      = "exact"
+          read_node       = "VIEW1"
+          write_node      = "VIEW2"
+          notify_node     = "VIEW3"
+        }
+      ]
+    }
+  }
+  user = {
+    user1 = {
+      grpname           = "grp1"
+      v3_auth_algorithm = "md5"
+      v3_auth_password  = "Azerty123!"
+    }
+  }
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.4.5 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 

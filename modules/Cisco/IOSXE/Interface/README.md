@@ -1,16 +1,85 @@
+# Interface Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "Interface" {
+  source       = "./Interface"
+  ethernet     = {
+    3 = {
+      type                           = "GigabitEthernet"
+      shutdown                       = false
+      ipv4_address                   = "15.1.1.1"
+      ipv4_address_mask              = "255.255.255.252"
+      ip_dhcp_relay_source_interface = "Loopback100"
+      ip_access_group_in             = "1"
+      ip_access_group_in_enable      = true
+      ip_access_group_out            = "1"
+      ip_access_group_out_enable     = true
+    }
+  }
+  loopback     = {
+    100 = {
+      shutdown                   = false
+      ipv4_address               = "200.1.1.1"
+      ipv4_address_mask          = "255.255.255.255"
+      ip_access_group_in         = "1"
+      ip_access_group_in_enable  = true
+      ip_access_group_out        = "1"
+      ip_access_group_out_enable = true
+    }
+  }
+  nve          = {
+    1 = {
+      shutdown                       = false
+      host_reachability_protocol_bgp = true
+      source_interface_loopback      = 100
+    }
+  }
+  port_channel = {
+    10 = {
+      ipv4_address                   = "192.0.2.1"
+      ipv4_address_mask              = "255.255.255.0"
+      ip_access_group_in             = "1"
+      ip_access_group_in_enable      = true
+      ip_access_group_out            = "1"
+      ip_access_group_out_enable     = true
+    }
+  }
+  vlan         = {
+    6 = {
+      autostate                      = false
+      shutdown                       = false
+      ipv4_address                   = "10.1.1.1"
+      ipv4_address_mask              = "255.255.255.0"
+      ip_access_group_in             = "1"
+      ip_access_group_in_enable      = true
+      ip_access_group_out            = "1"
+      ip_access_group_out_enable     = true
+    }
+  }
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >=0.1.13 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 0.2.4 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >=0.1.13 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 

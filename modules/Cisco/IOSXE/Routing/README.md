@@ -1,14 +1,47 @@
+# Routing Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "Routing" {
+  source       = "./Routing"
+  static_route = {
+    5.5.5.5 = {
+      maxk = "255.255.255.255"
+      next_hops = [
+        {
+          next_hop  = "6.6.6.6"
+          metric    = 10
+          global    = false
+          name      = "Route1"
+          permanent = true
+          tag       = 100
+        }
+      ]
+    }
+  }
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 

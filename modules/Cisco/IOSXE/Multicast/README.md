@@ -1,14 +1,62 @@
+# Multicast Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "Multicast" {
+  source        = "./Multicast"
+  interface_pim = {
+    35 = {
+      passive           = false
+      dense_mode        = false
+      sparse_mode       = true
+      sparse_dense_mode = false
+      bfd               = false
+      border            = false
+      bsr_border        = false
+      dr_priority       = 10
+    }
+  }
+  msdp          = [
+    {
+      originator_id = "loopback100"
+    }
+  ]
+  msdp_vrf      = []
+  pim_vrf       = []
+  pim           = [
+    {
+      autorp                 = false
+      autorp_listener        = false
+      ssm_range              = "10"
+      ssm_default            = false
+      rp_address             = "9.9.9.9"
+      rp_address_override    = false
+      rp_address_bidir       = false
+    }
+  ]
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | 0.1.14 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | 0.1.14 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 

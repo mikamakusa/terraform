@@ -1,14 +1,57 @@
+# BGP Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "BGP" {
+  source         = "./BGP"
+  address_family = [
+    {
+      ipv4    = true
+      asn     = "65000"
+      af_name = "unicast"
+    }
+  ]
+  bgp            = [
+    {
+      asn                  = "65000"
+      default_ipv4_unicast = false
+      log_neighbor_changes = true
+      router_id_loopback   = 100
+    }
+  ]
+  l2vpn          = [
+    {
+      asn                    = "65000"
+      ip                     = "3.3.3.3"
+      activate               = true
+      send_community         = "both"
+      route_reflector_client = false
+    }
+  ]
+  neighbor       = []
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | 0.1.15 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 

@@ -1,16 +1,52 @@
+# Switching Cisco IOSXE Terraform module documentation
+
+## Usage
+### module declaration
+```hcl
+provider "iosxe" {
+  username = var.username
+  password = var.password
+  url      = var.url
+  insecure = true
+}
+
+module "Switching" {
+  source     = "./Switching"
+  vlan       = {
+    vlan169 = {
+      vlan_id           = 169
+      shutdown          = false
+      evpn_instance     = 123
+      evpn_instance_vni = 10123
+    }
+  }
+  switchport = {
+    1/0/3 = {
+      type                          = "GigabitEthernet"
+      mode_access                   = false
+      mode_dot1q_tunnel             = false
+      mode_private_vlan_trunk       = false
+      mode_private_vlan_host        = false
+      mode_private_vlan_promiscuous = false
+      mode_trunk                    = true
+      nonegotiate                   = false
+    }
+  }
+}
+```
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1.0 |
-| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >=0.1.13 |
-| <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 0.2.4 |
+| Name | Version   |
+|------|-----------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4.5  |
+| <a name="requirement_iosxe"></a> [iosxe](#requirement\_iosxe) | >= 0.1.15 |
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >=0.1.13 |
+| Name | Version   |
+|------|-----------|
+| <a name="provider_iosxe"></a> [iosxe](#provider\_iosxe) | >= 0.1.15 |
 
 ## Modules
 
