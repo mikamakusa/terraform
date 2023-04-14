@@ -1,7 +1,137 @@
+# Virtual Machine Vsphere Terraform module documentation
+
+## Usage
+### module declaration
+#### Virtual Machine creation
+```hcl
+module "vm" {
+  source        = "../../../modules/vsphere/Virtual_Machine/Virtual_Machine"
+  datacenter    = var.datacenter
+  datastore     = var.datastore
+  cluster       = var.cluster
+  network       = var.network
+  vm            = {
+    original-1 = {
+      num_cpus   = 1
+      memory     = 1024
+      guest_id   = "other3xLinux64Guest"
+      disk_value = "disk0"
+      disk_size  = 20
+    }
+  }
+}
+```
+
+#### Linux Virtual Machine cloning
+```hcl
+module "vm" {
+  source     = "../../../modules/vsphere/Virtual_Machine/Virtual_Machine"
+  datacenter = var.datacenter
+  datastore  = var.datastore
+  cluster    = var.cluster
+  network    = var.network
+
+  clone_linux = {
+    clone-1 = {
+      domaine      = var.domain
+      ipv4_address = var.ipv4_address
+      ipv4_netmask = var.ipv4_netmask
+    }
+  }
+}
+```
+
+#### Windows Virtual Machine cloning
+```hcl
+module "vm" {
+  source        = "../../../modules/vsphere/Virtual_Machine/Virtual_Machine"
+  datacenter = var.datacenter
+  datastore  = var.datastore
+  cluster    = var.cluster
+  network    = var.network
+  
+  clone_windows = {
+    clone-1 = {
+      ipv4_address = var.ipv4_address
+      ipv4_netmask = var.ipv4_netmask
+    }
+  }
+}
+```
+
+#### Deploying a Virtual Machine from Remote OVF/OVA file
+```hcl
+module "vm" {
+  source        = "../../../modules/vsphere/Virtual_Machine/Virtual_Machine"
+  datacenter    = var.datacenter
+  datastore     = var.datastore
+  cluster       = var.cluster
+  network       = var.network
+  
+  ovf_template = [
+    {
+      name              = var.template_name
+      disk_provisioning = "thin"
+      remote_ovf_url    = "https://download3.vmware.com/software/vmw-tools/nested-esxi/Nested_ESXi7.0u3_Appliance_Template_v1.ova"
+    }
+  ]
+  from_ovf = {
+    vm-from-ovf = {
+      properties = {
+        "guestinfo.hostname"  = "nested-esxi-01.example.com",
+        "guestinfo.ipaddress" = "172.16.11.101",
+        "guestinfo.netmask"   = "255.255.255.0",
+        "guestinfo.gateway"   = "172.16.11.1",
+        "guestinfo.dns"       = "172.16.11.4",
+        "guestinfo.domain"    = "example.com",
+        "guestinfo.ntp"       = "ntp.example.com",
+        "guestinfo.password"  = "VMware1!",
+        "guestinfo.ssh"       = "True"
+      }
+    }
+  }
+}
+```
+
+#### Deploying a Virtual Machine from local OVF/OVA file
+```hcl
+module "vm" {
+  source        = "../../../modules/vsphere/Virtual_Machine/Virtual_Machine"
+  datacenter    = var.datacenter
+  datastore     = var.datastore
+  cluster       = var.cluster
+  network       = var.network
+  
+  ovf_template = [
+    {
+      name              = var.template_name
+      disk_provisioning = "thin"
+      local_ovf_path    = "/Volume/Storage/OVA/Nested_ESXi7.0u3_Appliance_Template_v1.ova"
+    }
+  ]
+  from_ovf = {
+    vm-from-ovf = {
+      properties = {
+        "guestinfo.hostname"  = "nested-esxi-01.example.com",
+        "guestinfo.ipaddress" = "172.16.11.101",
+        "guestinfo.netmask"   = "255.255.255.0",
+        "guestinfo.gateway"   = "172.16.11.1",
+        "guestinfo.dns"       = "172.16.11.4",
+        "guestinfo.domain"    = "example.com",
+        "guestinfo.ntp"       = "ntp.example.com",
+        "guestinfo.password"  = "VMware1!",
+        "guestinfo.ssh"       = "True"
+      }
+    }
+  }
+}
+```
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.4.5 |
 | <a name="requirement_vsphere"></a> [vsphere](#requirement\_vsphere) | 2.3.1 |
 
 ## Providers
@@ -18,13 +148,18 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [vsphere_virtual_machine.virtual_machine](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/virtual_machine) | resource |
+| [vsphere_virtual_machine.clone_linux](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/virtual_machine) | resource |
+| [vsphere_virtual_machine.clone_windows](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/virtual_machine) | resource |
+| [vsphere_virtual_machine.from_ovf](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/virtual_machine) | resource |
+| [vsphere_virtual_machine.vm](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/resources/virtual_machine) | resource |
+| [vsphere_compute_cluster.cluster](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/compute_cluster) | data source |
 | [vsphere_datacenter.datacenter](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/datacenter) | data source |
 | [vsphere_datastore.datastore](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/datastore) | data source |
 | [vsphere_datastore_cluster.datastore_cluster](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/datastore_cluster) | data source |
 | [vsphere_folder.folder](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/folder) | data source |
+| [vsphere_host.host](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/host) | data source |
 | [vsphere_network.network](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/network) | data source |
-| [vsphere_resource_pool.resource_pool](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/resource_pool) | data source |
+| [vsphere_ovf_vm_template.ovf_template](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/ovf_vm_template) | data source |
 | [vsphere_storage_policy.storage_policy](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/storage_policy) | data source |
 | [vsphere_tag.tag](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/tag) | data source |
 | [vsphere_tag_category.tag_category](https://registry.terraform.io/providers/hashicorp/vsphere/2.3.1/docs/data-sources/tag_category) | data source |
@@ -34,34 +169,24 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | Administrator password for Windows virtual machine | `string` | `null` | no |
-| <a name="input_clone"></a> [clone](#input\_clone) | n/a | <pre>object({<br>    network_address = string<br>    netmask         = number<br>  })</pre> | n/a | yes |
-| <a name="input_custom_attributes"></a> [custom\_attributes](#input\_custom\_attributes) | n/a | `map(any)` | `null` | no |
+| <a name="input_clone_linux"></a> [clone\_linux](#input\_clone\_linux) | For Linux - Building on the above example, the below configuration creates a virtual machine by cloning it from a template, fetched using the vsphere\_virtual\_machine data source. This option allows you to locate the UUID of the template to clone, along with settings for network interface type, SCSI bus type, and disk attributes. | <pre>map(object({<br>    domain       = string<br>    ipv4_address = optional(string)<br>    ipv4_netmask = optional(number)<br>  }))</pre> | `{}` | no |
+| <a name="input_clone_windows"></a> [clone\_windows](#input\_clone\_windows) | For Windows - Building on the above example, the below configuration creates a virtual machine by cloning it from a template, fetched using the vsphere\_virtual\_machine data source. This option allows you to locate the UUID of the template to clone, along with settings for network interface type, SCSI bus type, and disk attributes. | <pre>map(object({<br>    computer_name = string<br>    ipv4_address  = optional(string)<br>    ipv4_netmask  = optional(number)<br>  }))</pre> | `{}` | no |
+| <a name="input_cluster"></a> [cluster](#input\_cluster) | Name of the Cluster | `string` | `""` | no |
 | <a name="input_datacenter"></a> [datacenter](#input\_datacenter) | Name of the datacenter | `string` | `""` | no |
 | <a name="input_datastore"></a> [datastore](#input\_datastore) | Name of the datastore to deploy the virtual machine | `string` | `""` | no |
 | <a name="input_datastore_cluster"></a> [datastore\_cluster](#input\_datastore\_cluster) | Name of the datastore cluster to deploy the virtual machine | `string` | `""` | no |
-| <a name="input_disk"></a> [disk](#input\_disk) | n/a | <pre>map(object({<br>    size             = optional(number)<br>    unit_number      = optional(number)<br>    thin_provisioned = optional(bool)<br>    eagerly_scrub    = optional(bool)<br>    io_reservation   = optional(number)<br>    io_share_level   = optional(string)<br>    io_share_count   = optional(string)<br>    disk_sharing     = optional(string)<br>    disk_mode        = optional(string)<br>    controller_type  = optional(string)<br>  }))</pre> | n/a | yes |
-| <a name="input_dns_server_list"></a> [dns\_server\_list](#input\_dns\_server\_list) | n/a | `list(string)` | `null` | no |
-| <a name="input_dns_suffix_list"></a> [dns\_suffix\_list](#input\_dns\_suffix\_list) | A list of DNS search domains to add to the DNS configuration on the virtual machine | `list(string)` | `null` | no |
-| <a name="input_domain"></a> [domain](#input\_domain) | n/a | `string` | n/a | yes |
-| <a name="input_extra_config"></a> [extra\_config](#input\_extra\_config) | Extra configuration data for this virtual machine | `map(any)` | `null` | no |
-| <a name="input_folder"></a> [folder](#input\_folder) | Name of the folder in which the virtual machine will be stored | `string` | `null` | no |
-| <a name="input_general_options"></a> [general\_options](#input\_general\_options) | n/a | <pre>object({<br>    scsi_controller       = optional(number)<br>    firmware              = optional(string)<br>    memory                = optional(number)<br>    num_cpus              = optional(number)<br>    num_cores_per_socket  = optional(number)<br>    cpu_share_level       = optional(string)<br>    cpu_share_count       = optional(number)<br>    cpu_limit             = optional(number)<br>    cpu_reservation       = optional(number)<br>    memory_limit          = optional(number)<br>    memory_reservation    = optional(number)<br>    memory_share_count    = optional(number)<br>    memory_share_level    = optional(string)<br>    ignored_guest_ips     = list(string)<br>    hv_mode               = optional(string)<br>    ept_rvi_mode          = optional(string)<br>    latency_sensitivity   = optional(string)<br>    swap_placement_policy = optional(string)<br>    scsi_bus_sharing      = optional(string)<br>    scsi_type             = optional(string)<br>  })</pre> | n/a | yes |
+| <a name="input_folder"></a> [folder](#input\_folder) | Name of the folder in which the virtual machine will be stored | `string` | `""` | no |
+| <a name="input_from_ovf"></a> [from\_ovf](#input\_from\_ovf) | Variable to instance in order to deploy a virtual machine from OVA/OVF file. | <pre>map(object({<br>    vapp = optional(list(string))<br>  }))</pre> | `{}` | no |
 | <a name="input_instances"></a> [instances](#input\_instances) | Number of virtual machine needed to be deployed | `number` | `1` | no |
-| <a name="input_ipv4_gateway"></a> [ipv4\_gateway](#input\_ipv4\_gateway) | Virtual Machine Gateway to set | `any` | `null` | no |
-| <a name="input_linux"></a> [linux](#input\_linux) | n/a | `bool` | n/a | yes |
 | <a name="input_network"></a> [network](#input\_network) | n/a | `map(list(string))` | `{}` | no |
-| <a name="input_resource_pool"></a> [resource\_pool](#input\_resource\_pool) | Resource pool on which the virtual machine will be deployed | `string` | n/a | yes |
-| <a name="input_storage_policy"></a> [storage\_policy](#input\_storage\_policy) | The storage policy to be sassigned to the virtual machine home directory | `string` | `null` | no |
+| <a name="input_ovf_template"></a> [ovf\_template](#input\_ovf\_template) | n/a | <pre>list(object({<br>    name              = string<br>    disk_provisioning = optional(string)<br>    remote_ovf_url    = optional(string)<br>    local_ovf_url     = optional(string)<br>    ovf_network_map   = optional(list(string))<br>  }))</pre> | `[]` | no |
+| <a name="input_storage_policy"></a> [storage\_policy](#input\_storage\_policy) | The storage policy to be sassigned to the virtual machine home directory | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | The name of the tags to attach to the resource | `map(any)` | `null` | no |
 | <a name="input_tags_ids"></a> [tags\_ids](#input\_tags\_ids) | The ids of the tags to attache to the resource | `list(any)` | `null` | no |
 | <a name="input_template_name"></a> [template\_name](#input\_template\_name) | Name of the template for the VM to be deployed | `string` | `""` | no |
-| <a name="input_vmname"></a> [vmname](#input\_vmname) | The name of the virtual machine used to deploy | `string` | n/a | yes |
-| <a name="input_windows"></a> [windows](#input\_windows) | n/a | `bool` | n/a | yes |
-| <a name="input_workgroup"></a> [workgroup](#input\_workgroup) | Workgroup of the Windows virtual machine | `string` | `null` | no |
+| <a name="input_vm"></a> [vm](#input\_vm) | n/a | <pre>map(object({<br>    num_cpus   = optional(number)<br>    memory     = optional(number)<br>    guest_id   = optional(string)<br>    disk_size  = optional(number)<br>    disk_value = optional(string)<br>  }))</pre> | `{}` | no |
+| <a name="input_vsphere_host"></a> [vsphere\_host](#input\_vsphere\_host) | Vsphere host on which the template is store or on which the virtual machine will be deployed | `string` | `""` | no |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_virtual_machine_id"></a> [virtual\_machine\_id](#output\_virtual\_machine\_id) | n/a |
+No outputs.

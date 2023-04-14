@@ -1,109 +1,115 @@
-resource "vsphere_virtual_machine" "virtual_machine" {
-  count            = var.instances
-  name             = join("-", [var.vmname, count.index + 1])
-  resource_pool_id = data.vsphere_resource_pool.resource_pool.id
-
-  ## Options to hardcode
-  datastore_cluster_id    = var.datastore_cluster != "" ? data.vsphere_datastore_cluster.datastore_cluster.id : null
-  datastore_id            = var.datastore != "" ? data.vsphere_datastore.datastore.id : null
-  folder                  = var.folder != "" ? data.vsphere_folder.folder.path : null
-  tags                    = var.tags_ids != null ? var.tags_ids : data.vsphere_tag.tag[*].id
-  custom_attributes       = var.custom_attributes
-  extra_config            = var.extra_config
-  firmware                = var.general_options.firmware
-  efi_secure_boot_enabled = var.general_options.firmware == "efi" ? true : false
-  boot_retry_enabled      = true
-  boot_retry_delay        = 10000
-  enable_disk_uuid        = true
-  storage_policy_id       = data.vsphere_storage_policy.storage_policy.id
-  scsi_type               = var.general_options.scsi_type
-  scsi_controller_count   = ""
-  scsi_bus_sharing        = var.general_options.scsi_bus_sharing
-  ### CPU
-  num_cpus               = var.general_options.num_cpus == null ? 1 : var.general_options.num_cpus
-  num_cores_per_socket   = var.general_options.num_cores_per_socket == null ? 1 : var.general_options.num_cores_per_socket
+resource "vsphere_virtual_machine" "vm" {
+  for_each               = var.vm
+  name                   = each.key
+  resource_pool_id       = data.vsphere_compute_cluster.cluster.id
+  datastore_id           = data.vsphere_datastore.datastore.id
+  num_cpus               = each.value.num_cpus
   cpu_hot_add_enabled    = true
   cpu_hot_remove_enabled = true
-  cpu_reservation        = var.general_options.cpu_reservation != null ? var.general_options.cpu_reservation : null
-  cpu_share_level        = var.general_options.cpu_share_level != "normal" ? var.general_options.cpu_share_level : "normal"
-  cpu_share_count        = var.general_options.cpu_share_level == "custom" ? var.general_options.cpu_share_count : 4000
-  cpu_limit              = var.general_options.cpu_limit
-  ### MEMORY
-  memory                 = var.general_options.memory == null ? 1024 : var.general_options.memory
+  memory                 = each.value.memory
   memory_hot_add_enabled = true
-  memory_limit           = var.general_options.memory_limit
-  memory_reservation     = var.general_options.memory_reservation
-  memory_share_count     = var.general_options.memory_share_count
-  memory_share_level     = var.general_options.memory_share_level
-  ### NETWORK
-  wait_for_guest_ip_timeout        = true
-  wait_for_guest_net_routable      = true
-  wait_for_guest_net_timeout       = true
-  ignored_guest_ips                = var.general_options.ignored_guest_ips
-  hv_mode                          = var.general_options.hv_mode == "" ? "hvAuto" : var.general_options.hv_mode
-  ept_rvi_mode                     = var.general_options.ept_rvi_mode == "" ? "automatic" : var.general_options.ept_rvi_mode
-  nested_hv_enabled                = true
-  vbs_enabled                      = true
-  vvtd_enabled                     = true
-  enable_logging                   = true
-  cpu_performance_counters_enabled = true
-  swap_placement_policy            = var.general_options.swap_placement_policy
-  latency_sensitivity              = var.general_options.latency_sensitivity
-  force_power_off                  = true
-
+  guest_id               = each.value.guest_id
 
   network_interface {
     network_id = data.vsphere_network.network.id
   }
+  disk {
+    label            = each.value.disk_value
+    size             = each.value.disk_size
+    thin_provisioned = true
+  }
+}
 
-  dynamic "disk" {
-    for_each = var.disk
-    content {
-      label             = disk.key
-      size              = disk.value.size
-      unit_number       = disk.value.unit_number
-      thin_provisioned  = disk.value.eagerly_scrub == true ? false : true
-      eagerly_scrub     = disk.value.thin_provisioned == true ? false : true
-      datastore_id      = data.vsphere_datastore.datastore.id
-      storage_policy_id = data.vsphere_storage_policy.storage_policy.id
-      io_share_level    = disk.value.io_share_level
-      io_share_count    = disk.value.io_share_count
-      disk_sharing      = disk.value.disk_sharing
-      keep_on_remove    = false
-      disk_mode         = disk.value.disk_mode
-      controller_type   = disk.value.controller_type
-    }
+resource "vsphere_virtual_machine" "clone_linux" {
+  for_each         = var.clone_linux
+  name             = each.key
+  resource_pool_id = data.vsphere_compute_cluster.cluster.id
+  datastore_id     = data.vsphere_datastore.datastore.id
+  datacenter_id    = data.vsphere_datacenter.datacenter.id
+  guest_id         = data.vsphere_virtual_machine.template.guest_id
+  scsi_type        = data.vsphere_virtual_machine.template.scsi_type
+
+  network_interface {
+    network_id   = data.vsphere_network.network.id
+    adapter_type = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
   }
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
-    customize {
-      ipv4_gateway    = var.ipv4_gateway
-      dns_server_list = var.dns_server_list
-      dns_suffix_list = var.dns_suffix_list
-      network_interface {
-        ipv4_address = var.clone.network_address != "0.0.0.0" ? cidrhost(var.clone.network_address, var.clone.netmask) : ""
-        ipv4_netmask = var.clone.network_address != "0.0.0.0" ? cidrnetmask(join("/", [var.clone.network_address, var.clone.netmask])) : ""
-      }
 
-      dynamic "linux_options" {
-        for_each = var.linux ? 1 : 0
-        content {
-          domain       = var.domain
-          host_name    = join("-", [var.vmname, count.index + 1])
-          hw_clock_utc = true
-          time_zone    = "Europe"
-        }
+    customize {
+      linux_options {
+        domain    = each.value.domain
+        host_name = each.key
       }
-      dynamic "windows_options" {
-        for_each = var.windows ? 1 : 0
-        content {
-          computer_name  = join("-", [var.vmname, count.index + 1])
-          admin_password = var.admin_password
-          workgroup      = var.workgroup
-          time_zone      = "Europe"
-        }
+      network_interface {
+        ipv4_address = each.value.ipv4_address
+        ipv4_netmask = each.value.ipv4_netmask
       }
     }
+  }
+}
+
+resource "vsphere_virtual_machine" "clone_windows" {
+  for_each         = var.clone_windows
+  name             = each.key
+  resource_pool_id = data.vsphere_compute_cluster.cluster.id
+  datastore_id     = data.vsphere_datastore.datastore.id
+  datacenter_id    = data.vsphere_datacenter.datacenter.id
+  guest_id         = data.vsphere_virtual_machine.template.guest_id
+  scsi_type        = data.vsphere_virtual_machine.template.scsi_type
+
+  network_interface {
+    network_id   = data.vsphere_network.network.id
+    adapter_type = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
+  }
+
+  clone {
+    template_uuid = data.vsphere_virtual_machine.template.id
+
+    customize {
+      windows_options {
+        computer_name = each.key
+      }
+      network_interface {
+        ipv4_address = each.value.ipv4_address
+        ipv4_netmask = each.value.ipv4_netmask
+      }
+    }
+  }
+}
+
+resource "vsphere_virtual_machine" "from_ovf" {
+  for_each             = var.from_ovf
+  name                 = each.key
+  datacenter_id        = data.vsphere_datacenter.datacenter.id
+  datastore_id         = data.vsphere_datastore.datastore.id
+  host_system_id       = data.vsphere_host.host.id
+  resource_pool_id     = data.vsphere_compute_cluster.cluster.id
+  num_cpus             = data.vsphere_ovf_vm_template.ovf_template.num_cpus
+  num_cores_per_socket = data.vsphere_ovf_vm_template.ovf_template.num_cores_per_socket
+  memory               = data.vsphere_ovf_vm_template.ovf_template.memory
+  guest_id             = data.vsphere_ovf_vm_template.ovf_template.guest_id
+  scsi_type            = data.vsphere_ovf_vm_template.ovf_template.scsi_type
+  nested_hv_enabled    = data.vsphere_ovf_vm_template.ovf_template.nested_hv_enabled
+
+  dynamic "network_interface" {
+    for_each = data.vsphere_ovf_vm_template.ovf_template.ovf_network_map
+    content {
+      network_id = network_interface.value
+    }
+  }
+  wait_for_guest_net_timeout = 0
+  wait_for_guest_ip_timeout  = 0
+
+  ovf_deploy {
+    allow_unverified_ssl_cert = false
+    remote_ovf_url            = data.vsphere_ovf_vm_template.ovf_template.remote_ovf_url
+    disk_provisioning         = data.vsphere_ovf_vm_template.ovf_template.disk_provisioning
+    ovf_network_map           = data.vsphere_ovf_vm_template.ovf_template.ovf_network_map
+  }
+
+  vapp {
+    properties = each.value.vapp
   }
 }
