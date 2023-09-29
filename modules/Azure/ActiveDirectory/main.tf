@@ -49,32 +49,36 @@ resource "azurerm_subnet_network_security_group_association" "this" {
 }
 
 resource "azuread_group" "this" {
-  for_each         = var.ad_group
-  display_name     = each.key
+  for_each         = lenght(var.ad_group)
+  display_name     = lookup(var.ad_group[count.index], "display_name")
   security_enabled = true
 }
 
 resource "azuread_user" "this" {
-  for_each            = var.ad_user
-  display_name        = each.key
-  user_principal_name = each.value.user_principal_name
-  password            = sensitive(each.value.password)
+  count               = length(var.ad_user)
+  display_name        = lookup(var.ad_user[count.index], "display_name")
+  user_principal_name = lookup(var.ad_user[count.index], "user_principal_name")
+  password            = sensitive(lookup(var.ad_user[count.index], "password"))
 }
 
 resource "azuread_group_member" "this" {
-  for_each = var.ad_group && var.ad_user
-  group_object_id  = ""
-  member_object_id = ""
+  for_each         = length(var.group_member)
+  group_object_id  = element(azuread_group.this.*.id, lookup(var.group_member[count.index], "group_object_id"))
+  member_object_id = element(azuread_user.this.*.id, lookup(var.group_member[count.index], "member_object_id"))
 }
 
 resource "azuread_service_principal" "this" {
-  application_id = ""
+  application_id = data.azuread_application.this.id
+  use_existing   = true
 }
 
 resource "azurerm_active_directory_domain_service" "this" {
-  domain_name         = ""
-  location            = ""
-  name                = ""
-  resource_group_name = ""
-  sku                 = ""
+  count                     = length(var.ad_domain_services)
+  domain_name               = lookup(var.ad_domain_services[count.index], "domain_name")
+  location                  = element(azurerm_resource_group.this.*.location, lookup(var.ad_domain_services[count.index], "resource_group_id"))
+  name                      = lookup(var.ad_domain_services[count.index], "name")
+  resource_group_name       = element(azurerm_resource_group.this.*.name, lookup(var.ad_domain_services[count.index], "resource_group_id"))
+  sku                       = lookup(var.ad_domain_services[count.index], "sku")
+  domain_configuration_type = lookup(var.ad_domain_services[count.index], "domain_configuration_type", null)
+  filtered_sync_enabled     = lookup(var.ad_domain_services[count.index], "filtered_sync_enabled", false)
 }

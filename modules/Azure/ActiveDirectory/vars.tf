@@ -32,14 +32,23 @@ variable "security_group_association" {
 }
 
 variable "ad_group" {
-  type = map(object({
-    display_name = optional(string)
-  }))
+  type = any
 }
 
 variable "ad_user" {
-  type = map(object({
-    user_principal_name = string
-    password            = string
-  }))
+  type = any
 }
+
+variable "group_member" {
+  type = any
+}
+
+variable "ad_domain_services" {
+  type = any
+}
+
+variable "application" {
+  type = string
+}
+
+variable "secure_ldap" {}
