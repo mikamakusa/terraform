@@ -300,3 +300,98 @@ variable "keyvault_certificate_name" {
   type    = string
   default = null
 }
+
+variable "custom_domain" {
+  type = object({
+    scm = optional(object({
+      host_name                       = optional(string)
+      certificate                     = optional(string)
+      certificate_password            = optional(string)
+      key_vault_id                    = optional(string)
+      negotiate_client_certificate    = optional(bool)
+      ssl_keyvault_identity_client_id = optional(string)
+    }))
+    developer_portal = optional(object({
+      host_name                       = optional(string)
+      certificate                     = optional(string)
+      certificate_password            = optional(string)
+      key_vault_id                    = optional(string)
+      negotiate_client_certificate    = optional(bool)
+      ssl_keyvault_identity_client_id = optional(string)
+    }))
+    portal = optional(object({
+      host_name                       = optional(string)
+      certificate                     = optional(string)
+      certificate_password            = optional(string)
+      key_vault_id                    = optional(string)
+      negotiate_client_certificate    = optional(bool)
+      ssl_keyvault_identity_client_id = optional(string)
+    }))
+    gateway = optional(object({
+      host_name                       = optional(string)
+      certificate                     = optional(string)
+      certificate_password            = optional(string)
+      key_vault_id                    = optional(string)
+      negotiate_client_certificate    = optional(bool)
+      ssl_keyvault_identity_client_id = optional(string)
+      default_ssl_binding             = optional(string)
+    }))
+    management = optional(object({
+      host_name                       = optional(string)
+      certificate                     = optional(string)
+      certificate_password            = optional(string)
+      key_vault_id                    = optional(string)
+      negotiate_client_certificate    = optional(bool)
+      ssl_keyvault_identity_client_id = optional(string)
+    }))
+  })
+  default = null
+}
+
+variable "gateway" {
+  type = object({
+    name        = string
+    description = optional(string)
+    location_data = optional(object({
+      name     = optional(string)
+      city     = optional(string)
+      district = optional(string)
+      region   = optional(string)
+    }))
+  })
+  default = null
+}
+
+variable "gateway_host_name_configuration" {
+  type = object({
+    name      = string
+    host_name = string
+  })
+  default = null
+}
+
+variable "api_management_group" {
+  type = object({
+    name         = string
+    display_name = string
+    description  = optional(string)
+    external_id  = optional(string)
+    type         = optional(string)
+  })
+  default = null
+}
+
+variable "api_management_user" {
+  type = object({
+    email        = string
+    first_name   = string
+    last_name    = string
+    user_id      = string
+    confirmation = optional(string)
+    note         = optional(string)
+    password     = optional(string)
+    state        = optional(string)
+  })
+  default = null
+}
+

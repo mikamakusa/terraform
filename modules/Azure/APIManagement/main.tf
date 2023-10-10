@@ -410,3 +410,147 @@ resource "azurerm_api_management_certificate" "this" {
   key_vault_identity_client_id = var.keyvault_certificate_name != null ? data.azurerm_key_vault_certificate.this.id : [""]
   key_vault_secret_id          = var.keyvault_certificate_name != null ? data.azurerm_key_vault_certificate.this.secret_id : [""]
 }
+
+resource "azurerm_api_management_custom_domain" "this" {
+  count             = var.custom_domain == null ? 0 : 1 && var.api_management != null
+  api_management_id = azurerm_api_management.this.id
+
+  dynamic "scm" {
+    for_each = var.custom_domain.scm == null ? [] : [""]
+    content {
+      host_name                       = var.custom_domain.scm.host_name
+      certificate                     = join("/", [path.cwd, "certificate", base64encode(var.custom_domain.scm.certificate)])
+      certificate_password            = sensitive(var.custom_domain.scm.certificate_password)
+      key_vault_id                    = var.custom_domain.scm.certificate == null ? data.azurerm_key_vault_certificate.this.id : [""]
+      negotiate_client_certificate    = var.custom_domain.scm.negotiate_client_certificate
+      ssl_keyvault_identity_client_id = var.custom_domain.scm.ssl_keyvault_identity_client_id
+    }
+  }
+
+  dynamic "gateway" {
+    for_each = var.custom_domain.gateway == null ? [] : [""]
+    content {
+      host_name                       = var.custom_domain.gateway.host_name
+      certificate                     = join("/", [path.cwd, "certificate", base64encode(var.custom_domain.gateway.certificate)])
+      certificate_password            = sensitive(var.custom_domain.gateway.certificate_password)
+      key_vault_id                    = var.custom_domain.gateway.certificate == null ? data.azurerm_key_vault_certificate.this.id : [""]
+      negotiate_client_certificate    = var.custom_domain.gateway.negotiate_client_certificate
+      ssl_keyvault_identity_client_id = var.custom_domain.gateway.ssl_keyvault_identity_client_id
+      default_ssl_binding             = var.custom_domain.gateway.default_ssl_binding
+    }
+  }
+
+  dynamic "portal" {
+    for_each = var.custom_domain.portal
+    content {
+      host_name                       = var.custom_domain.portal.host_name
+      certificate                     = join("/", [path.cwd, "certificate", base64encode(var.custom_domain.portal.certificate)])
+      certificate_password            = sensitive(var.custom_domain.portal.certificate_password)
+      key_vault_id                    = var.custom_domain.portal.certificate == null ? data.azurerm_key_vault_certificate.this.id : [""]
+      negotiate_client_certificate    = var.custom_domain.portal.negotiate_client_certificate
+      ssl_keyvault_identity_client_id = var.custom_domain.portal.ssl_keyvault_identity_client_id
+    }
+  }
+
+  dynamic "developer_portal" {
+    for_each = var.custom_domain.developer_portal
+    content {
+      host_name                       = var.custom_domain.developer_portal.host_name
+      certificate                     = join("/", [path.cwd, "certificate", base64encode(var.custom_domain.developer_portal.certificate)])
+      certificate_password            = sensitive(var.custom_domain.developer_portal.certificate_password)
+      key_vault_id                    = var.custom_domain.developer_portal.certificate == null ? data.azurerm_key_vault_certificate.this.id : [""]
+      negotiate_client_certificate    = var.custom_domain.developer_portal.negotiate_client_certificate
+      ssl_keyvault_identity_client_id = var.custom_domain.developer_portal.ssl_keyvault_identity_client_id
+    }
+  }
+
+  dynamic "management" {
+    for_each = var.custom_domain.management == null ? [] : [""]
+    content {
+      host_name                       = var.custom_domain.management.host_name
+      certificate                     = join("/", [path.cwd, "certificate", base64encode(var.custom_domain.management.certificate)])
+      certificate_password            = sensitive(var.custom_domain.management.certificate_password)
+      key_vault_id                    = var.custom_domain.management.certificate == null ? data.azurerm_key_vault_certificate.this.id : [""]
+      negotiate_client_certificate    = var.custom_domain.management.negotiate_client_certificate
+      ssl_keyvault_identity_client_id = var.custom_domain.management.ssl_keyvault_identity_client_id
+    }
+  }
+}
+
+
+resource "azurerm_api_management_gateway" "this" {
+  count             = var.gateway == null ? 0 : 1 && var.api_management != null
+  api_management_id = azurerm_api_management.this.id
+  name              = var.gateway.name
+  description       = var.gateway.description
+
+  dynamic "location_data" {
+    for_each = var.gateway.location_data == null ? [] : [""]
+    content {
+      name     = var.gateway.location_data.name
+      city     = var.gateway.location_data.city
+      district = var.gateway.location_data.district
+      region   = var.gateway.location_data.region
+    }
+  }
+}
+
+resource "azurerm_api_management_gateway_api" "this" {
+  count      = var.gateway != null && var.api_management_api != null
+  api_id     = azurerm_api_management_api.this.id
+  gateway_id = azurerm_api_management_gateway.this.id
+}
+
+resource "azurerm_api_management_gateway_certificate_authority" "this" {
+  count             = var.api_management != null && var.certificate != null && var.gateway != null
+  api_management_id = azurerm_api_management.this.id
+  certificate_name  = azurerm_api_management_certificate.this.name
+  gateway_name      = azurerm_api_management_gateway.this.name
+  is_trusted        = true
+}
+
+resource "azurerm_api_management_gateway_host_name_configuration" "this" {
+  count                              = var.api_management != null && var.gateway != null && var.certificate != null && var.gateway_host_name_configuration == null ? 0 : 1
+  api_management_id                  = azurerm_api_management.this.id
+  certificate_id                     = azurerm_api_management_certificate.this.id
+  gateway_name                       = azurerm_api_management_gateway.this.name
+  host_name                          = var.gateway_host_name_configuration.host_name
+  name                               = var.gateway_host_name_configuration.name
+  request_client_certificate_enabled = true
+  http2_enabled                      = true
+  tls10_enabled                      = true
+  tls11_enabled                      = true
+}
+
+resource "azurerm_api_management_group" "this" {
+  count               = var.api_management_group == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  display_name        = var.api_management_group.display_name
+  name                = var.api_management_group.name
+  resource_group_name = data.azurerm_resource_group.this.name
+  description         = var.api_management_group.description
+  external_id         = var.api_management_group.external_id
+  type                = var.api_management_group.type
+}
+
+resource "azurerm_api_management_user" "this" {
+  count               = var.api_management_user == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  email               = var.api_management_user.email
+  first_name          = var.api_management_user.first_name
+  last_name           = var.api_management_user.last_name
+  resource_group_name = data.azurerm_resource_group.this.name
+  user_id             = var.api_management_user.user_id
+  confirmation        = var.api_management_user.confirmation
+  note                = var.api_management_user.note
+  password            = sensitive(var.api_management_user.password)
+  state               = var.api_management_user.state
+}
+
+resource "azurerm_api_management_group_user" "this" {
+  count               = var.api_management != null && var.api_management_user != null && var.api_management_group != null
+  api_management_name = azurerm_api_management.this.name
+  group_name          = azurerm_api_management_group.this.name
+  resource_group_name = data.azurerm_resource_group.this.name
+  user_id             = azurerm_api_management_user.this.id
+}
