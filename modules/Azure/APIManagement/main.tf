@@ -554,3 +554,196 @@ resource "azurerm_api_management_group_user" "this" {
   resource_group_name = data.azurerm_resource_group.this.name
   user_id             = azurerm_api_management_user.this.id
 }
+
+resource "azurerm_api_management_identity_provider_aad" "this" {
+  count               = var.provider_aad == null ? 0 : 1 && var.api_management != null
+  allowed_tenants     = var.provider_aad.allowed_tenants
+  api_management_name = azurerm_api_management.this.name
+  client_id           = var.provider_aad.client_id
+  client_secret       = sensitive(var.provider_aad.client_secrets)
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_identity_provider_aadb2c" "this" {
+  count                  = var.provider_aadb2c == null ? 0 : 1 && var.api_management != null
+  allowed_tenant         = var.provider_aadb2c.allowed_tenant
+  api_management_name    = azurerm_api_management.this.name
+  authority              = var.provider_aadb2c.authority
+  client_id              = var.provider_aadb2c.client_id
+  client_secret          = sensitive(var.provider_aadb2c.client_secret)
+  resource_group_name    = data.azurerm_resource_group.this.name
+  signin_policy          = var.provider_aadb2c.signin_policy
+  signin_tenant          = var.provider_aadb2c.signin_tenant
+  signup_policy          = var.provider_aadb2c.signup_policy
+  password_reset_policy  = var.provider_aadb2c.password_reset_policy
+  profile_editing_policy = var.provider_aadb2c.profile_editing_policy
+}
+
+resource "azurerm_api_management_identity_provider_facebook" "this" {
+  count               = var.provider_facebook == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  app_id              = var.provider_facebook.app_id
+  app_secret          = sensitive(var.provider_facebook.app_secret)
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_identity_provider_google" "this" {
+  count               = var.provider_google == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  client_id           = var.provider_google.client_id
+  client_secret       = sensitive(var.provider_google.client_secret)
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_identity_provider_microsoft" "this" {
+  count               = var.provider_microsoft == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  client_id           = var.provider_microsoft.client_id
+  client_secret       = sensitive(var.provider_microsoft.client_secret)
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_identity_provider_twitter" "this" {
+  count               = var.provider_twitter == null ? 0 : 1 && var.api_management != null
+  api_key             = var.provider_twitter.api_key
+  api_management_name = azurerm_api_management.this.name
+  api_secret_key      = sensitive(var.provider_twitter.api_secret_key)
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_named_value" "this" {
+  count               = var.named_value == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  display_name        = var.named_value.display_value
+  name                = var.named_value.name
+  resource_group_name = data.azurerm_resource_group.this.name
+  value               = var.named_value.value
+  secret              = var.named_value.secret
+  tags                = var.named_value.tags
+
+  dynamic "value_from_key_vault" {
+    for_each = var.named_value.value_from_key_vault
+    content {
+      secret_id          = var.named_value.value_from_key_vault.secret_id
+      identity_client_id = var.named_value.value_from_key_vault.identity_client_id
+    }
+  }
+}
+
+resource "azurerm_api_management_notification_recipient_email" "this" {
+  count             = var.notification_recipient_email == null ? 0 : 1 && var.api_management != null
+  api_management_id = azurerm_api_management.this.id
+  email             = var.notification_recipient_email.email
+  notification_type = var.notification_recipient_email.notification_type
+}
+
+resource "azurerm_api_management_notification_recipient_user" "this" {
+  count             = var.notification_recipient_user == null ? 0 : 1 && var.api_management != null
+  api_management_id = azurerm_api_management.this.id
+  notification_type = var.notification_recipient_user.notification_type
+  user_id           = var.notification_recipient_user.user_id
+}
+
+resource "azurerm_api_management_openid_connect_provider" "this" {
+  count               = var.openid_connect_provider == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  client_id           = var.openid_connect_provider.client_id
+  client_secret       = sensitive(var.openid_connect_provider.client_secret)
+  display_name        = var.openid_connect_provider.display_name
+  metadata_endpoint   = var.openid_connect_provider.metadata_endpoint
+  name                = var.openid_connect_provider.name
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_policy" "this" {
+  count             = var.api_management_policy != null ? 0 : 1 && var.api_management != null
+  api_management_id = azurerm_api_management.this.name
+  xml_content       = join("/", [path.cwd, "policies", file(var.api_management_policy.xml_content)])
+  xml_link          = var.api_management_policy.xml_link
+}
+
+resource "azurerm_api_management_product" "this" {
+  count                 = var.api_management_product == null ? 0 : 1 && var.api_management != null
+  api_management_name   = azurerm_api_management.this.name
+  display_name          = var.api_management_product.display_name
+  product_id            = var.api_management_product.product_id
+  published             = var.api_management_product.published
+  resource_group_name   = data.azurerm_resource_group.this.name
+  approval_required     = var.api_management_product.approval_required
+  subscription_required = var.api_management_product.subscription_required
+  subscriptions_limit   = var.api_management_product.subscription_limit
+  terms                 = var.api_management_product.terms
+}
+
+resource "azurerm_api_management_product_api" "this" {
+  count               = var.api_management_product != null && var.api_management_api != null && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  api_name            = azurerm_api_management_api.this.name
+  product_id          = azurerm_api_management_product.this.product_id
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_product_group" "this" {
+  count               = var.api_management_product != null && var.api_management_api != null && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  group_name          = join("-", [azurerm_api_management_product, "group"])
+  product_id          = azurerm_api_management_product.this.product_id
+  resource_group_name = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_product_policy" "this" {
+  count               = var.product_policy == null ? 0 : 1 && var.api_management_product != null
+  api_management_name = azurerm_api_management_product.this.api_management_name
+  product_id          = azurerm_api_management_product.this.product_id
+  resource_group_name = data.azurerm_resource_group.this.name
+  xml_content         = var.product_policy.xml_content
+  xml_link            = var.product_policy.xml_link
+}
+
+resource "azurerm_api_management_product_tag" "this" {
+  count                     = var.product_tag == null ? 0 : 1 && var.api_management_product != null
+  api_management_name       = azurerm_api_management.this.name
+  api_management_product_id = azurerm_api_management_product.this.product_id
+  name                      = var.product_tag.name
+  resource_group_name       = data.azurerm_resource_group.this.name
+}
+
+resource "azurerm_api_management_redis_cache" "this" {
+  count             = var.api_management_redis_cache == null ? 0 : 1 && var.redis_cache != null && var.api_management != null
+  api_management_id = azurerm_api_management_product.this.id
+  connection_string = data.azurerm_redis_cache.this.primary_connection_string
+  name              = var.api_management_redis_cache.name
+  description       = var.api_management_redis_cache.description
+  redis_cache_id    = data.azurerm_redis_cache.this.id
+  cache_location    = var.api_management_redis_cache.cache_location
+}
+
+resource "azurerm_api_management_global_schema" "this" {
+  count               = var.global_schema == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  resource_group_name = data.azurerm_resource_group.this.name
+  schema_id           = var.global_schema.schema_id
+  type                = var.global_schema.type
+  value               = var.global_schema.value
+}
+
+resource "azurerm_api_management_subscription" "this" {
+  count               = var.subscription == null ? 0 : 1 && var.api_management != null
+  api_management_name = azurerm_api_management.this.name
+  resource_group_name = data.azurerm_resource_group.this.name
+  display_name        = var.subscription.display_name
+  product_id          = azurerm_api_management_product.this.id
+  user_id             = azurerm_api_management_user.this.id
+  api_id              = azurerm_api_management_api.this.id
+  primary_key         = var.subscription.primary_key
+  secondary_key       = var.subscription.secondary_key
+  state               = var.subscription.state
+  subscription_id     = var.subscription.subscription_id
+  allow_tracing       = true
+}
+
+resource "azurerm_api_management_tag" "this" {
+  count             = var.api_management_tag == null ? 0 : 1 && var.api_management != null
+  api_management_id = azurerm_api_management.this.id
+  name              = var.api_management_tag.name
+}

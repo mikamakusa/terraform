@@ -15,6 +15,8 @@ variable "api_management" {
     condition     = contains(["Consumption", "Developer", "Basic", "Standard", "Premium"], var.api_management.sku_name)
     error_message = "Allowed values are \"Consumption\", \"Developer\", \"Basic\", \"Standard\", \"Premium\"."
   }
+
+  description = "Manages an API Management Service."
 }
 
 variable "api_management_api" {
@@ -65,7 +67,10 @@ variable "api_management_api" {
     version_description   = optional(string)
     source_api_id         = optional(string)
   })
+
   default = null
+
+  description = "Manages an API within an API Management Service."
 }
 
 variable "application_insights" {
@@ -90,7 +95,10 @@ variable "api_management_logger" {
     description = optional(string)
     resource_id = optional(string)
   })
+
   default = null
+
+  description = "Manages a Logger within an API Management Service."
 }
 
 variable "api_diagnostic" {
@@ -158,7 +166,10 @@ variable "api_diagnostic" {
       }))
     }))
   })
+
   default = null
+
+  description = "Manages a API Management Service API Diagnostics Logs."
 }
 
 variable "api_operation" {
@@ -169,14 +180,20 @@ variable "api_operation" {
     url_template = string
     description  = optional(string)
   })
+
   default = null
+
+  description = "Manages an API Operation within an API Management Service."
 }
 
 variable "operation_tag" {
   type = map(object({
     display_name = optional(string)
   }))
+
   default = {}
+
+  description = "Manages a API Management API Operation Tag."
 }
 
 variable "api_management_api_schema" {
@@ -187,7 +204,8 @@ variable "api_management_api_schema" {
     components   = optional(string)
     definitions  = optional(string)
   })
-  default = null
+  default     = null
+  description = "Manages an API Schema within an API Management Service."
 }
 
 variable "api_version_set" {
@@ -203,6 +221,7 @@ variable "api_version_set" {
     condition     = contains(["Header", "Query", "Segment"], var.api_version_set.versioning_scheme)
     error_message = "Allowed values are 'Header', 'Query' and 'Segment'."
   }
+  description = "Manages an API Version Set within an API Management Service."
 }
 
 variable "authorization_server" {
@@ -237,6 +256,7 @@ variable "authorization_server" {
     condition     = contains(["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT", "TRACE"], var.authorization_server.authorization_methods)
     error_message = "Allowed values are : \"DELETE\", \"GET\", \"HEAD\", \"OPTIONS\", \"PATCH\", \"POST\", \"PUT\", \"TRACE\"."
   }
+  description = "Manages an Authorization Server within an API Management Service."
 }
 
 variable "backend" {
@@ -281,6 +301,7 @@ variable "backend" {
     condition     = contains(["http", "soap"], var.backend.protocol)
     error_message = "Allowed values are : 'http' or 'soap'."
   }
+  description = "Manages a backend within an API Management Service."
 }
 
 variable "certificate" {
@@ -289,6 +310,8 @@ variable "certificate" {
     password = optional(string)
     data     = optional(string)
   })
+  description = "Manages an Certificate within an API Management Service."
+  default     = null
 }
 
 variable "keyvault_name" {
@@ -345,7 +368,8 @@ variable "custom_domain" {
       ssl_keyvault_identity_client_id = optional(string)
     }))
   })
-  default = null
+  default     = null
+  description = "Manages a API Management Custom Domain."
 }
 
 variable "gateway" {
@@ -360,6 +384,7 @@ variable "gateway" {
     }))
   })
   default = null
+  description = "Manages an API Management Gateway."
 }
 
 variable "gateway_host_name_configuration" {
@@ -395,3 +420,189 @@ variable "api_management_user" {
   default = null
 }
 
+variable "provider_aad" {
+  type = object({
+    allowed_tenants = list(string)
+    client_id       = string
+    client_secrets  = string
+  })
+  default = null
+}
+
+variable "provider_aadb2c" {
+  type = object({
+    allowed_tenant         = string
+    authority              = string
+    client_id              = string
+    client_secret          = string
+    signin_policy          = string
+    signin_tenant          = string
+    signup_policy          = string
+    password_reset_policy  = optional(string)
+    profile_editing_policy = optional(string)
+  })
+  default = null
+}
+
+variable "provider_facebook" {
+  type = object({
+    app_id     = string
+    app_secret = string
+  })
+  default = null
+}
+
+variable "provider_google" {
+  type = object({
+    client_id     = string
+    client_secret = string
+  })
+  default = null
+}
+
+variable "provider_microsoft" {
+  type = object({
+    client_id     = string
+    client_secret = string
+  })
+  default = null
+}
+
+variable "provider_twitter" {
+  type = object({
+    api_key        = string
+    api_secret_key = string
+  })
+  default = null
+}
+
+variable "named_value" {
+  type = object({
+    name          = string
+    display_value = string
+    value         = optional(string)
+    secret        = optional(bool)
+    tags          = optional(list(string))
+    value_from_key_vault = optional(object({
+      secret_id          = optional(string)
+      identity_client_id = optional(string)
+    }))
+  })
+  default = null
+}
+
+variable "notification_recipient_email" {
+  type = object({
+    email             = string
+    notification_type = string
+  })
+  default = null
+  validation {
+    condition     = contains(["AccountClosedPublisher", "BCC", "NewApplicationNotificationMessage", "NewIssuePublisherNotificationMessage", "PurchasePublisherNotificationMessage", "QuotaLimitApproachingPublisherNotificationMessage", "RequestPublisherNotificationMessage"], var.notification_recipient_email.notification_type)
+    error_message = "Value not allowed."
+  }
+}
+
+variable "notification_recipient_user" {
+  type = object({
+    user_id           = string
+    notification_type = string
+  })
+  default = null
+  validation {
+    condition     = contains(["AccountClosedPublisher", "BCC", "NewApplicationNotificationMessage", "NewIssuePublisherNotificationMessage", "PurchasePublisherNotificationMessage", "QuotaLimitApproachingPublisherNotificationMessage", "RequestPublisherNotificationMessage"], var.notification_recipient_email.notification_type)
+    error_message = "Value not allowed."
+  }
+}
+
+variable "openid_connect_provider" {
+  type = object({
+    name              = string
+    client_id         = string
+    client_secret     = string
+    display_name      = string
+    metadata_endpoint = string
+  })
+  default = null
+}
+
+variable "api_management_policy" {
+  type = object({
+    xml_content = optional(string)
+    xml_link    = optional(string)
+  })
+  default = null
+}
+
+variable "api_management_product" {
+  type = object({
+    display_name          = string
+    product_id            = string
+    published             = bool
+    subscription_required = optional(bool)
+    subscription_limit    = optional(number)
+    terms                 = optional(string)
+    approval_required     = optional(bool)
+  })
+  default = null
+}
+
+variable "product_policy" {
+  type = object({
+    xml_content = optional(string)
+    xml_link    = optional(string)
+  })
+  default = null
+}
+
+variable "product_tag" {
+  type = object({
+    name = string
+  })
+  default = null
+}
+
+variable "redis_cache" {
+  type    = string
+  default = null
+}
+
+variable "api_management_redis_cache" {
+  type = object({
+    name           = string
+    description    = optional(string)
+    cache_location = optional(string)
+  })
+  default = null
+}
+
+variable "global_schema" {
+  type = object({
+    schema_id = string
+    type      = string
+    value     = string
+  })
+  default = null
+  validation {
+    condition     = contains(["xml", "json"], var.global_schema.type)
+    error_message = "Allowed value are : 'xml' and 'json'."
+  }
+}
+
+variable "subscription" {
+  type = object({
+    display_name    = string
+    primary_key     = optional(string)
+    secondary_key   = optional(string)
+    state           = optional(string)
+    subscription_id = optional(string)
+  })
+  default = null
+}
+
+variable "api_management_tag" {
+  type = object({
+    name = string
+  })
+  default = null
+}

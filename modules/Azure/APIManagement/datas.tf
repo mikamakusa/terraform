@@ -24,3 +24,9 @@ data "azurerm_key_vault_certificate" "this" {
   key_vault_id = data.azurerm_key_vault.this.id
   name         = var.keyvault_certificate_name
 }
+
+data "azurerm_redis_cache" "this" {
+  count               = var.redis_cache == null ? 0 : 1
+  name                = var.redis_cache
+  resource_group_name = data.azurerm_resource_group.this.name
+}
