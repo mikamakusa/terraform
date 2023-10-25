@@ -1,5 +1,6 @@
 data "alicloud_zones" "this" {
-  available_resource_creation = ""
+  count                       = var.available_resource_creation ? 1 : 0
+  available_resource_creation = var.available_resource_creation
 }
 
 data "alicloud_vpcs" "this" {
