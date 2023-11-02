@@ -22,7 +22,10 @@ resource "alicloud_vswitch" "this" {
   count                = length(var.vswitch)
   vswitch_name         = lookup(var.vswitch[count.index], "vswitch_name")
   cidr_block           = lookup(var.vswitch[count.index], "cidr_block")
-  vpc_id               = var.vpcs ? data.alicloud_vpcs.this.vpcs.0.id : element(alicloud_vpc.this.*.id, lookup(var.vswitch[count.index], "vpc_id"))
+  vpc_id               = try(
+    data.alicloud_vpcs.this.vpcs.0.id,
+    element(alicloud_vpc.this.*.id, lookup(var.vswitch[count.index], "vpc_id"))
+  )
   description          = lookup(var.vswitch[count.index], "description")
   zone_id              = data.alicloud_zones.this.zones.0.id
   enable_ipv6          = lookup(var.vswitch[count.index], "enable_ipv6")
@@ -46,7 +49,10 @@ resource "alicloud_security_group" "this" {
   count               = length(var.security_group)
   name                = lookup(var.security_group[count.index], "name")
   description         = lookup(var.security_group[count.index], "description")
-  vpc_id              = var.vpcs ? data.alicloud_vpcs.this.vpcs.0.id : element(alicloud_vpc.this.*.id, lookup(var.security_group[count.index], "vpc_id"))
+  vpc_id              = try(
+    data.alicloud_vpcs.this.vpcs.0.id,
+    element(alicloud_vpc.this.*.id, lookup(var.security_group[count.index], "vpc_id"))
+  )
   resource_group_id   = var.resource_groups ? data.alicloud_resource_manager_resource_groups.this.groups.0.id : element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.security_group[count.index], "resource_group_id"))
   security_group_type = lookup(var.security_group[count.index], "security_group_type")
   inner_access_policy = lookup(var.security_group[count.index], "inner_access_policy")
@@ -98,7 +104,10 @@ resource "alicloud_db_instance" "this" {
   auto_renew                     = lookup(var.db_instance[count.index], "auto_renew")
   auto_renew_period              = lookup(var.db_instance[count.index], "auto_renew_period")
   zone_id                        = data.alicloud_zones.this.zones.0.id
-  vswitch_id                     = var.vswitches ? data.alicloud_vswitches.this.vswitches.0.id : element(alicloud_vswitch.this.*.id, lookup(var.db_instance[count.index], "vswitch_id"))
+  vswitch_id                     = try(
+    data.alicloud_vswitches.this.vswitches.0.id,
+    element(alicloud_vswitch.this.*.id, lookup(var.db_instance[count.index], "vswitch_id"))
+  )
   private_ip_address             = lookup(var.db_instance[count.index], "private_ip_address")
   security_ips                   = lookup(var.db_instance[count.index], "security_ips")
   db_instance_ip_array_name      = lookup(var.db_instance[count.index], "db_instance_ip_array_name")
@@ -117,7 +126,10 @@ resource "alicloud_db_instance" "this" {
       deploy = "terraform"
     }
   )
-  security_group_ids          = var.security_groups ? data.alicloud_security_groups.this.ids : element(alicloud_security_group.this.*.id, lookup(var.db_instance[count.index], "security_group_ids"))
+  security_group_ids          = try(
+    data.alicloud_security_groups.this.ids,
+    element(alicloud_security_group.this.*.id, lookup(var.db_instance[count.index], "security_group_ids"))
+  )
   maintain_time               = lookup(var.db_instance[count.index], "maintain_type")
   auto_upgrade_minor_version  = lookup(var.db_instance[count.index], "auto_upgrade_minor_version")
   upgrade_time                = lookup(var.db_instance[count.index], "upgrade_time")
@@ -128,7 +140,10 @@ resource "alicloud_db_instance" "this" {
   ssl_action                  = lookup(var.db_instance[count.index], "ssl_action")
   ssl_connection_string       = lookup(var.db_instance[count.index], "ssl_connection_string")
   tde_status                  = lookup(var.db_instance[count.index], "tde_status")
-  encryption_key              = var.kms_keys ? data.alicloud_kms_keys.this.keys.0.id : element(alicloud_kms_key.this.*.id, lookup(var.db_instance[count.index], "encrpytion_key_id"))
+  encryption_key              = try(
+    data.alicloud_kms_keys.this.keys.0.id,
+    element(alicloud_kms_key.this.*.id, lookup(var.db_instance[count.index], "encrpytion_key_id"))
+  )
   ca_type                     = lookup(var.db_instance[count.index], "ca_type")
   server_cert                 = lookup(var.db_instance[count.index], "server_cert")
   server_key                  = lookup(var.db_instance[count.index], "server_key")
@@ -147,7 +162,10 @@ resource "alicloud_db_instance" "this" {
   tcp_connection_type         = lookup(var.db_instance[count.index], "tcp_connection_type")
   category                    = lookup(var.db_instance[count.index], "category")
   babelfish_port              = lookup(var.db_instance[count.index], "babelfish_port")
-  vpc_id                      = var.vpcs ? data.alicloud_vpcs.this.vpcs.0.id : element(alicloud_vpc.this.*.id, lookup(var.db_instance[count.index], "vpc_id"))
+  vpc_id                      = try(
+    data.alicloud_vpcs.this.vpcs.0.id,
+    element(alicloud_vpc.this.*.id, lookup(var.db_instance[count.index], "vpc_id"))
+  )
   effective_time              = lookup(var.db_instance[count.index], "effective_time")
 
   dynamic "parameters" {
@@ -200,7 +218,10 @@ resource "alicloud_slb_load_balancer" "this" {
   internet_charge_type = lookup(var.load_balancer[count.index], "internet_charge_type")
   instance_charge_type = lookup(var.load_balancer[count.index], "instance_charge_type")
   bandwidth            = lookup(var.load_balancer[count.index], "bandwidth")
-  vswitch_id           = var.vswitches ? data.alicloud_vswitches.this.vswitches.0.id : element(alicloud_vswitch.this.*.id, lookup(var.load_balancer[count.index], "vswitch_id"))
+  vswitch_id           = try(
+    data.alicloud_vswitches.this.vswitches.0.id,
+    element(alicloud_vswitch.this.*.id, lookup(var.load_balancer[count.index], "vswitch_id"))
+  )
   load_balancer_spec   = lookup(var.load_balancer[count.index], "load_balancer_spec")
   tags = merge(
     var.tags,
@@ -214,7 +235,10 @@ resource "alicloud_slb_load_balancer" "this" {
   delete_protection              = lookup(var.load_balancer[count.index], "delete_protection")
   address_ip_version             = lookup(var.load_balancer[count.index], "address_ip_version")
   address                        = lookup(var.load_balancer[count.index], "address")
-  resource_group_id              = var.resource_groups ? data.alicloud_resource_manager_resource_groups.this.groups.0.id : element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.load_balancer[count.index], "resource_group_id"))
+  resource_group_id              = try(
+    data.alicloud_resource_manager_resource_groups.this.groups.0.id,
+    element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.load_balancer[count.index], "resource_group_id"))
+  )
   modification_protection_reason = lookup(var.load_balancer[count.index], "modification_protection_reason")
   modification_protection_status = lookup(var.load_balancer[count.index], "modification_protection_status")
   status                         = lookup(var.load_balancer[count.index], "status")
@@ -228,10 +252,18 @@ resource "alicloud_ess_scaling_group" "this" {
   desired_capacity                         = lookup(var.ess_scaling_group[count.index], "desired_capacity")
   scaling_group_name                       = lookup(var.ess_scaling_group[count.index], "scaling_group_name")
   default_cooldown                         = lookup(var.ess_scaling_group[count.index], "default_cooldown")
-  vswitch_ids                              = var.vswitches ? data.alicloud_vswitches.this.ids : lookup(alicloud_vswitch.this.*.id, lookup(var.ess_scaling_group[count.index], "vswitch_ids"))
+  vswitch_ids                              = try(
+    data.alicloud_vswitches.this.ids, lookup(alicloud_vswitch.this.*.id,
+    lookup(var.ess_scaling_group[count.index], "vswitch_ids")))
   removal_policies                         = lookup(var.ess_scaling_group[count.index], "removal_policies")
-  db_instance_ids                          = var.db_instances ? data.alicloud_db_instances.this.ids : element(alicloud_db_instance.this.*.id, lookup(var.ess_scaling_group[count.index], "db_instance_ids"))
-  loadbalancer_ids                         = var.load_balancers ? data.alicloud_slb_load_balancers.this.ids : element(alicloud_slb_load_balancer.this.*.id, lookup(var.ess_scaling_group[count.index], "loadbalancer_ids"))
+  db_instance_ids                          = try(
+    data.alicloud_db_instances.this.ids,
+    element(alicloud_db_instance.this.*.id, lookup(var.ess_scaling_group[count.index], "db_instance_ids"))
+  )
+  loadbalancer_ids                         = try(
+    data.alicloud_slb_load_balancers.this.ids,
+    element(alicloud_slb_load_balancer.this.*.id, lookup(var.ess_scaling_group[count.index], "loadbalancer_ids"))
+  )
   multi_az_policy                          = lookup(var.ess_scaling_group[count.index], "multi_az_policy")
   on_demand_percentage_above_base_capacity = lookup(var.ess_scaling_group[count.index], "on_demand_percentage_above_base_capacity")
   on_demand_base_capacity                  = lookup(var.ess_scaling_group[count.index], "on_demand_base_capacity")
@@ -252,10 +284,16 @@ resource "alicloud_ess_scaling_group" "this" {
 
 resource "alicloud_ess_scaling_configuration" "this" {
   count             = length(var.scaling_configuration)
-  scaling_group_id  = var.ess_scaling_groups ? data.alicloud_ess_scaling_groups.this.groups.0.id : element(alicloud_ess_scaling_group.this.*.id, lookup(var.ess_scaling_group[count.index], "scaling_group_id"))
+  scaling_group_id  = try(
+    data.alicloud_ess_scaling_groups.this.groups.0.id,
+    element(alicloud_ess_scaling_group.this.*.id, lookup(var.ess_scaling_group[count.index], "scaling_group_id"))
+  )
   image_id          = data.alicloud_images.this.images[0].id
   instance_type     = data.alicloud_instance_types.this.instance_types[0].id
-  security_group_id = var.security_groups ? data.alicloud_security_groups.this.groups.0.id : element(alicloud_security_group.this.*.id, lookup(var.scaling_configuration[count.index], "security_group_id"))
+  security_group_id = try(
+    data.alicloud_security_groups.this.groups.0.id,
+    element(alicloud_security_group.this.*.id, lookup(var.scaling_configuration[count.index], "security_group_id"))
+  )
   force_delete      = true
   active            = true
   tags = merge(
@@ -269,12 +307,21 @@ resource "alicloud_ess_scaling_configuration" "this" {
 
 resource "alicloud_cs_managed_kubernetes" "this" {
   count                        = length(var.managed_kubernetes)
-  worker_vswitch_ids           = var.vswitches ? data.alicloud_vswitches.this.ids : element(alicloud_vswitch.this.*.id, lookup(var.managed_kubernetes[count.index], "worker_vswitch_ids"))
+  worker_vswitch_ids           = try(
+    data.alicloud_vswitches.this.ids,
+    element(alicloud_vswitch.this.*.id, lookup(var.managed_kubernetes[count.index], "worker_vswitch_ids"))
+  )
   name                         = lookup(var.managed_kubernetes[count.index], "name")
   timezone                     = lookup(var.managed_kubernetes[count.index], "timezone")
-  resource_group_id            = var.resource_groups ? data.alicloud_resource_manager_resource_groups.this.groups.0.id : element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.managed_kubernetes[count.index], "resource_group_id"))
+  resource_group_id            = try(
+    data.alicloud_resource_manager_resource_groups.this.groups.0.id,
+    element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.managed_kubernetes[count.index], "resource_group_id"))
+  )
   version                      = lookup(var.managed_kubernetes[count.index], "version")
-  security_group_id            = var.security_groups ? data.alicloud_security_groups.this.groups.0.id : element(alicloud_security_group.this.*.id, lookup(var.managed_kubernetes[count.index], "security_group_id"))
+  security_group_id            = try(
+    data.alicloud_security_groups.this.groups.0.id,
+    element(alicloud_security_group.this.*.id, lookup(var.managed_kubernetes[count.index], "security_group_id"))
+  )
   is_enterprise_security_group = lookup(var.managed_kubernetes[count.index], "is_enterprise_security_group")
   proxy_mode                   = lookup(var.managed_kubernetes[count.index], "proxy_mode")
   cluster_domain               = lookup(var.managed_kubernetes[count.index], "cluster_domain")
@@ -292,7 +339,10 @@ resource "alicloud_cs_managed_kubernetes" "this" {
     }
   )
   cluster_spec                 = lookup(var.managed_kubernetes[count.index], "cluster_spec")
-  encryption_provider_key      = var.kms_keys ? data.alicloud_kms_keys.this.keys.0.id : element(alicloud_kms_key.this.*.id, lookup(var.managed_kubernetes[count.index], "encryption_provider_key_id"))
+  encryption_provider_key      = try(
+    data.alicloud_kms_keys.this.keys.0.id,
+    element(alicloud_kms_key.this.*.id, lookup(var.managed_kubernetes[count.index], "encryption_provider_key_id"))
+  )
   load_balancer_spec           = lookup(var.managed_kubernetes[count.index], "load_balancer_spec")
   control_plane_log_ttl        = lookup(var.managed_kubernetes[count.index], "control_plane_log_ttl")
   control_plane_log_components = lookup(var.managed_kubernetes[count.index], "control_plane_log_components")
@@ -321,7 +371,10 @@ resource "alicloud_cs_managed_kubernetes" "this" {
   dynamic "worker_data_disks" {
     for_each = lookup(var.managed_kubernetes[count.index], "worker_data_disks") == null ? [] : ["worker_data_disks"]
     content {
-      kms_key_id  = var.kms_keys ? data.alicloud_kms_keys.this.keys.0.id : element(alicloud_kms_key.this.*.id, lookup(worker_data_disks.value, "kms_key_id"))
+      kms_key_id  = try(
+        data.alicloud_kms_keys.this.keys.0.id,
+        element(alicloud_kms_key.this.*.id, lookup(worker_data_disks.value, "kms_key_id"))
+      )
       device      = lookup(worker_data_disks.value, "device")
       name        = lookup(worker_data_disks.value, "name")
       snapshot_id = lookup(worker_data_disks.value, "snapshot_id")
@@ -372,13 +425,25 @@ resource "alicloud_cs_edge_kubernetes" "this" {
   count                        = length(var.edge_kubernetes)
   worker_instance_types        = [data.alicloud_instance_types.this.instance_types.0.id]
   worker_number                = lookup(var.edge_kubernetes[count.index], "worker_number")
-  worker_vswitch_ids           = var.vswitches ? data.alicloud_vswitches.this.ids : element(alicloud_vswitch.this.*.id, lookup(var.edge_kubernetes[count.index], "vswitch_ids"))
+  worker_vswitch_ids           = try(
+    data.alicloud_vswitches.this.ids,
+    element(alicloud_vswitch.this.*.id, lookup(var.edge_kubernetes[count.index], "vswitch_ids"))
+  )
   name                         = lookup(var.edge_kubernetes[count.index], "name")
   version                      = lookup(var.edge_kubernetes[count.index], "version")
-  security_group_id            = var.security_groups ? data.alicloud_security_groups.this.groups.0.id : element(alicloud_security_group.this.*.id, lookup(var.edge_kubernetes[count.index], "security_group_id"))
+  security_group_id            = try(
+    data.alicloud_security_groups.this.groups.0.id,
+    element(alicloud_security_group.this.*.id, lookup(var.edge_kubernetes[count.index], "security_group_id"))
+  )
   is_enterprise_security_group = lookup(var.edge_kubernetes[count.index], "is_enterprise_security_group")
-  rds_instances                = var.db_instances ? data.alicloud_db_instances.this.ids : element(alicloud_db_instance.this.*.id, lookup(var.edge_kubernetes[count.index], "db_instance_ids"))
-  resource_group_id            = var.resource_groups ? data.alicloud_resource_manager_resource_groups.this.groups.0.id : element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.edge_kubernetes[count.index], "resource_group_id"))
+  rds_instances                = try(
+    data.alicloud_db_instances.this.ids,
+    element(alicloud_db_instance.this.*.id, lookup(var.edge_kubernetes[count.index], "db_instance_ids"))
+  )
+  resource_group_id            = try(
+    data.alicloud_resource_manager_resource_groups.this.groups.0.id,
+    element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.edge_kubernetes[count.index], "resource_group_id"))
+  )
   deletion_protection          = lookup(var.edge_kubernetes[count.index], "deletion_protection")
   force_update                 = lookup(var.edge_kubernetes[count.index], "force_update")
   tags = merge(
@@ -451,7 +516,10 @@ resource "alicloud_cs_kubernetes_autoscaler" "this" {
   dynamic "nodepools" {
     for_each = lookup(var.kubernetes_autoscaler[count.index], "nodepools")
     content {
-      id     = var.ess_scaling_configurations ? data.alicloud_ess_scaling_configurations.this.configurations.0.id : element(alicloud_ess_scaling_configuration.this.*.id, lookup(nodepools.value, "id"))
+      id     = try(
+        data.alicloud_ess_scaling_configurations.this.configurations.0.id,
+        element(alicloud_ess_scaling_configuration.this.*.id, lookup(nodepools.value, "id"))
+      )
       labels = lookup(nodepools.value, "labels")
       taints = lookup(nodepools.value, "taints")
     }
@@ -467,7 +535,10 @@ resource "alicloud_cs_kubernetes_node_pool" "this" {
   ), lookup(var.node_pool[count.index], "cluster_id"))
   instance_types                = [data.alicloud_instance_types.this.instance_types.0.id]
   name                          = lookup(var.node_pool[count.index], "name")
-  vswitch_ids                   = var.vswitches ? data.alicloud_vswitches.this.vswitches : element(alicloud_vswitch.this.*.id, lookup(var.node_pool[count.index], "vswitch_ids"))
+  vswitch_ids                   = try(
+    data.alicloud_vswitches.this.vswitches,
+    element(alicloud_vswitch.this.*.id, lookup(var.node_pool[count.index], "vswitch_ids"))
+  )
   password                      = sensitive(lookup(var.node_pool[count.index], "password"))
   key_name                      = lookup(var.node_pool[count.index], "key_name")
   desired_size                  = lookup(var.node_pool[count.index], "desired_state")
@@ -482,7 +553,10 @@ resource "alicloud_cs_kubernetes_node_pool" "this" {
   auto_renew_period             = lookup(var.node_pool[count.index], "auto_renew_period")
   install_cloud_monitor         = lookup(var.node_pool[count.index], "install_cloud_monitor")
   unschedulable                 = lookup(var.node_pool[count.index], "unschedulable")
-  resource_group_id             = var.resource_groups ? data.alicloud_resource_manager_resource_groups.this.groups.0.id : element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.node_pool[count.index], "resource_group_id"))
+  resource_group_id             = try(
+    data.alicloud_resource_manager_resource_groups.this.groups.0.id,
+    element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.node_pool[count.index], "resource_group_id"))
+  )
   internet_charge_type          = lookup(var.node_pool[count.index], "internet_charge_type")
   internet_max_bandwidth_out    = lookup(var.node_pool[count.index], "internet_max_bandwidth_out")
   spot_strategy                 = lookup(var.node_pool[count.index], "spot_strategy")
@@ -511,7 +585,10 @@ resource "alicloud_cs_kubernetes_node_pool" "this" {
       size              = lookup(data_disks, "size")
       encrypted         = lookup(data_disks, "encrypted")
       performance_level = lookup(data_disks, "performance_level")
-      kms_key_id        = var.kms_keys ? data.alicloud_kms_keys.this.keys.0.id : element(alicloud_kms_key.this.*.id, lookup(data_disks, "kms_key_id"))
+      kms_key_id        = try(
+        data.alicloud_resource_manager_resource_groups.this.groups.0.id,
+        element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.node_pool[count.index], "resource_group_id"))var.kms_keys ? data.alicloud_kms_keys.this.keys.0.id : element(alicloud_kms_key.this.*.id, lookup(data_disks, "kms_key_id"))
+      )
       device            = lookup(data_disks, "device")
       name              = lookup(data_disks, "name")
     }
@@ -641,10 +718,16 @@ resource "alicloud_cs_kubernetes_permissions" "this" {
 
 resource "alicloud_cs_serverless_kubernetes" "this" {
   count                          = length(var.serverless_kubernetes)
-  vpc_id                         = var.vpcs ? data.alicloud_vpcs.this.vpcs.0.id : element(alicloud_vpc.this.*.id, lookup(var.serverless_kubernetes[count.index], "vpc_id"))
+  vpc_id                         = try(
+    data.alicloud_vpcs.this.vpcs.0.id,
+    element(alicloud_vpc.this.*.id, lookup(var.serverless_kubernetes[count.index], "vpc_id"))
+  )
   name                           = lookup(var.serverless_kubernetes[count.index], "name")
   version                        = lookup(var.serverless_kubernetes[count.index], "version")
-  vswitch_ids                    = var.vswitches ? data.alicloud_vswitches.this.ids : element(alicloud_vswitch.this.*.id, lookup(var.serverless_kubernetes[count.index], "vswitch_ids"))
+  vswitch_ids                    = try(
+    data.alicloud_vswitches.this.ids,
+    element(alicloud_vswitch.this.*.id, lookup(var.serverless_kubernetes[count.index], "vswitch_ids"))
+  )
   new_nat_gateway                = lookup(var.serverless_kubernetes[count.index], "new_nat_gateway")
   endpoint_public_access_enabled = lookup(var.serverless_kubernetes[count.index], "endpoint_public_access_enabled")
   service_discovery_types        = lookup(var.serverless_kubernetes[count.index], "service_discovery_types")
@@ -661,8 +744,14 @@ resource "alicloud_cs_serverless_kubernetes" "this" {
   client_cert                    = lookup(var.serverless_kubernetes[count.index], "client_cert")
   client_key                     = lookup(var.serverless_kubernetes[count.index], "client_key")
   cluster_ca_cert                = lookup(var.serverless_kubernetes[count.index], "cluster_ca_cert")
-  security_group_id              = var.security_groups ? data.alicloud_security_groups.this.groups.0.id : element(alicloud_security_group.this.*.id, lookup(var.serverless_kubernetes[count.index], "security_group_id"))
-  resource_group_id              = var.resource_groups ? data.alicloud_resource_manager_resource_groups.this.groups.0.id : element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.serverless_kubernetes[count.index], "resource_group_id"))
+  security_group_id              = try(
+    data.alicloud_security_groups.this.groups.0.id,
+    element(alicloud_security_group.this.*.id, lookup(var.serverless_kubernetes[count.index], "security_group_id"))
+  )
+  resource_group_id              = try(
+    data.alicloud_resource_manager_resource_groups.this.groups.0.id,
+    element(alicloud_resource_manager_resource_group.this.*.id, lookup(var.serverless_kubernetes[count.index], "resource_group_id"))
+  )
   load_balancer_spec             = lookup(var.serverless_kubernetes[count.index], "load_balancer_spec")
   time_zone                      = lookup(var.serverless_kubernetes[count.index], "time_zone")
   zone_id                        = data.alicloud_zones.this.zones[0].id
