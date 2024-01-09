@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="90f4c50d-8c85-4d01-9bac-0544f688115d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/Azure/APIManagement/datas.tf" beforeDir="false" afterPath="$PROJECT_DIR$/modules/Azure/APIManagement/datas.tf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/Azure/APIManagement/main.tf" beforeDir="false" afterPath="$PROJECT_DIR$/modules/Azure/APIManagement/main.tf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/Azure/APIManagement/vars.tf" beforeDir="false" afterPath="$PROJECT_DIR$/modules/Azure/APIManagement/vars.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/Azure/Container/AKS/main.tf" beforeDir="false" afterPath="$PROJECT_DIR$/modules/Azure/Container/AKS/main.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modules/Azure/Container/AKS/vars.tf" beforeDir="false" afterPath="$PROJECT_DIR$/modules/Azure/Container/AKS/vars.tf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +37,8 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/mike/Documents/perso/pulumi&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/mike/Téléchargements/terraform-233.13309.zip&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -45,9 +48,15 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/modules/Alicloud/ThreatDetection" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType">
       <module name="terraform" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -64,79 +73,6 @@
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="terraform" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="terraform" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
-      <module name="terraform" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="terraform" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="Python.FlaskServer">
-      <module name="terraform" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="launchJavascriptDebuger" value="false" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="Tox" factoryName="Tox">
-      <module name="terraform" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
     </configuration>
   </component>
@@ -161,6 +97,59 @@
       <workItem from="1697008878379" duration="4225000" />
       <workItem from="1697018846282" duration="109000" />
       <workItem from="1697026109645" duration="6843000" />
+      <workItem from="1697094162406" duration="594000" />
+      <workItem from="1697113222565" duration="1139000" />
+      <workItem from="1697179608948" duration="5824000" />
+      <workItem from="1697203226954" duration="1662000" />
+      <workItem from="1697456844234" duration="5792000" />
+      <workItem from="1697562609156" duration="8454000" />
+      <workItem from="1697617357058" duration="11609000" />
+      <workItem from="1697662954607" duration="171000" />
+      <workItem from="1697702676268" duration="4523000" />
+      <workItem from="1697712266776" duration="1562000" />
+      <workItem from="1697785302862" duration="2940000" />
+      <workItem from="1698047831176" duration="438000" />
+      <workItem from="1698049926672" duration="47000" />
+      <workItem from="1698049996783" duration="8373000" />
+      <workItem from="1698074260714" duration="6717000" />
+      <workItem from="1698132024958" duration="1589000" />
+      <workItem from="1698157793519" duration="5544000" />
+      <workItem from="1698219044643" duration="58132000" />
+      <workItem from="1698388965060" duration="19079000" />
+      <workItem from="1698657472994" duration="20063000" />
+      <workItem from="1698740467912" duration="6878000" />
+      <workItem from="1698946958080" duration="10962000" />
+      <workItem from="1699261040734" duration="22418000" />
+      <workItem from="1699348911867" duration="12008000" />
+      <workItem from="1699431501931" duration="8610000" />
+      <workItem from="1699447916127" duration="4873000" />
+      <workItem from="1699535103332" duration="2329000" />
+      <workItem from="1699538138800" duration="1820000" />
+      <workItem from="1699865883953" duration="50000" />
+      <workItem from="1699865950494" duration="8678000" />
+      <workItem from="1699950687344" duration="71061000" />
+      <workItem from="1700261269610" duration="3382000" />
+      <workItem from="1700411514011" duration="4182000" />
+      <workItem from="1700428703049" duration="6182000" />
+      <workItem from="1700463843558" duration="1035000" />
+      <workItem from="1700510245848" duration="4788000" />
+      <workItem from="1700659919111" duration="5335000" />
+      <workItem from="1701158067100" duration="2046000" />
+      <workItem from="1701194828144" duration="3842000" />
+      <workItem from="1701213987072" duration="4424000" />
+      <workItem from="1701295605575" duration="1602000" />
+      <workItem from="1701417570068" duration="15178000" />
+      <workItem from="1701711852301" duration="1290000" />
+      <workItem from="1701730967563" duration="1855000" />
+      <workItem from="1702317412601" duration="1097000" />
+      <workItem from="1702415273828" duration="7360000" />
+      <workItem from="1702489073836" duration="4100000" />
+      <workItem from="1704299785871" duration="1495000" />
+      <workItem from="1704312047625" duration="85000" />
+      <workItem from="1704312449475" duration="4070000" />
+      <workItem from="1704400885614" duration="7123000" />
+      <workItem from="1704480055828" duration="2643000" />
+      <workItem from="1704807460326" duration="659000" />
     </task>
     <servers />
   </component>

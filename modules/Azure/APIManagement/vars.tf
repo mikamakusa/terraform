@@ -4,12 +4,14 @@ variable "resource_group_name" {
 }
 
 variable "api_management" {
-  type = object({
+  type = list(map(object({
+    id              = number
     name            = string
     publisher_email = string
     publisher_name  = string
     sku_name        = string
-  })
+  })))
+  default = []
 
   validation {
     condition     = contains(["Consumption", "Developer", "Basic", "Standard", "Premium"], var.api_management.sku_name)
@@ -20,45 +22,47 @@ variable "api_management" {
 }
 
 variable "api_management_api" {
-  type = object({
-    name         = string
-    revision     = string
-    api_type     = optional(string)
-    display_name = optional(string)
-    path         = optional(string)
-    protocols    = optional(list(string))
-    contact = optional(object({
+  type = list(map(object({
+    id                = number
+    api_management_id = any
+    name              = string
+    revision          = string
+    api_type          = optional(string)
+    display_name      = optional(string)
+    path              = optional(string)
+    protocols         = optional(list(string))
+    contact = optional(list(object({
       email = optional(string)
       name  = optional(string)
       url   = optional(string)
-    }))
+    })), [])
     description = optional(string)
-    import = optional(object({
+    import = optional(list(object({
       content_format = optional(string)
       content_value  = optional(string)
-      wsdl_selector = optional(object({
+      wsdl_selector = optional(list(object({
         service_name  = optional(string)
         endpoint_name = optional(string)
-      }))
-    }))
+      })), [])
+    })), [])
     license = optional(object({
       name = optional(string)
       url  = optional(string)
-    }))
-    oauth2_authorization = optional(object({
+    }), [])
+    oauth2_authorization = optional(list(object({
       authorization_server_name = optional(string)
       scope                     = optional(string)
-    }))
-    openid_authentication = optional(object({
+    })), [])
+    openid_authentication = optional(list(object({
       openid_provider_name         = optional(string)
       bearer_token_sending_methods = optional(list(string))
-    }))
+    })), [])
     service_url           = optional(string)
     subscription_required = optional(string)
-    subscription_key_parameter_names = optional(object({
+    subscription_key_parameter_names = optional(list(object({
       header = optional(string)
       query  = optional(string)
-    }))
+    })), [])
     subscription_required = optional(bool)
     terms_of_service_url  = optional(string)
     version               = optional(string)
@@ -66,10 +70,8 @@ variable "api_management_api" {
     revision_description  = optional(string)
     version_description   = optional(string)
     source_api_id         = optional(string)
-  })
-
-  default = null
-
+  })))
+  default     = []
   description = "Manages an API within an API Management Service."
 }
 
@@ -89,115 +91,160 @@ variable "event_hub_namespace" {
 }
 
 variable "api_management_logger" {
-  type = object({
-    name        = string
-    buffered    = optional(string)
-    description = optional(string)
-    resource_id = optional(string)
-  })
+  type = list(map(object({
+    id                = number
+    api_management_id = any
+    name              = string
+    buffered          = optional(string)
+    description       = optional(string)
+    resource_id       = optional(string)
+    event_hub = optional(list(object({
+      connection_string = string
+      name              = string
+    })), [])
+    application_insights = optional(list(object({
+      instrumentation_key = string
+    })), [])
+  })))
 
-  default = null
+  default = []
 
   description = "Manages a Logger within an API Management Service."
 }
 
 variable "api_diagnostic" {
-  type = object({
-    identifier            = string
-    always_log_errors     = optional(bool)
-    log_client_ip         = optional(string)
-    sampling_percentage   = optional(string)
-    verbosity             = optional(string)
-    operation_name_format = optional(string)
-    backend_request = optional(object({
+  type = list(map(object({
+    id                       = number
+    api_management_logger_id = any
+    api_management_id        = any
+    identifier               = string
+    always_log_errors        = optional(bool)
+    log_client_ip            = optional(string)
+    sampling_percentage      = optional(string)
+    verbosity                = optional(string)
+    operation_name_format    = optional(string)
+    backend_request = optional(list(object({
       body_bytes     = optional(number)
       headers_to_log = optional(list(string))
-      data_masking = optional(object({
-        query_params = optional(object({
+      data_masking = optional(list(object({
+        query_params = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-        headers = optional(object({
+        })), [])
+        headers = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-      }))
-    }))
-    backend_response = optional(object({
+        })), [])
+      })), [])
+    })), [])
+    backend_response = optional(list(object({
       body_bytes     = optional(number)
       headers_to_log = optional(list(string))
-      data_masking = optional(object({
-        query_params = optional(object({
+      data_masking = optional(list(object({
+        query_params = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-        headers = optional(object({
+        })), [])
+        headers = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-      }))
-    }))
-    frontend_request = optional(object({
+        })), [])
+      })), [])
+    })), [])
+    frontend_request = optional(list(object({
       body_bytes     = optional(number)
       headers_to_log = optional(list(string))
-      data_masking = optional(object({
-        query_params = optional(object({
+      data_masking = optional(list(object({
+        query_params = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-        headers = optional(object({
+        })), [])
+        headers = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-      }))
-    }))
-    frontend_response = optional(object({
+        })), [])
+      })), [])
+    })), [])
+    frontend_response = optional(list(object({
       body_bytes     = optional(number)
       headers_to_log = optional(list(string))
-      data_masking = optional(object({
-        query_params = optional(object({
+      data_masking = optional(list(object({
+        query_params = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-        headers = optional(object({
+        })), [])
+        headers = optional(list(object({
           mode  = optional(string)
           value = optional(string)
-        }))
-      }))
-    }))
-  })
+        })), [])
+      })), [])
+    })), [])
+  })))
 
-  default = null
+  default = []
 
   description = "Manages a API Management Service API Diagnostics Logs."
 }
 
 variable "api_operation" {
-  type = object({
-    operation_id = string
-    display_name = string
-    method       = string
-    url_template = string
-    description  = optional(string)
-  })
+  type = list(map(object({
+    id                = number
+    api_management_id = any
+    operation_id      = string
+    display_name      = string
+    method            = string
+    url_template      = string
+    description       = optional(string)
+  })))
 
-  default = null
+  default = []
 
   description = "Manages an API Operation within an API Management Service."
 }
 
-variable "operation_tag" {
-  type = map(object({
-    display_name = optional(string)
-  }))
+variable "api_operation_policy" {
+  type = list(map(object({
+    id                = number
+    api_management_id = any
+  })))
+  default = []
+}
 
-  default = {}
+variable "operation_tag" {
+  type = list(map(object({
+    id               = number
+    api_operation_id = any
+    display_name     = string
+    name             = string
+  })))
+
+  default = []
 
   description = "Manages a API Management API Operation Tag."
 }
 
+variable "api_policy" {
+  type = list(map(object({
+    id                = number
+    management_api_id = any
+  })))
+  default = []
+}
+
+variable "api_release" {
+  type = list(map(object({
+    id                = number
+    management_api_id = any
+    name              = string
+    notes             = optional(string)
+  })))
+  default = []
+}
+
 variable "api_management_api_schema" {
   type = object({
+    id = number
+    api_management_id = any
     schema_id    = string
     content_type = string
     value        = optional(string)
@@ -383,7 +430,7 @@ variable "gateway" {
       region   = optional(string)
     }))
   })
-  default = null
+  default     = null
   description = "Manages an API Management Gateway."
 }
 

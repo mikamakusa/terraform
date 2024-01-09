@@ -548,11 +548,6 @@ resource "azurerm_role_assignment" "this" {
   scope                            = each.value.scope
   role_definition_name             = each.key
   skip_service_principal_aad_check = each.value.skip_service_principal_aad_check
-
-  dynamic "lifecycle" {
-    for_each = ""
-    content {}
-  }
 }
 
 resource "azurerm_user_assigned_identity" "this" {

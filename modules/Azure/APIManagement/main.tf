@@ -1,144 +1,160 @@
 resource "azurerm_api_management" "this" {
-  count               = var.api_management == null ? 0 : 1
+  count               = length(var.api_management)
   location            = data.azurerm_resource_group.this.location
-  name                = join("-", [var.api_management.name, "api_management"])
-  publisher_email     = var.api_management.publisher_email
-  publisher_name      = var.api_management.publisher_name
+  name                = join("-", [lookup(var.api_management[count.index], "name"), "api_management"])
+  publisher_email     = lookup(var.api_management[count.index], "publisher_email")
+  publisher_name      = lookup(var.api_management[count.index], "publisher_name")
   resource_group_name = data.azurerm_resource_group.this.name
-  sku_name            = var.api_management.sku_name
+  sku_name            = lookup(var.api_management[count.index], "sku_name")
 }
 
 resource "azurerm_api_management_api" "this" {
-  count                 = var.api_management != null && var.api_management_api == null ? 0 : 1
-  api_management_name   = azurerm_api_management.this.name
-  name                  = var.api_management_api.name
+  count = length(var.api_management_api) == "0" ? "0" : length(var.api_management)
+  api_management_name = try(
+    element(azurerm_api_management.this.*.id, lookup(var.api_management_api[count.index], "api_management_id"))
+  )
+  name                  = lookup(var.api_management_api[count.index], "name")
   resource_group_name   = data.azurerm_resource_group.this.name
-  revision              = var.api_management_api.revision
-  api_type              = var.api_management_api.api_type
-  display_name          = var.api_management_api.display_name
-  path                  = var.api_management_api.path
-  protocols             = var.api_management_api.protocols
-  description           = var.api_management_api.description
-  service_url           = var.api_management_api.service_url
-  subscription_required = var.api_management_api.subscription_required
-  terms_of_service_url  = var.api_management_api.terms_of_service_url
-  version               = var.api_management_api.version
-  version_set_id        = var.api_management_api.version_set_id
-  revision_description  = var.api_management_api.revision_description
-  version_description   = var.api_management_api.version_description
-  source_api_id         = var.api_management_api.source_api_id
+  revision              = lookup(var.api_management_api[count.index], "revision")
+  api_type              = lookup(var.api_management_api[count.index], "api_type")
+  display_name          = lookup(var.api_management_api[count.index], "display_name")
+  path                  = lookup(var.api_management_api[count.index], "path")
+  protocols             = lookup(var.api_management_api[count.index], "protocols")
+  description           = lookup(var.api_management_api[count.index], "description")
+  service_url           = lookup(var.api_management_api[count.index], "service_url")
+  subscription_required = lookup(var.api_management_api[count.index], "subscription_required")
+  terms_of_service_url  = lookup(var.api_management_api[count.index], "terms_of_service_url")
+  version               = lookup(var.api_management_api[count.index], "version")
+  version_set_id        = lookup(var.api_management_api[count.index], "version_set_id")
+  revision_description  = lookup(var.api_management_api[count.index], "revision_description")
+  version_description   = lookup(var.api_management_api[count.index], "version_description")
+  source_api_id         = lookup(var.api_management_api[count.index], "source_api_id")
 
   dynamic "subscription_key_parameter_names" {
-    for_each = var.api_management_api.subscription_key_parameter_names == null ? [] : [""]
+    for_each = lookup(var.api_management_api[count.index], "subscription_key_parameter_names") == null ? [] : ["subscription_key_parameter_names"]
     content {
-      header = var.api_management_api.subscription_key_parameter_names.header
-      query  = var.api_management_api.subscription_key_parameter_names.query
+      header = lookup(subscription_key_parameter_names.value, "header")
+      query  = lookup(subscription_key_parameter_names.value, "query")
     }
   }
 
   dynamic "import" {
-    for_each = var.api_management_api.import == null ? [] : [""]
+    for_each = lookup(var.api_management_api[count.index], "import") == null ? [] : ["import"]
     content {
-      content_format = var.api_management_api.import.content_format
-      content_value  = var.api_management_api.import.content_value
+      content_format = lookup(import.value, "content_format")
+      content_value  = lookup(import.value, "content_value")
 
       dynamic "wsdl_selector" {
-        for_each = var.api_management_api.import == null ? 0 : var.api_management_api.import.wsdl_selector
+        for_each = lookup(import.value, "wsdl_selector") == null ? [] : ["wsdl_selector"]
         content {
-          endpoint_name = var.api_management_api.import.wsdl_selector.endpoint_name
-          service_name  = var.api_management_api.import.wsdl_selector.service_name
+          endpoint_name = lookup(wsdl_selector.value, "endpoint_name")
+          service_name  = lookup(wsdl_selector.value, "service_name")
         }
       }
     }
   }
 
   dynamic "license" {
-    for_each = var.api_management_api.license == null ? [] : [""]
+    for_each = lookup(var.api_management_api[count.index], "license") == null ? [] : ["license"]
     content {
-      name = var.api_management_api.license.name
-      url  = var.api_management_api.license.url
+      name = lookup(license.value, "name")
+      url  = lookup(license.value, "url")
     }
   }
 
   dynamic "oauth2_authorization" {
-    for_each = var.api_management_api.oauth2_authorization == null ? [] : [""]
+    for_each = lookup(var.api_management_api[count.index], "oauth2_authorization") == null ? [] : ["oauth2_authorization"]
     content {
-      authorization_server_name = var.api_management_api.oauth2_authorization.authorization_server_name
-      scope                     = var.api_management_api.oauth2_authorization.scope
+      authorization_server_name = lookup(oauth2_authorization.value, "authorization_server_name")
+      scope                     = lookup(oauth2_authorization.value, "scope")
     }
   }
 
   dynamic "openid_authentication" {
-    for_each = var.api_management_api.openid_authentication == null ? [] : [""]
+    for_each = lookup(var.api_management_api[count.index], "openid_authentication") == null ? [] : ["openid_authentication"]
     content {
-      openid_provider_name         = var.api_management_api.openid_authentication.openid_provider_name
-      bearer_token_sending_methods = var.api_management_api.openid_authentication.bearer_token_sending_methods
+      openid_provider_name         = lookup(openid_authentication.value, "openid_provider_name")
+      bearer_token_sending_methods = lookup(openid_authentication.value, "bearer_token_sending_methods")
     }
   }
 
   dynamic "contact" {
-    for_each = var.api_management_api.contact == null ? [] : [""]
+    for_each = lookup(var.api_management_api[count.index], "contact") == null ? [] : ["contact"]
     content {
-      email = var.api_management_api.contact.email
-      name  = var.api_management_api.contact.name
-      url   = var.api_management_api.contact.url
+      email = lookup(contact.value, "email")
+      name  = lookup(contact.value, "name")
+      url   = lookup(contact.value, "url")
     }
   }
 }
 
 resource "azurerm_api_management_logger" "this" {
-  count               = var.api_management_logger == null ? 0 : 1
-  api_management_name = azurerm_api_management.this.name
-  name                = var.api_management_logger.name
+  count = length(var.api_management_logger) == "0" ? "0" : length(var.api_management)
+  api_management_name = try(
+    element(azurerm_api_management.this.*.name, lookup(var.api_management_logger[count.index], "api_management_id"))
+  )
+  name                = lookup(var.api_management_logger[count.index], "name")
   resource_group_name = data.azurerm_resource_group.this.name
-  buffered            = var.api_management_logger.buffered
-  description         = var.api_management_logger.description
-  resource_id         = var.api_management_logger.resource_id
+  buffered            = lookup(var.api_management_logger[count.index], "buffered")
+  description         = lookup(var.api_management_logger[count.index], "description")
+  resource_id         = lookup(var.api_management_logger[count.index], "resource_id")
 
-  eventhub {
-    connection_string = join("-", [var.api_management_logger.name, "eventhub"])
-    name              = data.azurerm_eventhub.this.name
+  dynamic "eventhub" {
+    for_each = lookup(var.api_management_logger[count.index], "eventhub") == null ? [] : ["eventhub"]
+    content {
+      connection_string = lookup(eventhub.value, "connection_string")
+      name              = lookup(eventhub.value, "name")
+    }
   }
 
-  application_insights {
-    instrumentation_key = data.azurerm_application_insights.this.instrumentation_key
+  dynamic "application_insights" {
+    for_each = lookup(var.api_management_logger[count.index], "application_insights") == null ? [] : ["application_insights"]
+    content {
+      instrumentation_key = lookup(application_insights.value, "instrumentation_key")
+    }
   }
 }
 
 resource "azurerm_api_management_api_diagnostic" "this" {
-  count                    = var.api_management != null && var.api_management_logger != null && var.api_diagnostic == null ? 0 : 1
-  api_management_logger_id = azurerm_api_management_logger.this.id
-  api_management_name      = azurerm_api_management.this.name
-  api_name                 = azurerm_api_management_api.this.name
-  identifier               = var.api_diagnostic.identifier
-  resource_group_name      = data.azurerm_resource_group.this.name
-  always_log_errors        = var.api_diagnostic.always_log_errors
-  log_client_ip            = var.api_diagnostic.log_client_ip
-  sampling_percentage      = var.api_diagnostic.sampling_percentage
-  verbosity                = var.api_diagnostic.verbosity
-  operation_name_format    = var.api_diagnostic.operation_name_format
+  count = length(var.api_diagnostic) == "0" ? "0" : length(var.api_management_logger) && length(var.api_management)
+  api_management_logger_id = try(
+    element(azurerm_api_management_logger.this.*.id, lookup(var.api_diagnostic[count.index], "api_management_logger_id"))
+  )
+  api_management_name = try(
+    element(azurerm_api_management.this.*.name, lookup(var.api_diagnostic[count.index], "api_management_id"))
+  )
+  api_name = try(
+    element(azurerm_api_management_api.this.*.name, lookup(var.api_diagnostic[count.index], "api_management_id"))
+  )
+  identifier            = lookup(var.api_diagnostic[count.index], "identifier")
+  resource_group_name   = data.azurerm_resource_group.this.name
+  always_log_errors     = lookup(var.api_diagnostic[count.index], "always_log_errors")
+  log_client_ip         = lookup(var.api_diagnostic[count.index], "log_client_ip")
+  sampling_percentage   = lookup(var.api_diagnostic[count.index], "sampling_percentage")
+  verbosity             = lookup(var.api_diagnostic[count.index], "verbosity")
+  operation_name_format = lookup(var.api_diagnostic[count.index], "operation_name_format")
 
   dynamic "backend_request" {
-    for_each = var.api_diagnostic.backend_request == null ? [] : [""]
+    for_each = lookup(var.api_diagnostic[count.index], "backend_request") == null ? [] : ["backend_request"]
     content {
-      body_bytes     = var.api_diagnostic.backend_request.body_bytes
-      headers_to_log = var.api_diagnostic.backend_request.headers_to_log
+      body_bytes     = lookup(backend_request.value, "body_bytes")
+      headers_to_log = lookup(backend_request.value, "headers_to_log")
 
       dynamic "data_masking" {
-        for_each = var.api_diagnostic.backend_request.data_masking
+        for_each = lookup(backend_request.value, "data_masking") == null ? [] : ["data_masking"]
         content {
           dynamic "query_params" {
-            for_each = var.api_diagnostic.backend_request.data_masking.query_params
+            for_each = lookup(data_masking.value, "query_params") == null ? [] : ["query_params"]
             content {
-              mode  = var.api_diagnostic.backend_request.data_masking.query_params.mode
-              value = var.api_diagnostic.backend_request.data_masking.query_params.value
+              mode  = lookup(query_params.value, "mode")
+              value = lookup(query_params.value, "value")
             }
           }
           dynamic "headers" {
-            for_each = var.api_diagnostic.backend_request.data_masking.headers
+            for_each = var.api_diagnostic.backend_request.data_masking.headers == null ? [] : ["headers"]
             content {
-              mode  = var.api_diagnostic.backend_request.data_masking.headers.mode
-              value = var.api_diagnostic.backend_request.data_masking.headers.value
+              mode  = lookup(headers.value, "mode")
+              value = lookup(headers.value, "value")
             }
           }
         }
@@ -147,26 +163,26 @@ resource "azurerm_api_management_api_diagnostic" "this" {
   }
 
   dynamic "backend_response" {
-    for_each = var.api_diagnostic.backend_response == null ? [] : [""]
+    for_each = lookup(var.api_diagnostic[count.index], "backend_response") == null ? [] : ["backend_response"]
     content {
-      body_bytes     = var.api_diagnostic.backend_response.body_bytes
-      headers_to_log = var.api_diagnostic.backend_response.headers_to_log
+      body_bytes     = lookup(backend_response.value, "body_bytes")
+      headers_to_log = lookup(backend_response.value, "headers_to_log")
 
       dynamic "data_masking" {
-        for_each = var.api_diagnostic.backend_response.data_masking
+        for_each = lookup(backend_response.value, "data_masking") == null ? [] : ["data_masking"]
         content {
           dynamic "query_params" {
-            for_each = var.api_diagnostic.backend_response.data_masking.query_params
+            for_each = lookup(data_masking.value, "query_params") == null ? [] : ["query_params"]
             content {
-              mode  = var.api_diagnostic.backend_response.data_masking.query_params.mode
-              value = var.api_diagnostic.backend_response.data_masking.query_params.value
+              mode  = lookup(query_params.value, "mode")
+              value = lookup(query_params.value, "value")
             }
           }
           dynamic "headers" {
-            for_each = var.api_diagnostic.backend_response.data_masking.headers
+            for_each = lookup(data_masking.value, "headers") == null ? [] : ["headers"]
             content {
-              mode  = var.api_diagnostic.backend_response.data_masking.headers.mode
-              value = var.api_diagnostic.backend_response.data_masking.headers.value
+              mode  = lookup(headers.value, "mode")
+              value = lookup(headers.value, "value")
             }
           }
         }
@@ -175,26 +191,26 @@ resource "azurerm_api_management_api_diagnostic" "this" {
   }
 
   dynamic "frontend_request" {
-    for_each = var.api_diagnostic.frontend_request == null ? [] : [""]
+    for_each = lookup(var.api_diagnostic[count.index], "frontend_request") == null ? [] : [""]
     content {
-      body_bytes     = var.api_diagnostic.frontend_request.body_bytes
-      headers_to_log = var.api_diagnostic.frontend_request.headers_to_log
+      body_bytes     = lookup(frontend_request.value, "body_bytes")
+      headers_to_log = lookup(frontend_request.value, "headers_to_log")
 
       dynamic "data_masking" {
-        for_each = var.api_diagnostic.frontend_request.data_masking
+        for_each = lookup(frontend_request.value, "data_masking")
         content {
           dynamic "query_params" {
-            for_each = var.api_diagnostic.frontend_request.data_masking.query_params
+            for_each = lookup(data_masking.value, "query_params")
             content {
-              mode  = var.api_diagnostic.frontend_request.data_masking.query_params.mode
-              value = var.api_diagnostic.frontend_request.data_masking.query_params.value
+              mode  = lookup(query_params.value, "mode")
+              value = lookup(query_params.value, "value")
             }
           }
           dynamic "headers" {
-            for_each = var.api_diagnostic.frontend_request.data_masking.headers
+            for_each = lookup(data_masking.value, "headers")
             content {
-              mode  = var.api_diagnostic.frontend_request.data_masking.headers.mode
-              value = var.api_diagnostic.frontend_request.data_masking.headers.value
+              mode  = lookup(headers.value, "mode")
+              value = lookup(headers.value, "value")
             }
           }
         }
@@ -203,26 +219,26 @@ resource "azurerm_api_management_api_diagnostic" "this" {
   }
 
   dynamic "frontend_response" {
-    for_each = var.api_diagnostic.frontend_response == null ? [] : [""]
+    for_each = lookup(var.api_diagnostic[count.index], "frontend_response") == null ? [] : [""]
     content {
-      body_bytes     = var.api_diagnostic.frontend_response.body_bytes
-      headers_to_log = var.api_diagnostic.frontend_response.headers_to_log
+      body_bytes     = lookup(frontend_response.value, "body_bytes")
+      headers_to_log = lookup(frontend_response.value, "headers_to_log")
 
       dynamic "data_masking" {
-        for_each = var.api_diagnostic.frontend_response.data_masking
+        for_each = lookup(frontend_response.value, "data_masking")
         content {
           dynamic "query_params" {
-            for_each = var.api_diagnostic.frontend_response.data_masking.query_params
+            for_each = lookup(data_masking.value, "query_params")
             content {
-              mode  = var.api_diagnostic.frontend_response.data_masking.query_params.mode
-              value = var.api_diagnostic.frontend_response.data_masking.query_params.value
+              mode  = lookup(query_params.value, "mode")
+              value = lookup(query_params.value, "value")
             }
           }
           dynamic "headers" {
-            for_each = var.api_diagnostic.frontend_response.data_masking.headers
+            for_each = lookup(data_masking.value, "headers")
             content {
-              mode  = var.api_diagnostic.frontend_response.data_masking.headers.mode
-              value = var.api_diagnostic.frontend_response.data_masking.headers.value
+              mode  = lookup(headers.value, "mode")
+              value = lookup(headers.value, "value")
             }
           }
         }
@@ -232,54 +248,88 @@ resource "azurerm_api_management_api_diagnostic" "this" {
 }
 
 resource "azurerm_api_management_api_operation" "this" {
-  count               = var.api_management_api != null && var.api_operation == null ? 0 : 1
-  api_management_name = azurerm_api_management_api.this.api_management_name
-  api_name            = azurerm_api_management_api.this.name
-  display_name        = var.api_operation.display_name
-  method              = var.api_operation.method
-  operation_id        = var.api_operation.operation_id
-  resource_group_name = data.azurerm_resource_group.this.name
-  url_template        = var.api_operation.url_template
-  description         = var.api_operation.description
+  count = length(var.api_operation) == "0" ? "0" : length(var.api_management_api)
+  api_management_name = try(
+    element(azurerm_api_management_api.this.*.api_management_name, lookup(var.api_operation[count.index], "api_management_id"))
+  )
+  api_name = try(
+    element(azurerm_api_management_api.this.*.name, lookup(var.api_operation[count.index], "api_management_id"))
+  )
+  display_name = lookup(var.api_operation[count.index], "display_name")
+  method       = lookup(var.api_operation[count.index], "method")
+  operation_id = lookup(var.api_operation[count.index], "operation_id")
+  resource_group_name = try(
+    data.azurerm_resource_group.this.name
+  )
+  url_template = lookup(var.api_operation[count.index], "url_template")
+  description  = lookup(var.api_operation[count.index], "description")
 }
 
 resource "azurerm_api_management_api_operation_policy" "this" {
-  count               = var.api_operation != null
-  api_management_name = azurerm_api_management_api_operation.this.api_management_name
-  api_name            = azurerm_api_management_api_operation.this.api_name
-  operation_id        = azurerm_api_management_api_operation.this.operation_id
-  resource_group_name = data.azurerm_resource_group.this.name
+  count = length(length(var.api_operation_policy)) == "0" ? "0" : length(var.api_operation)
+  api_management_name = try(
+    element(azurerm_api_management_api_operation.this.*.api_management_name, lookup(var.api_operation_policy[count.index], "api_management_id"))
+  )
+  api_name = try(
+    element(azurerm_api_management_api_operation.this.*.api_name, lookup(var.api_operation_policy[count.index], "api_management_id"))
+  )
+  operation_id = try(
+    element(azurerm_api_management_api_operation.this.*.operation_id, lookup(var.api_operation_policy[count.index], "api_management_id"))
+  )
+  resource_group_name = try(
+    data.azurerm_resource_group.this.name
+  )
 }
 
 resource "azurerm_api_management_api_operation_tag" "this" {
-  for_each         = var.operation_tag
-  api_operation_id = azurerm_api_management_api_operation.this.operation_id
-  display_name     = each.value.display_name
-  name             = each.key
+  count = length(var.operation_tag) == "0" ? "0" : length(var.api_operation)
+  api_operation_id = try(
+    element(azurerm_api_management_api_operation.this.*.operation_id, lookup(var.operation_tag[count.index], "api_operation_id"))
+  )
+  display_name = lookup(var.operation_tag[count.index], "display_name")
+  name         = lookup(var.operation_tag[count.index], "name")
 }
 
 resource "azurerm_api_management_api_policy" "this" {
-  api_management_name = azurerm_api_management_api.this.api_management_name
-  api_name            = azurerm_api_management_api.this.name
-  resource_group_name = data.azurerm_resource_group.this.name
+  count = length(var.api_policy) == "0" ? "0" : length(var.api_management_api)
+  api_management_name = try(
+    element(azurerm_api_management_api.this.*.api_management_name, lookup(var.api_policy[count.index], "management_api_id"))
+  )
+  api_name = try(
+    element(azurerm_api_management_api.this.*.name, lookup(var.api_policy[count.index], "management_api_id"))
+  )
+  resource_group_name = try(
+    data.azurerm_resource_group.this.name
+  )
 }
 
 resource "azurerm_api_management_api_release" "this" {
-  count  = var.api_management
-  api_id = azurerm_api_management_api.this.id
-  name   = join("-", [var.api_management.name, "release"])
+  count = length(var.api_release) == "0" ? "0" : length(var.api_management)
+  api_id = try(
+    element(azurerm_api_management_api.this.id, lookup(var.api_release[count.index], "api_management_id"))
+  )
+  name  = join("-", [lookup(var.api_release[count.index], "name"), "release"])
+  notes = lookup(var.api_release[count.index], "notes")
 }
 
 resource "azurerm_api_management_api_schema" "this" {
-  count               = var.api_management_api_schema && var.api_management_api != null
-  api_management_name = azurerm_api_management_api.this.api_management_name
-  api_name            = azurerm_api_management_api.this.name
-  content_type        = var.api_management_api_schema.content_type
-  resource_group_name = data.azurerm_resource_group.this.name
-  schema_id           = var.api_management_api_schema.schema_id
-  value               = file(join("/", [path.cwd, "api/schema", var.api_management_api_schema.value]))
-  components          = var.api_management_api_schema.components
-  definitions         = var.api_management_api_schema.definitions
+  count               = length(var.api_management_api_schema) == "0" ? "0" : length(var.api_management_api)
+  api_management_name = try(
+    element(azurerm_api_management_api.this.*.api_management_name, lookup(var.api_management_api_schema[count.index], "api_management_id"))
+  )
+  api_name            = try(
+    element(azurerm_api_management_api.this.*.name, lookup(var.api_management_api_schema[count.index], "api_management_id"))
+  )
+  content_type        = lookup(var.api_management_api_schema[count.index], "content_type")
+  resource_group_name = try(
+    data.azurerm_resource_group.this.name
+  )
+  schema_id           = try(
+    element(var.api_management_api_schema.*.schema_id, lookup(var.api_management_api_schema[count.index], "schema_id"))
+  )
+  value               = file(join("/", [path.cwd, "api/schema", lookup(var.api_management_api_schema[count.index], "value")]))
+  components          = lookup(var.api_management_api_schema[count.index], "components")
+  definitions         = lookup(var.api_management_api_schema[count.index], "definitions")
 }
 
 resource "azurerm_api_management_api_tag" "this" {

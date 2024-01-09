@@ -577,7 +577,7 @@ variable "role_assignemnt" {
   type = map(object({
     scope                            = string
     principal_id                     = string
-    skip_service_principal_aad_check = optional(bool, true)
+    skip_service_principal_aad_check = optional(bool)
   }))
   default     = {}
   description = <<-EOT
