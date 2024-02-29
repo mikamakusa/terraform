@@ -227,7 +227,7 @@ variable "endpoint_policy" {
       ports = list(string)
     })), [])
   })))
-  default = []
+  default     = []
   description = <<EOF
 EndpointPolicy is a resource that helps apply desired configuration on the endpoints that match specific criteria.
 EOF
@@ -252,7 +252,7 @@ variable "gateway" {
     project                              = optional(string)
     delete_swg_autogen_router_on_destroy = optional(bool)
   })))
-  default = []
+  default     = []
   description = <<EOF
 Gateway represents the configuration for a proxy, typically a load balancer. It captures the ip:port over which the services are exposed by the proxy, along with any policy configurations. Routes have reference to to Gateways to dictate how requests should be routed by this Gateway.
 EOF
@@ -260,14 +260,14 @@ EOF
 
 variable "grpc_route" {
   type = list(map(object({
-    id          = number
-    hostnames   = list(string)
-    name        = string
-    labels      = optional(map(string))
-    description = optional(string)
-    meshes      = optional(list(string))
-    gateways    = optional(list(string))
-    project     = optional(string)
+    id           = number
+    hostnames    = list(string)
+    name         = string
+    labels       = optional(map(string))
+    description  = optional(string)
+    meshes_ids   = optional(list(number))
+    gateways_ids = optional(list(number))
+    project      = optional(string)
     rules = list(object({
       matches = optional(list(object({
         headers = optional(list(object({
@@ -304,7 +304,7 @@ variable "grpc_route" {
       })), [])
     }))
   })))
-  default = []
+  default     = []
   description = <<EOF
 GrpcRoute is the resource defining how gRPC traffic routed by a Mesh or Gateway resource is routed.
 EOF
@@ -312,14 +312,14 @@ EOF
 
 variable "http_route" {
   type = list(map(object({
-    id          = number
-    hostnames   = list(string)
-    name        = string
-    labels      = optional(map(string))
-    description = optional(string)
-    meshes      = optional(list(string))
-    gateways    = optional(list(string))
-    project     = optional(string)
+    id           = number
+    hostnames    = list(string)
+    name         = string
+    labels       = optional(map(string))
+    description  = optional(string)
+    meshes_ids   = optional(list(number))
+    gateways_ids = optional(list(number))
+    project      = optional(string)
     rules = list(object({
       matches = optional(list(object({
         ignore_case     = optional(bool)
@@ -409,7 +409,7 @@ variable "http_route" {
       })), [])
     }))
   })))
-  default = []
+  default     = []
   description = <<EOF
 HttpRoute is the resource defining how HTTP traffic should be routed by a Mesh or Gateway resource.
 EOF
@@ -424,7 +424,7 @@ variable "mesh" {
     interception_port = optional(number)
     project           = optional(string)
   })))
-  default = []
+  default     = []
   description = <<EOF
 Mesh represents a logical configuration grouping for workload to workload communication within a service mesh. Routes that point to mesh dictate how requests are routed within this logical mesh boundary.
 EOF
@@ -439,7 +439,7 @@ variable "service_binding" {
     description = optional(string)
     project     = optional(string)
   })))
-  default = []
+  default     = []
   description = <<EOF
 ServiceBinding is the resource that defines a Service Directory Service to be used in a BackendService resource.
 EOF
@@ -447,13 +447,13 @@ EOF
 
 variable "tcp_route" {
   type = list(map(object({
-    id          = number
-    name        = string
-    labels      = optional(map(string))
-    description = optional(string)
-    meshes      = optional(list(string))
-    gateways    = optional(list(string))
-    project     = optional(string)
+    id           = number
+    name         = string
+    labels       = optional(map(string))
+    description  = optional(string)
+    meshes_ids   = optional(list(number))
+    gateways_ids = optional(list(number))
+    project      = optional(string)
     rules = list(object({
       matches = optional(list(object({
         address = string
@@ -468,7 +468,7 @@ variable "tcp_route" {
       }))
     }))
   })))
-  default = []
+  default     = []
   description = <<EOF
 TcpRoute is the resource defining how TCP traffic should be routed by a Mesh/Gateway resource.
 EOF
@@ -476,12 +476,12 @@ EOF
 
 variable "tls_route" {
   type = list(map(object({
-    id          = number
-    name        = string
-    description = optional(string)
-    meshes      = optional(list(string))
-    gateways    = optional(list(string))
-    project     = optional(string)
+    id           = number
+    name         = string
+    description  = optional(string)
+    meshes_ids   = optional(list(number))
+    gateways_ids = optional(list(number))
+    project      = optional(string)
     rules = list(object({
       matches = optional(list(object({
         sni_host = optional(list(string))
@@ -495,7 +495,7 @@ variable "tls_route" {
       })), [])
     }))
   })))
-  default = []
+  default     = []
   description = <<EOF
 TlsRoute defines how traffic should be routed based on SNI and other matching L3 attributes.
 EOF

@@ -351,8 +351,8 @@ resource "google_network_services_grpc_route" "this" {
   name        = lookup(var.grpc_route[count.index], "name")
   labels      = merge(var.labels, lookup(var.grpc_route[count.index], "labels"))
   description = lookup(var.grpc_route[count.index], "description")
-  meshes      = lookup(var.grpc_route[count.index], "meshes")
-  gateways    = lookup(var.grpc_route[count.index], "gateways")
+  meshes      = try(element(google_network_services_mesh.this.*.id, lookup(var.grpc_route[count.index], "meshes_ids")))
+  gateways    = try(element(google_network_services_gateway.this.*.id, lookup(var.grpc_route[count.index], "gateways_ids")))
   project     = lookup(var.grpc_route[count.index], "project")
 
   dynamic "rules" {
@@ -426,10 +426,10 @@ resource "google_network_services_http_route" "this" {
   count       = length(var.http_route)
   hostnames   = lookup(var.http_route[count.index], "hostnames")
   name        = lookup(var.http_route[count.index], "name")
-  labels      = {}
+  labels      = merge(var.labels, lookup(var.http_route[count.index], "labels"))
   description = lookup(var.http_route[count.index], "description")
-  meshes      = lookup(var.http_route[count.index], "meshes")
-  gateways    = lookup(var.http_route[count.index], "gateways")
+  meshes      = try(element(google_network_services_mesh.this.*.id, lookup(var.http_route[count.index], "meshes_ids")))
+  gateways    = try(element(google_network_services_gateway.this.*.id, lookup(var.http_route[count.index], "gateways_ids")))
   project     = lookup(var.http_route[count.index], "project")
 
   dynamic "rules" {
@@ -599,8 +599,8 @@ resource "google_network_services_tcp_route" "this" {
   name        = lookup(var.tcp_route[count.index], "name")
   labels      = merge(var.labels, lookup(var.tcp_route[count.index], "labels"))
   description = lookup(var.tcp_route[count.index], "description")
-  meshes      = lookup(var.tcp_route[count.index], "meshes")
-  gateways    = lookup(var.tcp_route[count.index], "gateways")
+  meshes      = try(element(google_network_services_mesh.this.*.id, lookup(var.tcp_route[count.index], "meshes_ids")))
+  gateways    = try(element(google_network_services_gateway.this.*.id, lookup(var.tcp_route[count.index], "gateways_ids")))
   project     = lookup(var.tcp_route[count.index], "project")
 
   dynamic "rules" {
@@ -635,8 +635,8 @@ resource "google_network_services_tls_route" "this" {
   count       = length(var.tls_route)
   name        = lookup(var.tls_route[count.index], "name")
   description = lookup(var.tls_route[count.index], "description")
-  meshes      = lookup(var.tls_route[count.index], "meshes")
-  gateways    = lookup(var.tls_route[count.index], "gateways")
+  meshes      = try(element(google_network_services_mesh.this.*.id, lookup(var.tls_route[count.index], "meshes_ids")))
+  gateways    = try(element(google_network_services_gateway.this.*.id, lookup(var.tls_route[count.index], "gateways_ids")))
   project     = lookup(var.tls_route[count.index], "project")
 
   dynamic "rules" {
