@@ -1,3 +1,0 @@
-variable "volume" {
-  type = "list"
-}
