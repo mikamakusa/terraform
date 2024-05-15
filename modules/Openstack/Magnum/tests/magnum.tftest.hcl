@@ -5,6 +5,8 @@ run "setup_tests" {
 }
 
 run "cluster_v1" {
+  command = apply
+  
   variables {
     project_name = "project_test"
     clustertemplate_v1 = [
@@ -38,6 +40,8 @@ run "cluster_v1" {
 }
 
 run "clustertemplate_v1" {
+  command = apply
+  
   variables {
     project_name = "project_test"
     clustertemplate_v1 = [
@@ -62,6 +66,8 @@ run "clustertemplate_v1" {
 }
 
 run "nodegroup_v1" {
+  command = apply
+  
   variables {
     project_name = "project_test"
     cluster_v1 = [

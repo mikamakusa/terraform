@@ -5,6 +5,8 @@ run "setup_tests" {
 }
 
 run "create_aggregate_v2" {
+  command = apply
+  
   variables {
     aggregate_v2 = [
       {
@@ -16,6 +18,8 @@ run "create_aggregate_v2" {
 }
 
 run "create_flavor_access_v2" {
+  command = apply
+  
   variables {
     flavor_v2 = [
       {
@@ -37,6 +41,8 @@ run "create_flavor_access_v2" {
 }
 
 run "create_flavor_v2" {
+  command = apply
+  
   variables {
     flavor_v2 = [
       {
@@ -51,6 +57,8 @@ run "create_flavor_v2" {
 }
 
 run "create_instance_v2" {
+  command = apply
+  
   variables {
     flavor_v2 = [
       {
@@ -72,6 +80,8 @@ run "create_instance_v2" {
 }
 
 run "create_interface_attach_v2" {
+  command = apply
+  
   variables {
     flavor_v2 = [
       {
@@ -99,6 +109,8 @@ run "create_interface_attach_v2" {
 }
 
 run "create_keypair_v2" {
+  command = apply
+  
   variables {
     keypair_v2 = [
       {
@@ -111,6 +123,8 @@ run "create_keypair_v2" {
 }
 
 run "create_quotaset_v2" {
+  command = apply
+  
   variables {
     quotaset_v2 = [
       {
@@ -127,6 +141,8 @@ run "create_quotaset_v2" {
 }
 
 run "create_servergroup_v2" {
+  command = apply
+  
   variables {
     servergroup_v2 = [
       {
@@ -139,6 +155,8 @@ run "create_servergroup_v2" {
 }
 
 run "create_volume_attach_v2" {
+  command = apply
+  
   variables {
     volume_name = "volume_test_1"
     instance_v2 = [

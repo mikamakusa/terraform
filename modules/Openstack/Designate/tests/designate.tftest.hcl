@@ -5,6 +5,8 @@ run "setup_tests" {
 }
 
 run "recordset_v2" {
+  command = apply
+  
   variables {
     project_name = "project_test_1"
     zone_v2 = {
@@ -32,6 +34,8 @@ run "recordset_v2" {
 }
 
 run "transfer_accept_v2" {
+  command = apply
+  
   variables {
     project_name = "project_test_1"
     zone_v2 = {
@@ -55,6 +59,8 @@ run "transfer_accept_v2" {
 }
 
 run "transfer_request_v2" {
+  command = apply
+  
   variables {
     project_name = "project_test_1"
     zone_v2 = {
@@ -84,6 +90,8 @@ run "transfer_request_v2" {
 }
 
 run "zone_v2" {
+  command = apply
+  
   variables {
     project_name = "project_test_1"
     zone_v2 = {

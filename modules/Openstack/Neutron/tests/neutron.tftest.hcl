@@ -5,6 +5,7 @@ run "setup_tests" {
 }
 
 run "group_v2" {
+  command = apply
   variables {
     group_v2 = [
       {
@@ -16,6 +17,7 @@ run "group_v2" {
 }
 
 run "policy_v2" {
+  command = apply
   variables {
     policy_v2 = [
       {
@@ -27,6 +29,7 @@ run "policy_v2" {
 }
 
 run "rule_v2" {
+  command = apply
   variables {
     rule_v2 = [
       {

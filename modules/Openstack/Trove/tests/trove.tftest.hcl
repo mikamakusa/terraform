@@ -5,6 +5,8 @@ run "setup_tests" {
 }
 
 run "configuration_v1" {
+  command = apply
+  
   variables {
     configuration_v1 = [
       {
@@ -24,6 +26,8 @@ run "configuration_v1" {
   }
 }
 run "database_v1" {
+  command = apply
+  
   variables {
     instance_v1 = [
       {
@@ -44,6 +48,8 @@ run "database_v1" {
   }
 }
 run "instance_v1" {
+  command = apply
+  
   variables {
     instance_v1 = [
       {
@@ -57,6 +63,8 @@ run "instance_v1" {
   }
 }
 run "user_v1" {
+  command = apply
+  
   variables {
     instance_v1 = [
       {
