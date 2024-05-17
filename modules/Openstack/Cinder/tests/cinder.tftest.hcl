@@ -49,6 +49,11 @@ run "qos_v3" {
       }
     ]
   }
+
+  assert {
+    condition     = contains(["front-end","back-end","both"], var.qos_v3[0].consumer)
+    error_message = "Invalid input, Can be one of front-end, back-end or both."
+  }
 }
 run "quotaset_v3" {
   command = apply
