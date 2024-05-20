@@ -1,3 +1,0 @@
-variable "app" {
-  type = list
-}
