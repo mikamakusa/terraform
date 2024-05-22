@@ -25,7 +25,7 @@ variable "image_v2" {
     web_download          = optional(bool)
     decompress            = optional(bool)
   }))
-  default     = optional(map(string))
+  default     = []
   description = <<EOF
 The following arguments are supported:
 container_format - (Required) The container format. Must be one of "ami", "ari", "aki", "bare", "ovf".
@@ -58,7 +58,7 @@ variable "image_access_accept_v2" {
     status    = string
     member_id = optional(string)
   }))
-  default     = optional(map(string))
+  default     = []
   description = <<EOF
 The following arguments are supported:
 region - (Optional) The region in which to obtain the V2 Glance client. A Glance client is needed to manage Image memberships. If omitted, the region argument of the provider is used. Changing this creates a new membership.
@@ -75,7 +75,7 @@ variable "image_access_v2" {
     status    = optional(string)
     member_id = string
   }))
-  default     = optional(map(string))
+  default     = []
   description = <<EOF
 The following arguments are supported:
 region - (Optional) The region in which to obtain the V2 Glance client. A Glance client is needed to manage Image members. If omitted, the region argument of the provider is used. Changing this creates a new resource.
