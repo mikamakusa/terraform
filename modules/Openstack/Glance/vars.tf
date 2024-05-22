@@ -3,7 +3,7 @@ variable "project_name" {
 }
 
 variable "image_v2" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     container_format      = string
     disk_format           = string
@@ -24,7 +24,7 @@ variable "image_v2" {
     visibility            = optional(string)
     web_download          = optional(bool)
     decompress            = optional(bool)
-  })))
+  }))
   default     = optional(map(string))
   description = <<EOF
 The following arguments are supported:
@@ -52,12 +52,12 @@ decompress - (Optional) If true, this provider will decompress downloaded image 
 }
 
 variable "image_access_accept_v2" {
-  type = list(map(object({
+  type = list(object({
     id        = number
     image_id  = number
     status    = string
     member_id = optional(string)
-  })))
+  }))
   default     = optional(map(string))
   description = <<EOF
 The following arguments are supported:
@@ -69,12 +69,12 @@ status - (Required) The membership proposal status. Can either be accepted, reje
 }
 
 variable "image_access_v2" {
-  type = list(map(object({
+  type = list(object({
     id        = number
     image_id  = number
     status    = optional(string)
     member_id = string
-  })))
+  }))
   default     = optional(map(string))
   description = <<EOF
 The following arguments are supported:

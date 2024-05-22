@@ -18,13 +18,13 @@ variable "volume_name" {
 }
 
 variable "aggregate_v2" {
-  type = list(map(object({
+  type = list(object({
     id       = number
     name     = string
     zone     = optional(string)
     hosts    = optional(list(string))
     metadata = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -37,10 +37,10 @@ metadata - (Optional) The metadata of the Host Aggregate. Can be useful to indic
 }
 
 variable "flavor_access_v2" {
-  type = list(map(object({
+  type = list(object({
     id        = number
     flavor_id = number
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -50,7 +50,7 @@ flavor_id - (Required) The UUID of flavor to use. Changing this creates a new fl
 }
 
 variable "flavor_v2" {
-  type = list(map(object({
+  type = list(object({
     id           = number
     disk         = number
     name         = string
@@ -63,7 +63,7 @@ variable "flavor_v2" {
     rx_tx_factor = optional(number)
     is_public    = optional(bool)
     extra_specs  = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -83,7 +83,7 @@ extra_specs - (Optional) Key/Value pairs of metadata for the flavor.
 }
 
 variable "instance_v2" {
-  type = list(map(object({
+  type = list(object({
     id                      = number
     name                    = string
     image_id                = optional(number)
@@ -140,7 +140,7 @@ variable "instance_v2" {
       ignore_resize_confirmation  = optional(bool)
       detach_ports_before_destroy = optional(bool)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -212,13 +212,13 @@ detach_ports_before_destroy - (Optional) Whether to try to detach all attached p
 }
 
 variable "interface_attach_v2" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     instance_id = number
     port_id     = optional(string)
     network_id  = optional(number)
     fixed_ip    = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following attributes are exported:
@@ -231,13 +231,13 @@ fixed_ip - See Argument Reference above.
 }
 
 variable "keypair_v2" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = string
     public_key  = optional(string)
     user_id     = optional(string)
     value_specs = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -250,7 +250,7 @@ value_specs - (Optional) Map of additional options.
 }
 
 variable "quotaset_v2" {
-  type = list(map(object({
+  type = list(object({
     id                          = number
     fixed_ips                   = optional(number)
     floating_ips                = optional(number)
@@ -266,7 +266,7 @@ variable "quotaset_v2" {
     server_groups               = optional(number)
     cores                       = optional(number)
     instances                   = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -290,7 +290,7 @@ server_group_members - (Optional) Quota value for server groups members. Changin
 }
 
 variable "servergroup_v2" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = string
     policies    = optional(list(string))
@@ -298,7 +298,7 @@ variable "servergroup_v2" {
     rules = optional(list(object({
       max_server_per_host = optional(number)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -317,13 +317,13 @@ soft-anti-affinity - All instances/servers launched in this group will be hosted
 }
 
 variable "volume_attach_v2" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     instance_id = number
     volume_id   = string
     device      = optional(string)
     multiattach = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:

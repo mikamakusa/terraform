@@ -3,30 +3,30 @@ variable "project_name" {
 }
 
 variable "qos_association_v3" {
-  type = list(map(object({
+  type = list(object({
     id             = number
     qos_id         = number
     volume_type_id = number
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "qos_v3" {
-  type = list(map(object({
+  type = list(object({
     id       = number
     name     = string
     consumer = optional(string)
     specs    = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "quotaset_v3" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     volumes              = optional(number)
     snapshots            = optional(number)
@@ -36,14 +36,14 @@ variable "quotaset_v3" {
     backup_gigabytes     = optional(number)
     groups               = optional(number)
     volume_type_quota    = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "volume_attach_v3" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     host_name   = string
     volume_id   = number
@@ -56,37 +56,37 @@ variable "volume_attach_v3" {
     platform    = optional(string)
     wwnn        = optional(string)
     wwpn        = optional(list(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "volume_type_access_v3" {
-  type = list(map(object({
+  type = list(object({
     id             = number
     volume_type_id = number
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "volume_type_v3" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = string
     description = optional(string)
     is_public   = optional(bool)
     extra_specs = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "volume_v3" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     size                 = number
     enable_online_resize = optional(bool)
@@ -109,7 +109,7 @@ variable "volume_v3" {
       query                 = optional(string)
       additional_properties = optional(map(string))
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF

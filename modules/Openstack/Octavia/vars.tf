@@ -3,7 +3,7 @@ variable "project_name" {
 }
 
 variable "l7policy_v2" {
-  type = list(map(object({
+  type = list(object({
     id               = number
     action           = string
     listener_id      = string
@@ -15,14 +15,14 @@ variable "l7policy_v2" {
     redirect_pool_id = optional(number)
     redirect_url     = optional(string)
     admin_state_up   = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "l7rule_v2" {
-  type = list(map(object({
+  type = list(object({
     id             = number
     compare_type   = string
     l7policy_id    = number
@@ -31,14 +31,14 @@ variable "l7rule_v2" {
     key            = optional(string)
     invert         = optional(bool)
     admin_state_up = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "listener_v2" {
-  type = list(map(object({
+  type = list(object({
     id                        = number
     loadbalancer_id           = number
     protocol                  = string
@@ -56,14 +56,14 @@ variable "listener_v2" {
     admin_state_up            = optional(bool)
     insert_headers            = optional(map(string))
     allowed_cidrs             = optional(list(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "loadbalancer_v2" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     vip_address           = optional(string)
     vip_network_id        = optional(string)
@@ -77,14 +77,14 @@ variable "loadbalancer_v2" {
     availability_zone     = optional(string)
     security_group_ids    = optional(list(string))
     tags                  = optional(list(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "member_v2" {
-  type = list(map(object({
+  type = list(object({
     id              = number
     address         = string
     pool_id         = number
@@ -96,14 +96,14 @@ variable "member_v2" {
     monitor_address = optional(string)
     monitor_port    = optional(number)
     backup          = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "members_v2" {
-  type = list(map(object({
+  type = list(object({
     id      = number
     pool_id = number
     member = optional(list(object({
@@ -117,14 +117,14 @@ variable "members_v2" {
       admin_state_up  = optional(bool)
       backup          = optional(bool)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "monitor_v2" {
-  type = list(map(object({
+  type = list(object({
     id               = number
     delay            = number
     max_retries      = number
@@ -137,14 +137,14 @@ variable "monitor_v2" {
     http_method      = optional(string)
     expected_codes   = optional(string)
     admin_state_up   = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "pool_v2" {
-  type = list(map(object({
+  type = list(object({
     id              = number
     lb_method       = string
     protocol        = string
@@ -157,14 +157,14 @@ variable "pool_v2" {
       type        = string
       cookie_name = optional(string)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "quota_v2" {
-  type = list(map(object({
+  type = list(object({
     id             = number
     loadbalancer   = optional(number)
     listener       = optional(number)
@@ -173,7 +173,7 @@ variable "quota_v2" {
     health_monitor = optional(number)
     l7_policy      = optional(number)
     l7_rule        = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF

@@ -3,7 +3,7 @@ variable "project_name" {
 }
 
 variable "recordset_v2" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     name                 = string
     records              = list(string)
@@ -13,7 +13,7 @@ variable "recordset_v2" {
     description          = optional(string)
     value_specs          = optional(map(string))
     disable_status_check = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -31,12 +31,12 @@ disable_status_check - (Optional) Disable wait for recordset to reach ACTIVE sta
 }
 
 variable "transfer_accept_v2" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     zone_id              = number
     value_specs          = optional(map(string))
     disable_status_check = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -49,14 +49,14 @@ disable_status_check - (Optional) Disable wait for zone to reach ACTIVE status. 
 }
 
 variable "transfer_request_v2" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     zone_id              = number
     target_project_id    = optional(number)
     description          = optional(string)
     value_specs          = optional(map(string))
     disable_status_check = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -70,7 +70,7 @@ disable_status_check - (Optional) Disable wait for zone to reach ACTIVE status. 
 }
 
 variable "zone_v2" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     name                 = string
     email                = optional(string)
@@ -81,7 +81,7 @@ variable "zone_v2" {
     masters              = optional(list(string))
     value_specs          = optional(map(string))
     disable_status_check = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:

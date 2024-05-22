@@ -8,7 +8,7 @@ variable "project_name" {
 }
 
 variable "cluster_v1" {
-  type = list(map(object({
+  type = list(object({
     id                  = number
     cluster_template_id = number
     name                = optional(string)
@@ -25,7 +25,7 @@ variable "cluster_v1" {
     fixed_network       = optional(string)
     fixed_subnet        = optional(string)
     floating_ip_enabled = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -51,7 +51,7 @@ floating_ip_enabled - (Optional) Indicates whether floating IP should be created
 }
 
 variable "clustertemplate_v1" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     coe                   = string
     image                 = string
@@ -84,7 +84,7 @@ variable "clustertemplate_v1" {
     tls_disabled          = optional(bool)
     volume_driver         = optional(string)
     hidden                = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -123,7 +123,7 @@ hidden - (Optional) Indicates whether the ClusterTemplate is hidden or not. Chan
 }
 
 variable "nodegroup_v1" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     cluster_id         = number
     name               = string
@@ -138,7 +138,7 @@ variable "nodegroup_v1" {
     min_node_count     = optional(number)
     max_node_count     = optional(number)
     role               = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:

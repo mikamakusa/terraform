@@ -3,7 +3,7 @@ variable "project_name" {
 }
 
 variable "configuration_v1" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     description = string
     name        = string
@@ -16,7 +16,7 @@ variable "configuration_v1" {
       value       = string
       string_type = optional(bool)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -38,11 +38,11 @@ string_type - (Optional) Whether or not to store configuration parameter value a
 }
 
 variable "database_v1" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     instance_id = number
     name        = string
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -52,7 +52,7 @@ instance_id - (Required) The ID for the database instance.
 }
 
 variable "instance_v1" {
-  type = list(map(object({
+  type = list(object({
     id               = number
     name             = string
     size             = number
@@ -78,7 +78,7 @@ variable "instance_v1" {
       collate = optional(string)
       charset = optional(string)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -116,13 +116,13 @@ charset - (Optional) Database character set. Changing this creates a new instanc
 }
 
 variable "user_v1" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     instance_id = number
     name        = string
     password    = string
     databases   = optional(list(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:

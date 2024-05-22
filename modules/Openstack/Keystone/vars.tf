@@ -3,7 +3,7 @@ variable "project_name" {
 }
 
 variable "project_v3" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = optional(string)
     description = optional(string)
@@ -13,14 +13,14 @@ variable "project_v3" {
     parent_id   = optional(string)
     region      = optional(string)
     tags        = optional(list(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "application_credential_v3" {
-  type = list(map(object({
+  type = list(object({
     id           = number
     name         = string
     region       = optional(string)
@@ -34,116 +34,116 @@ variable "application_credential_v3" {
       path    = string
       service = string
     })))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "ec2_credential_v3" {
-  type = list(map(object({
+  type = list(object({
     id         = number
     project_id = optional(number)
     user_id    = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "endpoint_v3" {
-  type = list(map(object({
+  type = list(object({
     id         = number
     service_id = number
     url        = string
     name       = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "group_v3" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = string
     description = optional(string)
     domain_id   = optional(string)
     region      = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "inherit_role_assignment_v3" {
-  type = list(map(object({
+  type = list(object({
     id         = number
     role_id    = number
     domain_id  = optional(string)
     group_id   = optional(number)
     project_id = optional(number)
     user_id    = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "role_assignment_v3" {
-  type = list(map(object({
+  type = list(object({
     id         = number
     role_id    = number
     domain_id  = optional(string)
     group_id   = optional(number)
     project_id = optional(number)
     user_id    = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "role_v3" {
-  type = list(map(object({
+  type = list(object({
     id         = number
     name       = string
     domain_id  = optional(string)
     project_id = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "service_v3" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = string
     type        = string
     project_id  = optional(number)
     description = optional(string)
     enabled     = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "user_membership_v3" {
-  type = list(map(object({
+  type = list(object({
     id         = number
     group_id   = number
     user_id    = number
     project_id = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "user_v3" {
-  type = list(map(object({
+  type = list(object({
     id                                    = number
     description                           = optional(string)
     default_project_id                    = optional(string)
@@ -159,7 +159,7 @@ variable "user_v3" {
     multi_factor_auth_rule = optional(list(object({
       rule = list(string)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF

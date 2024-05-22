@@ -3,7 +3,7 @@ variable "project_name" {
 }
 
 variable "group_v2" {
-  type = list(map(object({
+  type = list(object({
     id                         = number
     name                       = optional(string)
     description                = optional(string)
@@ -12,7 +12,7 @@ variable "group_v2" {
     admin_state_up             = optional(bool)
     ports                      = optional(list(string))
     shared                     = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -27,14 +27,14 @@ shared - (Optional) Sharing status of the firewall group (must be "true" or "fal
 }
 
 variable "policy_v2" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = optional(string)
     description = optional(string)
     rules       = optional(list(string))
     audited     = optional(bool)
     shared      = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -47,7 +47,7 @@ shared - (Optional) Sharing status of the firewall policy (must be "true" or "fa
 }
 
 variable "rule_v2" {
-  type = list(map(object({
+  type = list(object({
     id                     = number
     name                   = optional(string)
     description            = optional(string)
@@ -60,7 +60,7 @@ variable "rule_v2" {
     destination_port       = optional(string)
     shared                 = optional(bool)
     enabled                = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:

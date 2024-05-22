@@ -8,7 +8,7 @@ variable "metadata" {
 }
 
 variable "container_v1" {
-  type = list(map(object({
+  type = list(object({
     id   = number
     type = string
     name = optional(string)
@@ -22,14 +22,14 @@ variable "container_v1" {
         users          = optional(list(string))
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "order_v1" {
-  type = list(map(object({
+  type = list(object({
     id   = number
     type = string
     meta = list(object({
@@ -39,14 +39,14 @@ variable "order_v1" {
       mode                 = optional(string)
       payload_content_type = optional(string)
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "secret_v1" {
-  type = list(map(object({
+  type = list(object({
     id                       = number
     name                     = optional(string)
     bit_length               = optional(number)
@@ -64,7 +64,7 @@ variable "secret_v1" {
         users          = optional(list(string))
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF

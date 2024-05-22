@@ -8,7 +8,7 @@ variable "metadata" {
 }
 
 variable "container_v1" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     name               = string
     container_read     = optional(string)
@@ -20,7 +20,7 @@ variable "container_v1" {
     content_type       = optional(string)
     storage_policy     = optional(string)
     force_destroy      = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -39,7 +39,7 @@ EOF
 }
 
 variable "object_v1" {
-  type = list(map(object({
+  type = list(object({
     id                  = number
     container_id        = number
     name                = string
@@ -54,7 +54,7 @@ variable "object_v1" {
     etag                = optional(string)
     object_manifest     = optional(string)
     source              = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
@@ -76,14 +76,14 @@ EOF
 }
 
 variable "tempurl_v1" {
-  type = list(map(object({
+  type = list(object({
     id           = number
     container_id = number
     object_id    = number
     ttl          = number
     method       = optional(string)
     regenerate   = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
 The following arguments are supported:
