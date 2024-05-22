@@ -27,7 +27,7 @@ variable "function_id" {
 }
 
 variable "build_pipeline" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     project_id    = number
     defined_tags  = optional(map(string))
@@ -41,7 +41,7 @@ variable "build_pipeline" {
         description   = optional(string)
       }))
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Build Pipeline resource in Oracle Cloud Infrastructure Devops service.
@@ -49,7 +49,7 @@ EOF
 }
 
 variable "pipeline_stage" {
-  type = list(map(object({
+  type = list(object({
     id                                 = number
     build_pipeline_id                  = number
     build_pipeline_stage_type          = string
@@ -97,7 +97,7 @@ variable "pipeline_stage" {
       wait_duration = string
       wait_type     = string
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Build Pipeline Stage resource in Oracle Cloud Infrastructure Devops service.
@@ -105,7 +105,7 @@ EOF
 }
 
 variable "build_run" {
-  type = list(map(object({
+  type = list(object({
     id                = number
     build_pipeline_id = number
     defined_tags      = optional(map(string))
@@ -122,7 +122,7 @@ variable "build_run" {
       repository_branch = string
       repository_url    = string
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Build Run resource in Oracle Cloud Infrastructure Devops service.
@@ -130,7 +130,7 @@ EOF
 }
 
 variable "connection" {
-  type = list(map(object({
+  type = list(object({
     id              = number
     connection_type = string
     project_id      = number
@@ -146,7 +146,7 @@ variable "connection" {
       ca_certificate_bundle_id = string
       tls_verify_mode          = string
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Connection resource in Oracle Cloud Infrastructure Devops service.
@@ -154,7 +154,7 @@ EOF
 }
 
 variable "deploy_artifact" {
-  type = list(map(object({
+  type = list(object({
     id                         = number
     argument_substitution_mode = string
     deploy_artifact_type       = string
@@ -179,7 +179,7 @@ variable "deploy_artifact" {
         vault_secret_id              = optional(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Deploy Artifact resource in Oracle Cloud Infrastructure Devops service.
@@ -187,7 +187,7 @@ EOF
 }
 
 variable "deploy_environment" {
-  type = list(map(object({
+  type = list(object({
     id                      = number
     deploy_environment_type = string
     project_id              = number
@@ -209,7 +209,7 @@ variable "deploy_environment" {
       network_channel_type = string
       nsg_ids              = optional(string)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Deploy Environment resource in Oracle Cloud Infrastructure Devops service.
@@ -217,7 +217,7 @@ EOF
 }
 
 variable "deploy_pipeline" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     project_id    = number
     defined_tags  = optional(map(string))
@@ -231,7 +231,7 @@ variable "deploy_pipeline" {
         description   = optional(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Deploy Pipeline resource in Oracle Cloud Infrastructure Devops service.
@@ -239,7 +239,7 @@ EOF
 }
 
 variable "deploy_stage" {
-  type = list(map(object({
+  type = list(object({
     id                                                           = number
     deploy_pipeline_id                                           = number
     deploy_stage_type                                            = string
@@ -370,7 +370,7 @@ variable "deploy_stage" {
       wait_duration = string
       wait_type     = string
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Deploy Stage resource in Oracle Cloud Infrastructure Devops service.
@@ -378,7 +378,7 @@ EOF
 }
 
 variable "deployment" {
-  type = list(map(object({
+  type = list(object({
     id                            = number
     deploy_pipeline_id            = number
     deployment_type               = string
@@ -408,7 +408,7 @@ variable "deployment" {
         value = optional(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Deployment resource in Oracle Cloud Infrastructure Devops service.
@@ -416,7 +416,7 @@ EOF
 }
 
 variable "project" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     name          = string
     defined_tags  = optional(map(string))
@@ -425,7 +425,7 @@ variable "project" {
     notification_config = optional(list(object({
       topic_id = string
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Project resource in Oracle Cloud Infrastructure Devops service.
@@ -433,7 +433,7 @@ EOF
 }
 
 variable "repository" {
-  type = list(map(object({
+  type = list(object({
     id              = number
     name            = string
     project_id      = number
@@ -449,7 +449,7 @@ variable "repository" {
         custom_schedule = optional(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Repository resource in Oracle Cloud Infrastructure Devops service.
@@ -457,10 +457,10 @@ EOF
 }
 
 variable "repository_mirror" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     repository_id = number
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Repository Mirror resource in Oracle Cloud Infrastructure Devops service.
@@ -468,14 +468,14 @@ EOF
 }
 
 variable "repository_ref" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     ref_name      = string
     ref_type      = string
     repository_id = number
     commit_id     = optional(string)
     object_id     = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Repository Ref resource in Oracle Cloud Infrastructure Devops service.
@@ -483,7 +483,7 @@ EOF
 }
 
 variable "trigger" {
-  type = list(map(object({
+  type = list(object({
     id             = number
     project_id     = string
     trigger_source = string
@@ -514,7 +514,7 @@ variable "trigger" {
         })), [])
       })), [])
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Trigger resource in Oracle Cloud Infrastructure Devops service.

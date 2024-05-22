@@ -17,7 +17,7 @@ EOF
 }
 
 variable "agent" {
-  type = list(map(object({
+  type = list(object({
     id             = number
     agent_type     = string
     agent_version  = string
@@ -26,7 +26,7 @@ variable "agent" {
     os_version     = string
     defined_tags   = optional(map(string))
     freeform_tags  = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Agent resource in Oracle Cloud Infrastructure Cloud Bridge service.
@@ -34,7 +34,7 @@ This resource provides the Agent resource in Oracle Cloud Infrastructure Cloud B
 }
 
 variable "agent_dependency" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     bucket             = string
     dependency_name    = string
@@ -46,7 +46,7 @@ variable "agent_dependency" {
     dependency_version = optional(string)
     description        = optional(string)
     system_tags        = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Agent Dependency resource in Oracle Cloud Infrastructure Cloud Bridge service.
@@ -54,12 +54,12 @@ This resource provides the Agent Dependency resource in Oracle Cloud Infrastruct
 }
 
 variable "agent_plugin" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     agent_id      = number
     plugin_name   = string
     desired_state = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Agent Plugin resource in Oracle Cloud Infrastructure Cloud Bridge service.
@@ -67,7 +67,7 @@ This resource provides the Agent Plugin resource in Oracle Cloud Infrastructure 
 }
 
 variable "asset" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     asset_type         = string
     external_asset_key = string
@@ -166,7 +166,7 @@ variable "asset" {
         name        = optional(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Asset resource in Oracle Cloud Infrastructure Cloud Bridge service.
@@ -174,7 +174,7 @@ This resource provides the Asset resource in Oracle Cloud Infrastructure Cloud B
 }
 
 variable "asset_source" {
-  type = list(map(object({
+  type = list(object({
     id                               = number
     assets_compartment_id            = string
     environment_id                   = number
@@ -196,7 +196,7 @@ variable "asset_source" {
       secret_id = string
       type      = string
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Asset Source resource in Oracle Cloud Infrastructure Cloud Bridge service.
@@ -204,13 +204,13 @@ This resource provides the Asset Source resource in Oracle Cloud Infrastructure 
 }
 
 variable "discovery_schedule" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     execution_recurrences = string
     defined_tags          = optional(map(string))
     freeform_tags         = optional(map(string))
     display_name          = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Discovery Schedule resource in Oracle Cloud Infrastructure Cloud Bridge service.
@@ -218,12 +218,12 @@ This resource provides the Discovery Schedule resource in Oracle Cloud Infrastru
 }
 
 variable "environment" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     defined_tags  = optional(map(string))
     freeform_tags = optional(map(string))
     display_name  = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Environment resource in Oracle Cloud Infrastructure Cloud Bridge service.
@@ -231,12 +231,12 @@ This resource provides the Environment resource in Oracle Cloud Infrastructure C
 }
 
 variable "inventory" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     defined_tags  = optional(map(string))
     freeform_tags = optional(map(string))
     display_name  = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Inventory resource in Oracle Cloud Infrastructure Cloud Bridge service.

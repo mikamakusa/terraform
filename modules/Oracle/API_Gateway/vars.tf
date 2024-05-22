@@ -39,13 +39,13 @@ variable "subnet_id" {
 }
 
 variable "api" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     content       = optional(string)
     defined_tags  = optional(map(string))
     display_name  = optional(string)
     freeform_tags = optional(map(string))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Api resource in Oracle Cloud Infrastructure API Gateway service.
@@ -53,7 +53,7 @@ EOF
 }
 
 variable "certificate" {
-  type = list(map(object({
+  type = list(object({
     id                        = number
     certificate               = string
     private_key               = string
@@ -61,7 +61,7 @@ variable "certificate" {
     display_name              = optional(string)
     freeform_tags             = optional(map(string))
     intermediate_certificates = optional(string)
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Certificate resource in Oracle Cloud Infrastructure API Gateway service.
@@ -69,7 +69,7 @@ EOF
 }
 
 variable "deployment" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     gateway_id    = number
     path_prefix   = string
@@ -500,7 +500,7 @@ variable "deployment" {
         })), [])
       })), [])
     })), [])
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Deployment resource in Oracle Cloud Infrastructure API Gateway service.
@@ -508,7 +508,7 @@ EOF
 }
 
 variable "gateway" {
-  type = list(map(object({
+  type = list(object({
     id                         = number
     endpoint_type              = string
     subnet_id                  = string
@@ -536,7 +536,7 @@ variable "gateway" {
         port = optional(number)
       })), [])
     })), [])
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Gateway resource in Oracle Cloud Infrastructure API Gateway service.
@@ -544,7 +544,7 @@ EOF
 }
 
 variable "subscriber" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     usage_plans   = list(string)
     defined_tags  = optional(map(string))
@@ -554,7 +554,7 @@ variable "subscriber" {
       name  = string
       token = string
     }))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Subscriber resource in Oracle Cloud Infrastructure API Gateway service.
@@ -562,7 +562,7 @@ EOF
 }
 
 variable "usage_plans" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     defined_tags  = optional(map(string))
     display_name  = optional(string)
@@ -584,7 +584,7 @@ variable "usage_plans" {
         deployment_id = number
       })), [])
     }))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Usage Plan resource in Oracle Cloud Infrastructure API Gateway service.

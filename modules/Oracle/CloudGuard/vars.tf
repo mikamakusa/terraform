@@ -17,12 +17,12 @@ EOF
 }
 
 variable "cloud_guard_configuration" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     reporting_region      = string
     status                = string
     self_manage_resources = optional(bool)
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Cloud Guard Configuration resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -30,7 +30,7 @@ variable "cloud_guard_configuration" {
 }
 
 variable "data_mask_rule" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     data_mask_categories  = list(string)
     display_name          = string
@@ -44,7 +44,7 @@ variable "data_mask_rule" {
       kind   = string
       values = optional(list(string))
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Data Mask Rule resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -52,7 +52,7 @@ variable "data_mask_rule" {
 }
 
 variable "data_source" {
-  type = list(map(object({
+  type = list(object({
     id                        = number
     data_source_feed_provider = string
     display_name              = string
@@ -76,7 +76,7 @@ variable "data_source" {
         query_start_time  = optional(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Data Source resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -84,7 +84,7 @@ variable "data_source" {
 }
 
 variable "detector_recipe" {
-  type = list(map(object({
+  type = list(object({
     id                        = number
     display_name              = string
     defined_tags              = optional(map(string))
@@ -120,7 +120,7 @@ variable "detector_recipe" {
         })), [])
       }))
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Detector Recipe resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -128,7 +128,7 @@ variable "detector_recipe" {
 }
 
 variable "managed_list" {
-  type = list(map(object({
+  type = list(object({
     id                     = number
     display_name           = string
     defined_tags           = optional(map(string))
@@ -137,7 +137,7 @@ variable "managed_list" {
     list_items             = optional(list(string))
     list_type              = optional(string)
     source_managed_list_id = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Managed List resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -145,7 +145,7 @@ variable "managed_list" {
 }
 
 variable "responder_recipe" {
-  type = list(map(object({
+  type = list(object({
     id                         = number
     display_name               = string
     source_responder_recipe_id = number
@@ -155,7 +155,7 @@ variable "responder_recipe" {
     responder_rules = optional(list(object({
       responder_rule_id = string
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Responder Recipe resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -163,14 +163,14 @@ variable "responder_recipe" {
 }
 
 variable "security_recipe" {
-  type = list(map(object({
+  type = list(object({
     id                = number
     display_name      = string
     security_policies = list(string)
     defined_tags      = optional(map(string))
     freeform_tags     = optional(map(string))
     description       = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Security Recipe resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -178,14 +178,14 @@ variable "security_recipe" {
 }
 
 variable "security_zone" {
-  type = list(map(object({
+  type = list(object({
     id                      = number
     display_name            = string
     security_zone_recipe_id = string
     defined_tags            = optional(map(string))
     freeform_tags           = optional(map(string))
     description             = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Security Zone resource in Oracle Cloud Infrastructure Cloud Guard service.
@@ -193,7 +193,7 @@ variable "security_zone" {
 }
 
 variable "target" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     display_name         = string
     target_resource_id   = string
@@ -229,7 +229,7 @@ variable "target" {
         })), [])
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   This resource provides the Target resource in Oracle Cloud Infrastructure Cloud Guard service.

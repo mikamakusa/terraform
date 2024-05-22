@@ -27,7 +27,7 @@ variable "model_id" {
 }
 
 variable "endpoint" {
-  type = list(map(object({
+  type = list(object({
     id              = number
     model_id        = number
     defined_tags    = optional(map(string))
@@ -35,7 +35,7 @@ variable "endpoint" {
     display_name    = optional(string)
     freeform_tags   = optional(map(string))
     inference_units = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Endpoint resource in Oracle Cloud Infrastructure Ai Language service.
@@ -43,7 +43,7 @@ EOF
 }
 
 variable "model" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     project_id    = number
     defined_tags  = optional(map(string))
@@ -92,7 +92,7 @@ variable "model" {
         object_names  = list(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Model resource in Oracle Cloud Infrastructure Ai Language service.
@@ -101,13 +101,13 @@ EOF
 }
 
 variable "project" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     defined_tags  = optional(map(string))
     description   = optional(string)
     display_name  = optional(string)
     freeform_tags = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Project resource in Oracle Cloud Infrastructure Ai Language service.

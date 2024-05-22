@@ -20,12 +20,12 @@ variable "subnet_id" {
 }
 
 variable "knowledge_base" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     defined_tags  = optional(map(string))
     display_name  = optional(string)
     freeform_tags = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Knowledge Base resource in Oracle Cloud Infrastructure Adm service.
@@ -33,7 +33,7 @@ EOF
 }
 
 variable "remediation_recipe" {
-  type = list(map(object({
+  type = list(object({
     id                            = number
     is_run_triggered_on_kb_change = bool
     knowledge_base_id             = number
@@ -73,7 +73,7 @@ variable "remediation_recipe" {
       username              = optional(string)
       workflow_name         = optional(string)
     }))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Remediation Recipe resource in Oracle Cloud Infrastructure Adm service.
@@ -81,13 +81,13 @@ EOF
 }
 
 variable "remediation_run" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     remediation_recipe_id = number
     defined_tags          = optional(map(string))
     freeform_tags         = optional(map(string))
     display_name          = optional(string)
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Remediation Run resource in Oracle Cloud Infrastructure Adm service.
@@ -95,7 +95,7 @@ EOF
 }
 
 variable "vulnerability_audit" {
-  type = list(map(object({
+  type = list(object({
     id                = number
     build_type        = string
     knowledge_base_id = number
@@ -125,7 +125,7 @@ variable "vulnerability_audit" {
       object      = string
       source_type = string
     })), [])
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Vulnerability Audit resource in Oracle Cloud Infrastructure Adm service.

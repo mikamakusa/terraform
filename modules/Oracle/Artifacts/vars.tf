@@ -17,17 +17,17 @@ EOF
 }
 
 variable "container_configuration" {
-  type = list(map(object({
+  type = list(object({
     id                                  = number
     is_repository_created_on_first_push = bool
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "container_image_signature" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     image_id           = string
     kms_key_id         = string
@@ -37,14 +37,14 @@ variable "container_image_signature" {
     signing_algorithm  = string
     freeform_tags      = optional(map(string))
     defined_tags       = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "container_repository" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     display_name  = string
     defined_tags  = optional(map(string))
@@ -55,26 +55,26 @@ variable "container_repository" {
       content = string
       format  = string
     })))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "generic_artifact" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     artifact_id   = string
     defined_tags  = optional(map(string))
     freeform_tags = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "repository" {
-  type = list(map(object({
+  type = list(object({
     id              = number
     is_immutable    = bool
     repository_type = string
@@ -82,7 +82,7 @@ variable "repository" {
     freeform_tags   = optional(map(string))
     description     = optional(string)
     display_name    = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF

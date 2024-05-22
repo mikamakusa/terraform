@@ -17,21 +17,21 @@ EOF
 }
 
 variable "domain" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     display_name  = string
     defined_tags  = optional(map(string))
     freeform_tags = optional(map(string))
     is_free_tier  = optional(bool)
     description   = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 EOF
 }
 
 variable "config" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     apm_domain_id = number
     config_type   = string
@@ -64,7 +64,7 @@ variable "config" {
       satisfied_response_time  = number
       tolerating_response_time = number
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Config resource in Oracle Cloud Infrastructure Apm Config service.
@@ -72,7 +72,7 @@ EOF
 }
 
 variable "synthetics_dedicated_vantage_point" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     apm_domain_id = number
     display_name  = string
@@ -86,7 +86,7 @@ variable "synthetics_dedicated_vantage_point" {
       dvp_stream_id  = string
       dvp_version    = string
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Dedicated Vantage Point resource in Oracle Cloud Infrastructure Apm Synthetics service.
@@ -94,7 +94,7 @@ EOF
 }
 
 variable "synthetics_monitor" {
-  type = list(map(object({
+  type = list(object({
     id                         = number
     apm_domain_id              = number
     display_name               = string
@@ -166,7 +166,7 @@ variable "synthetics_monitor" {
         text = optional(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitor resource in Oracle Cloud Infrastructure Apm Synthetics service.
@@ -174,7 +174,7 @@ EOF
 }
 
 variable "synthetics_script" {
-  type = list(map(object({
+  type = list(object({
     id                = number
     apm_domain_id     = string
     content           = string
@@ -188,7 +188,7 @@ variable "synthetics_script" {
       is_secret   = optional(bool)
       param_value = optional(string)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Script resource in Oracle Cloud Infrastructure Apm Synthetics service.

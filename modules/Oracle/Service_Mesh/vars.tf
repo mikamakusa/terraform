@@ -16,7 +16,7 @@ variable "compartment_id" {
 }
 
 variable "access_policy" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     mesh_id       = number
     name          = string
@@ -43,7 +43,7 @@ variable "access_policy" {
         virtual_service_id = optional(string)
       }))
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Access Policy resource in Oracle Cloud Infrastructure Service Mesh service.
@@ -51,7 +51,7 @@ This resource provides the Access Policy resource in Oracle Cloud Infrastructure
 }
 
 variable "ingress_gateway" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     mesh_id       = number
     name          = string
@@ -83,7 +83,7 @@ variable "ingress_gateway" {
     mtls = optional(list(object({
       maximum_validity = optional(number)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Ingress Gateway resource in Oracle Cloud Infrastructure Service Mesh service.
@@ -91,7 +91,7 @@ This resource provides the Ingress Gateway resource in Oracle Cloud Infrastructu
 }
 
 variable "ingress_gateway_route_table" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     ingress_gateway_id = number
     name               = string
@@ -117,7 +117,7 @@ variable "ingress_gateway_route_table" {
         port = optional(number)
       })), [])
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Ingress Gateway Route Table resource in Oracle Cloud Infrastructure Service Mesh service.
@@ -125,7 +125,7 @@ This resource provides the Ingress Gateway Route Table resource in Oracle Cloud 
 }
 
 variable "mesh" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     display_name  = string
     defined_tags  = optional(map(string))
@@ -137,7 +137,7 @@ variable "mesh" {
     mtls = optional(list(object({
       minimum = string
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Mesh resource in Oracle Cloud Infrastructure Service Mesh service.
@@ -145,7 +145,7 @@ This resource provides the Mesh resource in Oracle Cloud Infrastructure Service 
 }
 
 variable "virtual_deployment" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     name               = string
     virtual_service_id = string
@@ -165,7 +165,7 @@ variable "virtual_deployment" {
     access_logging = optional(list(object({
       is_enabled = optional(bool)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Virtual Deployment resource in Oracle Cloud Infrastructure Service Mesh service.
@@ -173,7 +173,7 @@ This resource provides the Virtual Deployment resource in Oracle Cloud Infrastru
 }
 
 variable "virtual_service" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     mesh_id       = number
     name          = string
@@ -188,7 +188,7 @@ variable "virtual_service" {
       mode             = string
       maximum_validity = optional(number)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Virtual Service resource in Oracle Cloud Infrastructure Service Mesh service.
@@ -196,7 +196,7 @@ This resource provides the Virtual Service resource in Oracle Cloud Infrastructu
 }
 
 variable "virtual_service_route_table" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     name               = string
     virtual_service_id = number
@@ -216,7 +216,7 @@ variable "virtual_service_route_table" {
         weight             = optional(number)
       }))
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Virtual Service Route Table resource in Oracle Cloud Infrastructure Service Mesh service.

@@ -9,7 +9,7 @@ variable "freeform_tags" {
 }
 
 variable "auto_scaling_configuration" {
-  type = list(map(object({
+  type = list(object({
     id                     = number
     bds_instance_id        = number
     cluster_admin_password = string
@@ -100,14 +100,14 @@ variable "auto_scaling_configuration" {
         })), [])
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "bds_instance" {
-  type = list(map(object({
+  type = list(object({
     id                     = number
     cluster_admin_password = string
     cluster_public_key     = string
@@ -197,28 +197,28 @@ variable "bds_instance" {
         ocpus         = optional(number)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "bds_instance_api_key" {
-  type = list(map(object({
+  type = list(object({
     id              = number
     bds_instance_id = number
     key_alias       = string
     passphrase      = string
     user_id         = string
     default_region  = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "bds_instance_metastore_config" {
-  type = list(map(object({
+  type = list(object({
     id                     = number
     bds_api_key_id         = string
     bds_api_key_passphrase = string
@@ -226,19 +226,19 @@ variable "bds_instance_metastore_config" {
     cluster_admin_password = string
     metastore_id           = string
     display_name           = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF
 }
 
 variable "bds_instance_patch_action" {
-  type = list(map(object({
+  type = list(object({
     id                     = number
     bds_instance_id        = number
     cluster_admin_password = string
     version                = string
-  })))
+  }))
   default     = []
   description = <<EOF
   EOF

@@ -16,13 +16,13 @@ variable "compartment_id" {
 }
 
 variable "baselineable_metric" {
-  type = list(map(object({
+  type = list(object({
     id             = number
     column         = string
     name           = string
     namespace      = string
     resource_group = string
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Baselineable Metric resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -30,7 +30,7 @@ EOF
 }
 
 variable "config" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     config_type   = string
     defined_tags  = optional(map(string))
@@ -39,7 +39,7 @@ variable "config" {
     is_enabled    = optional(bool)
     license       = optional(string)
     resource_type = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Config resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -49,7 +49,7 @@ EOF
 }
 
 variable "discovery_job" {
-  type = list(map(object({
+  type = list(object({
     id                                            = number
     defined_tags                                  = optional(map(string))
     discovery_client                              = optional(string)
@@ -76,7 +76,7 @@ variable "discovery_job" {
         })), [])
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Discovery Job resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -84,7 +84,7 @@ EOF
 }
 
 variable "metric_extension" {
-  type = list(map(object({
+  type = list(object({
     id                     = number
     collection_recurrences = string
     display_name           = string
@@ -128,7 +128,7 @@ variable "metric_extension" {
         script_file_name = optional(string)
       })), [])
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Metric Extension resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -136,10 +136,10 @@ EOF
 }
 
 variable "metric_extension_metric_extension_on_given_resources_management" {
-  type = list(map(object({
+  type = list(object({
     id           = number
     resource_ids = string
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Metric Extension Metric Extension On Given Resources Management resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -147,10 +147,10 @@ EOF
 }
 
 variable "metric_extensions_test_management" {
-  type = list(map(object({
+  type = list(object({
     id           = number
     resource_ids = string
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Metric Extensions Test Management resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -158,7 +158,7 @@ EOF
 }
 
 variable "monitored_resource" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     name                 = string
     type                 = string
@@ -226,7 +226,7 @@ variable "monitored_resource" {
       name  = optional(string)
       value = optional(string)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitored Resource resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -234,7 +234,7 @@ EOF
 }
 
 variable "monitored_resource_task" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     defined_tags  = optional(map(string))
     freeform_tags = optional(map(string))
@@ -247,7 +247,7 @@ variable "monitored_resource_task" {
       availability_proxy_metrics                    = optional(list(string))
       resource_group                                = optional(number)
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitored Resource Task resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -255,7 +255,7 @@ EOF
 }
 
 variable "monitored_resource_type" {
-  type = list(map(object({
+  type = list(object({
     id               = number
     name             = string
     defined_tags     = optional(map(string))
@@ -274,7 +274,7 @@ variable "monitored_resource_type" {
         properties = list(string)
       })), [])
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitored Resource Type resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -282,12 +282,12 @@ EOF
 }
 
 variable "monitored_resources_associate_monitored_resource" {
-  type = list(map(object({
+  type = list(object({
     id                      = number
     association_type        = string
     destination_resource_id = string
     source_resource_id      = string
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitored Resources Associate Monitored Resource resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -295,12 +295,12 @@ EOF
 }
 
 variable "monitored_resources_list_member" {
-  type = list(map(object({
+  type = list(object({
     id                      = number
     monitored_resource_id   = string
     destination_resource_id = optional(string)
     limit_level             = optional(number)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitored Resources List Member resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -308,7 +308,7 @@ EOF
 }
 
 variable "monitored_resources_search" {
-  type = list(map(object({
+  type = list(object({
     id                                    = number
     exclude_fields                        = optional(list(string))
     external_id                           = optional(string)
@@ -327,7 +327,7 @@ variable "monitored_resources_search" {
     time_updated_greater_than_or_equal_to = optional(string)
     time_updated_less_than                = optional(string)
     type                                  = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitored Resources Search resource in Oracle Cloud Infrastructure Stack Monitoring service.
@@ -335,7 +335,7 @@ EOF
 }
 
 variable "monitored_resources_search_association" {
-  type = list(map(object({
+  type = list(object({
     id                        = number
     association_type          = optional(string)
     destination_resource_id   = optional(string)
@@ -344,7 +344,7 @@ variable "monitored_resources_search_association" {
     source_resource_id        = optional(string)
     source_resource_name      = optional(string)
     source_resource_type      = optional(string)
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Monitored Resources Search Association resource in Oracle Cloud Infrastructure Stack Monitoring service.

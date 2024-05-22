@@ -22,7 +22,7 @@ variable "project_id" {
 }
 
 variable "model" {
-  type = list(map(object({
+  type = list(object({
     id                         = number
     model_type                 = string
     model_id                   = string
@@ -63,7 +63,7 @@ variable "model" {
       namespace    = optional(string)
       object       = optional(string)
     })), [])
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Model resource in Oracle Cloud Infrastructure Ai Document service.
@@ -72,7 +72,7 @@ EOF
 }
 
 variable "processor_job" {
-  type = list(map(object({
+  type = list(object({
     id           = number
     display_name = optional(string)
     input_location = list(object({
@@ -102,7 +102,7 @@ variable "processor_job" {
         tenancy_id              = optional(string)
       }))
     }))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Processor Job resource in Oracle Cloud Infrastructure Ai Document service.
@@ -110,13 +110,13 @@ EOF
 }
 
 variable "project" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     defined_tags  = optional(map(string))
     description   = optional(string)
     display_name  = optional(string)
     freeform_tags = optional(map(string))
-  })))
+  }))
   default     = []
   description = <<EOF
 This resource provides the Project resource in Oracle Cloud Infrastructure Ai Document service.

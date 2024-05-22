@@ -17,13 +17,13 @@ variable "subnet_id" {
 }
 
 variable "private_endpoint" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     dns_zones     = list(string)
     display_name  = optional(string)
     defined_tags  = optional(map(string))
     freeform_tags = optional(map(string))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Ai Private Endpoint resource in Oracle Cloud Infrastructure Ai Anomaly Detection service.
@@ -31,7 +31,7 @@ EOF
 }
 
 variable "data_asset" {
-  type = list(map(object({
+  type = list(object({
     id                  = number
     project_id          = number
     display_name        = optional(string)
@@ -67,7 +67,7 @@ variable "data_asset" {
         retention_policy_name = optional(string)
       })), [])
     }))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Data Asset resource in Oracle Cloud Infrastructure Ai Anomaly Detection service.
@@ -75,7 +75,7 @@ EOF
 }
 
 variable "anomaly_job" {
-  type = list(map(object({
+  type = list(object({
     id           = number
     model_id     = number
     description  = optional(string)
@@ -102,7 +102,7 @@ variable "anomaly_job" {
       output_type = string
       prefix      = optional(string)
     }))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Detect Anomaly Job resource in Oracle Cloud Infrastructure Ai Anomaly Detection service.
@@ -110,7 +110,7 @@ EOF
 }
 
 variable "model" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     project_id    = number
     defined_tags  = optional(map(string))
@@ -124,7 +124,7 @@ variable "model" {
       training_fraction = optional(number)
       window_size       = optional(number)
     }))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Model resource in Oracle Cloud Infrastructure Ai Anomaly Detection service.
@@ -132,13 +132,13 @@ EOF
 }
 
 variable "project" {
-  type = list(map(object({
+  type = list(object({
     id            = number
     display_name  = optional(string)
     description   = optional(string)
     defined_tags  = optional(map(string))
     freeform_tags = optional(map(string))
-  })))
+  }))
   default = []
   description = <<EOF
 This resource provides the Project resource in Oracle Cloud Infrastructure Ai Anomaly Detection service.
