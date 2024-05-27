@@ -1298,7 +1298,173 @@ EOF
 
 variable "database_secrets_mount" {
   type = list(object({
-    id = number
+    id                           = number
+    path                         = string
+    description                  = optional(string)
+    default_lease_ttl_seconds    = optional(number)
+    max_lease_ttl_seconds        = optional(number)
+    audit_non_hmac_request_keys  = optional(list(string))
+    audit_non_hmac_response_keys = optional(list(string))
+    local                        = optional(bool)
+    options                      = optional(map(string))
+    seal_wrap                    = optional(bool)
+    external_entropy_access      = optional(bool)
+    allowed_managed_keys         = optional(list(string))
+    cassandra = optional(list(object({
+      name             = string
+      username         = optional(string)
+      password         = optional(string)
+      port             = optional(number)
+      tls              = optional(bool)
+      insecure_tls     = optional(bool)
+      pem_bundle       = optional(string)
+      pem_json         = optional(string)
+      protocol_version = optional(number)
+      connect_timeout  = optional(number)
+    })), [])
+    couchbase = optional(list(object({
+      hosts             = list(string)
+      name              = string
+      password          = string
+      username          = string
+      tls               = optional(bool)
+      insecure_tls      = optional(bool)
+      base64_pem        = optional(string)
+      bucket_name       = optional(string)
+      username_template = optional(string)
+    })), [])
+    elasticsearch = optional(list(object({
+      name              = string
+      password          = string
+      url               = string
+      username          = string
+      tls_server_name   = optional(string)
+      ca_cert           = optional(string)
+      ca_path           = optional(string)
+      client_cert       = optional(string)
+      client_key        = optional(string)
+      insecure          = optional(bool)
+      username_template = optional(string)
+    })), [])
+    hana = optional(list(object({
+      name                    = string
+      connection_url          = optional(string)
+      max_connection_lifetime = optional(number)
+      max_idle_connections    = optional(number)
+      max_open_connections    = optional(number)
+      username                = optional(string)
+      password                = optional(string)
+      disable_escaping        = optional(bool)
+    })), [])
+    influxdb = optional(list(object({
+      name              = string
+      host              = string
+      password          = string
+      username          = string
+      tls               = optional(bool)
+      insecure_tls      = optional(bool)
+      pem_bundle        = optional(string)
+      pem_json          = optional(string)
+      username_template = optional(string)
+      connect_timeout   = optional(number)
+    })), [])
+    mongodb = optional(list(object({
+      name              = string
+      connection_url    = optional(string)
+      username          = optional(string)
+      username_template = optional(string)
+      password          = optional(string)
+    })), [])
+    mongodbatlas = optional(list(object({
+      private_key = string
+      project_id  = string
+      public_key  = string
+    })), [])
+    mssql = optional(list(object({
+      name                    = string
+      connection_url          = optional(string)
+      max_connection_lifetime = optional(number)
+      max_idle_connections    = optional(number)
+      max_open_connections    = optional(number)
+      username_template       = optional(string)
+      username                = optional(string)
+      password                = optional(string)
+      disable_escaping        = optional(bool)
+      contained_db            = optional(bool)
+    })), [])
+    mysql = optional(list(object({
+      name                    = string
+      connection_url          = optional(string)
+      max_connection_lifetime = optional(number)
+      max_idle_connections    = optional(number)
+      max_open_connections    = optional(number)
+      username                = optional(string)
+      password                = optional(string)
+      auth_type               = optional(string)
+      service_account_json    = optional(string)
+      tls_certificate_key     = optional(string)
+      tls_ca                  = optional(string)
+      username_template       = optional(string)
+    })), [])
+    postgresql = optional(list(object({
+      name                    = string
+      connection_url          = optional(string)
+      max_connection_lifetime = optional(number)
+      max_idle_connections    = optional(number)
+      max_open_connections    = optional(number)
+      username                = optional(string)
+      password                = optional(string)
+      auth_type               = optional(string)
+      service_account_json    = optional(string)
+      username_template       = optional(string)
+    })), [])
+    oracle = optional(list(object({
+      name                    = string
+      connection_url          = optional(string)
+      max_connection_lifetime = optional(number)
+      max_idle_connections    = optional(number)
+      max_open_connections    = optional(number)
+      username                = optional(string)
+      password                = optional(string)
+      username_template       = optional(string)
+    })), [])
+    snowflake = optional(list(object({
+      name                    = string
+      connection_url          = optional(string)
+      max_connection_lifetime = optional(number)
+      max_idle_connections    = optional(number)
+      max_open_connections    = optional(number)
+      username                = optional(string)
+      password                = optional(string)
+      username_template       = optional(string)
+    })), [])
+    redis = optional(list(object({
+      name         = string
+      host         = string
+      password     = string
+      username     = string
+      tls          = optional(bool)
+      insecure_tls = optional(bool)
+      ca_cert      = optional(string)
+    })), [])
+    redis_elasticache = optional(list(object({
+      name     = string
+      url      = string
+      username = optional(string)
+      password = optional(string)
+      region   = optional(string)
+    })), [])
+    redshift = optional(list(object({
+      name                    = string
+      connection_url          = optional(string)
+      max_connection_lifetime = optional(number)
+      max_idle_connections    = optional(number)
+      max_open_connections    = optional(number)
+      username                = optional(string)
+      password                = optional(string)
+      username_template       = optional(string)
+      disable_escaping        = optional(bool)
+    })), [])
   }))
   default     = []
   description = <<EOF
@@ -1307,7 +1473,12 @@ EOF
 
 variable "egp_policy" {
   type = list(object({
-    id = number
+    id                = number
+    enforcement_level = string
+    name              = string
+    paths             = list(string)
+    policy            = string
+    namespace         = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1316,7 +1487,13 @@ EOF
 
 variable "gcp_auth_backend" {
   type = list(object({
-    id = number
+    id              = number
+    namespace       = optional(string)
+    credentials     = optional(string)
+    path            = optional(string)
+    disable_remount = optional(bool)
+    description     = optional(string)
+    local           = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1325,16 +1502,50 @@ EOF
 
 variable "gcp_auth_backend_role" {
   type = list(object({
-    id = number
+    id                      = number
+    role                    = string
+    type                    = string
+    backend_id              = number
+    namespace               = optional(string)
+    bound_instance_groups   = optional(list(string))
+    bound_labels            = optional(list(string))
+    bound_projects          = optional(list(string))
+    bound_regions           = optional(list(string))
+    bound_service_accounts  = optional(list(string))
+    bound_zones             = optional(list(string))
+    token_bound_cidrs       = optional(list(string))
+    token_explicit_max_ttl  = optional(number)
+    token_max_ttl           = optional(number)
+    token_no_default_policy = optional(bool)
+    token_num_uses          = optional(number)
+    token_period            = optional(number)
+    token_policies          = optional(list(string))
+    token_ttl               = optional(number)
+    token_type              = optional(string)
   }))
   default     = []
   description = <<EOF
 EOF
+
+  validation {
+    condition = alltrue([
+      for role in var.gcp_auth_backend_role : contains(["gce", "iam"], role.type)
+    ])
+    error_message = "Valid values are 'gce' or 'iam'."
+  }
 }
 
 variable "gcp_secret_backend" {
   type = list(object({
-    id = number
+    id                        = number
+    credentials               = optional(string)
+    namespace                 = optional(string)
+    path                      = optional(string)
+    disable_remount           = optional(bool)
+    description               = optional(string)
+    default_lease_ttl_seconds = optional(number)
+    max_lease_ttl_seconds     = optional(number)
+    local                     = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1343,7 +1554,11 @@ EOF
 
 variable "gcp_secret_impersonated_account" {
   type = list(object({
-    id = number
+    id                    = number
+    backend_id            = number
+    impersonated_account  = string
+    service_account_email = string
+    token_scopes          = list(string)
   }))
   default     = []
   description = <<EOF
@@ -1352,25 +1567,66 @@ EOF
 
 variable "gcp_secret_roleset" {
   type = list(object({
-    id = number
+    id           = number
+    backend_id   = number
+    project      = string
+    roleset      = string
+    namespace    = optional(string)
+    secret_type  = optional(string)
+    token_scopes = optional(list(string))
+    binding = optional(list(object({
+      resource = string
+      roles    = list(string)
+    })), [])
   }))
   default     = []
   description = <<EOF
 EOF
+
+  validation {
+    condition = alltrue([
+      for secret in var.gcp_secret_roleset : contains(["access_token", "service_account_key"], secret.secret_type)
+    ])
+    error_message = "Valid values are 'access_token' or 'service_account_key'."
+  }
 }
 
 variable "gcp_secret_static_account" {
   type = list(object({
-    id = number
+    id                    = number
+    backend_id            = number
+    service_account_email = string
+    static_account        = string
+    namespace             = optional(string)
+    secret_type           = optional(string)
+    token_scopes          = optional(list(string))
+    binding = optional(list(object({
+      resource = string
+      roles    = list(string)
+    })), [])
   }))
   default     = []
   description = <<EOF
 EOF
+
+  validation {
+    condition = alltrue([
+      for secret in var.gcp_secret_static_account : contains(["access_token", "service_account_key"], secret.secret_type)
+    ])
+    error_message = "Valid values are 'access_token' or 'service_account_key'."
+  }
 }
 
 variable "generic_endpoint" {
   type = list(object({
-    id = number
+    id                   = number
+    data_json            = string
+    path                 = string
+    namespace            = optional(string)
+    disable_read         = optional(bool)
+    disable_delete       = optional(bool)
+    ignore_absent_fields = optional(bool)
+    write_fields         = optional(list(string))
   }))
   default     = []
   description = <<EOF
@@ -1379,7 +1635,12 @@ EOF
 
 variable "generic_secret" {
   type = list(object({
-    id = number
+    id                  = number
+    data_json           = string
+    path                = string
+    namespace           = optional(string)
+    disable_read        = optional(bool)
+    delete_all_versions = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1388,7 +1649,14 @@ EOF
 
 variable "github_auth_backend" {
   type = list(object({
-    id = number
+    id              = number
+    organization    = string
+    namespace       = optional(string)
+    path            = optional(string)
+    disable_remount = optional(bool)
+    organization_id = optional(number)
+    base_url        = optional(string)
+    description     = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1397,7 +1665,11 @@ EOF
 
 variable "github_team" {
   type = list(object({
-    id = number
+    id         = number
+    team       = string
+    backend_id = optional(number)
+    namespace  = optional(string)
+    policies   = optional(list(string))
   }))
   default     = []
   description = <<EOF
@@ -1406,7 +1678,11 @@ EOF
 
 variable "github_user" {
   type = list(object({
-    id = number
+    id         = number
+    user       = string
+    backend_id = optional(number)
+    namespace  = optional(string)
+    policies   = optional(list(string))
   }))
   default     = []
   description = <<EOF
@@ -1415,7 +1691,13 @@ EOF
 
 variable "identity_entity" {
   type = list(object({
-    id = number
+    id                = number
+    namespace         = optional(string)
+    name              = optional(string)
+    policies          = optional(list(string))
+    external_policies = optional(bool)
+    metadata          = optional(map(string))
+    disabled          = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1424,7 +1706,11 @@ EOF
 
 variable "identity_entity_alias" {
   type = list(object({
-    id = number
+    id             = number
+    canonical_id   = string
+    mount_accessor = string
+    name           = string
+    namespace      = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1433,7 +1719,11 @@ EOF
 
 variable "identity_entity_policies" {
   type = list(object({
-    id = number
+    id        = number
+    entity_id = number
+    policies  = list(string)
+    namespace = optional(string)
+    exclusive = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1442,16 +1732,37 @@ EOF
 
 variable "identity_group" {
   type = list(object({
-    id = number
+    id                         = number
+    namespace                  = optional(string)
+    name                       = optional(string)
+    type                       = optional(string)
+    policies                   = optional(list(string))
+    external_policies          = optional(bool)
+    external_member_group_ids  = optional(bool)
+    external_member_entity_ids = optional(bool)
+    metadata                   = optional(map(string))
+    member_entity_ids          = optional(list(string))
+    member_group_ids           = optional(list(string))
   }))
   default     = []
   description = <<EOF
 EOF
+
+  validation {
+    condition = alltrue([
+      for group in var.identity_group : contains(["internal", "external"], group.type)
+    ])
+    error_message = "Valid values are 'internal' or 'external'."
+  }
 }
 
 variable "identity_group_alias" {
   type = list(object({
-    id = number
+    id                = number
+    canonical_id      = number
+    mount_accessor_id = number
+    name              = string
+    namespace         = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1460,7 +1771,11 @@ EOF
 
 variable "identity_group_member_entity_ids" {
   type = list(object({
-    id = number
+    id                = number
+    group_id          = number
+    namespace         = optional(string)
+    member_entity_ids = list(number)
+    exclusive         = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1469,7 +1784,11 @@ EOF
 
 variable "identity_group_member_group_ids" {
   type = list(object({
-    id = number
+    id                = number
+    group_id          = number
+    namespace         = optional(string)
+    member_entity_ids = list(number)
+    exclusive         = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1478,7 +1797,11 @@ EOF
 
 variable "identity_group_policies" {
   type = list(object({
-    id = number
+    id        = number
+    group_id  = number
+    policies  = list(string)
+    namespace = optional(string)
+    exclusive = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1487,7 +1810,14 @@ EOF
 
 variable "identity_mfa_duo" {
   type = list(object({
-    id = number
+    id              = number
+    api_hostname    = string
+    integration_key = string
+    secret_key      = string
+    namespace       = optional(string)
+    push_info       = optional(string)
+    use_passcode    = optional(bool)
+    username_format = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1496,7 +1826,14 @@ EOF
 
 variable "identity_mfa_login_enforcement" {
   type = list(object({
-    id = number
+    id                    = number
+    mfa_method_ids        = list(number)
+    name                  = string
+    auth_method_accessors = optional(string)
+    auth_method_types     = optional(string)
+    identity_entity_ids   = optional(list(number))
+    identity_group_ids    = optional(list(number))
+    namespace             = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1505,7 +1842,13 @@ EOF
 
 variable "identity_mfa_okta" {
   type = list(object({
-    id = number
+    id              = number
+    api_token       = string
+    org_name        = string
+    base_url        = optional(string)
+    namespace       = optional(string)
+    primary_email   = optional(bool)
+    username_format = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1514,7 +1857,10 @@ EOF
 
 variable "identity_mfa_pingid" {
   type = list(object({
-    id = number
+    id                   = number
+    settings_file_base64 = string
+    namespace            = optional(string)
+    username_format      = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1523,7 +1869,16 @@ EOF
 
 variable "identity_mfa_totp" {
   type = list(object({
-    id = number
+    id                      = number
+    issuer                  = string
+    algorithm               = optional(string)
+    digits                  = optional(number)
+    key_size                = optional(number)
+    max_validation_attempts = optional(number)
+    namespace               = optional(string)
+    period                  = optional(number)
+    qr_size                 = optional(number)
+    skew                    = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -1532,7 +1887,9 @@ EOF
 
 variable "identity_oidc" {
   type = list(object({
-    id = number
+    id        = number
+    namespace = optional(string)
+    issuer    = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1541,7 +1898,11 @@ EOF
 
 variable "identity_oidc_assignment" {
   type = list(object({
-    id = number
+    id         = number
+    name       = string
+    entity_ids = optional(list(number))
+    group_ids  = optional(list(number))
+    namespace  = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1550,7 +1911,15 @@ EOF
 
 variable "identity_oidc_client" {
   type = list(object({
-    id = number
+    id               = number
+    name             = string
+    key              = optional(string)
+    redirect_uris    = optional(list(string))
+    assignments      = optional(list(string))
+    id_token_ttl     = optional(number)
+    access_token_ttl = optional(number)
+    client_type      = optional(string)
+    namespace        = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1559,7 +1928,13 @@ EOF
 
 variable "identity_oidc_key" {
   type = list(object({
-    id = number
+    id                 = number
+    name               = string
+    namespace          = optional(string)
+    rotation_period    = optional(number)
+    verification_ttl   = optional(number)
+    algorithm          = optional(string)
+    allowed_client_ids = optional(list(number))
   }))
   default     = []
   description = <<EOF
@@ -1568,7 +1943,10 @@ EOF
 
 variable "identity_oidc_key_allowed_client_id" {
   type = list(object({
-    id = number
+    id                = number
+    allowed_client_id = number
+    key_id            = number
+    namespace         = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1577,7 +1955,13 @@ EOF
 
 variable "identity_oidc_provider" {
   type = list(object({
-    id = number
+    id                 = number
+    name               = string
+    allowed_client_ids = optional(list(number))
+    issuer_host        = optional(string)
+    https_enabled      = optional(bool)
+    namespace          = optional(string)
+    scopes_ids         = optional(list(number))
   }))
   default     = []
   description = <<EOF
@@ -1586,7 +1970,13 @@ EOF
 
 variable "identity_oidc_role" {
   type = list(object({
-    id = number
+    id        = number
+    key_id    = number
+    name      = string
+    template  = optional(string)
+    ttl       = optional(number)
+    client_id = optional(number)
+    namespace = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1595,7 +1985,11 @@ EOF
 
 variable "identity_oidc_scope" {
   type = list(object({
-    id = number
+    id          = number
+    name        = string
+    template    = optional(string)
+    description = optional(string)
+    namespace   = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1604,7 +1998,26 @@ EOF
 
 variable "jwt_auth_backend" {
   type = list(object({
-    id = number
+    id                     = number
+    namespace              = optional(string)
+    namespace_in_state     = optional(bool)
+    path                   = optional(string)
+    disable_remount        = optional(bool)
+    type                   = optional(string)
+    description            = optional(string)
+    oidc_client_id         = optional(string)
+    oidc_client_secret     = optional(string)
+    oidc_discovery_ca_pem  = optional(string)
+    oidc_discovery_url     = optional(string)
+    oidc_response_mode     = optional(string)
+    oidc_response_types    = optional(list(string))
+    jwks_ca_pem            = optional(string)
+    jwks_url               = optional(string)
+    jwt_supported_algs     = optional(list(string))
+    jwt_validation_pubkeys = optional(list(string))
+    default_role           = optional(string)
+    provider_config        = optional(map(string))
+    local                  = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1613,7 +2026,36 @@ EOF
 
 variable "jwt_auth_backend_role" {
   type = list(object({
-    id = number
+    id                           = number
+    backend_id                   = optional(number)
+    role_name                    = optional(string)
+    user_claim                   = optional(string)
+    role_type                    = optional(string)
+    bound_audiences              = optional(list(string))
+    bound_claims                 = optional(map(string))
+    bound_claims_type            = optional(string)
+    bound_subject                = optional(string)
+    disable_bound_claims_parsing = optional(bool)
+    user_claim_json_pointer      = optional(bool)
+    claim_mappings               = optional(map(string))
+    clock_skew_leeway            = optional(number)
+    oidc_scopes                  = optional(list(string))
+    groups_claim                 = optional(string)
+    allowed_redirect_uris        = optional(list(string))
+    expiration_leeway            = optional(number)
+    not_before_leeway            = optional(number)
+    verbose_oidc_logging         = optional(bool)
+    max_age                      = optional(number)
+    namespace                    = optional(string)
+    token_bound_cidrs            = optional(list(string))
+    token_explicit_max_ttl       = optional(number)
+    token_max_ttl                = optional(number)
+    token_num_uses               = optional(number)
+    token_no_default_policy      = optional(bool)
+    token_policies               = optional(list(string))
+    token_period                 = optional(number)
+    token_ttl                    = optional(number)
+    token_type                   = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1622,16 +2064,56 @@ EOF
 
 variable "kmip_secret_backend" {
   type = list(object({
-    id = number
+    id                          = number
+    path                        = string
+    namespace                   = optional(string)
+    disable_remount             = optional(bool)
+    description                 = optional(string)
+    listen_addrs                = optional(list(string))
+    server_hostnames            = optional(list(string))
+    server_ips                  = optional(list(string))
+    tls_ca_key_bits             = optional(number)
+    tls_ca_key_type             = optional(string)
+    tls_min_version             = optional(string)
+    default_tls_client_key_bits = optional(number)
+    default_tls_client_key_type = optional(string)
+    default_tls_client_ttl      = optional(number)
   }))
   default     = []
   description = <<EOF
 EOF
+
+  validation {
+    condition = alltrue([
+      for secret in var.kmip_secret_backend : contains(["rsa", "ec"], secret.default_tls_client_key_type)
+    ])
+    error_message = "Valid values are 'rsa' or 'ec'."
+  }
 }
 
 variable "kmip_secret_role" {
   type = list(object({
-    id = number
+    id                           = number
+    path_id                      = number
+    scope                        = optional(string)
+    namespace                    = optional(string)
+    tls_client_key_bits          = optional(number)
+    tls_client_key_type          = optional(string)
+    tls_client_ttl               = optional(number)
+    operation_activate           = optional(bool)
+    operation_add_attribute      = optional(bool)
+    operation_all                = optional(bool)
+    operation_create             = optional(bool)
+    operation_destroy            = optional(bool)
+    operation_discover_versions  = optional(bool)
+    operation_get                = optional(bool)
+    operation_get_attribute_list = optional(bool)
+    operation_get_attributes     = optional(bool)
+    operation_locate             = optional(bool)
+    operation_none               = optional(bool)
+    operation_register           = optional(bool)
+    operation_rekey              = optional(bool)
+    operation_revoke             = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1640,7 +2122,11 @@ EOF
 
 variable "kmip_secret_scope" {
   type = list(object({
-    id = number
+    id        = number
+    path_id   = number
+    scope     = string
+    force     = optional(bool)
+    namespace = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1649,7 +2135,16 @@ EOF
 
 variable "kubernetes_auth_backend_config" {
   type = list(object({
-    id = number
+    id                     = number
+    kubernetes_host        = string
+    backend_id             = optional(number)
+    kubernetes_ca_cert     = optional(string)
+    token_reviewer_jwt     = optional(string)
+    issuer                 = optional(string)
+    namespace              = optional(string)
+    disable_iss_validation = optional(bool)
+    disable_local_ca_jwt   = optional(bool)
+    pem_keys               = optional(list(string))
   }))
   default     = []
   description = <<EOF
@@ -1658,7 +2153,22 @@ EOF
 
 variable "kubernetes_auth_backend_role" {
   type = list(object({
-    id = number
+    id                               = number
+    bound_service_account_names      = list(string)
+    bound_service_account_namespaces = list(string)
+    role_name                        = string
+    backend_id                       = optional(number)
+    audience                         = optional(string)
+    alias_name_source                = optional(string)
+    token_type                       = optional(string)
+    token_bound_cidrs                = optional(list(string))
+    token_policies                   = optional(list(string))
+    token_explicit_max_ttl           = optional(number)
+    token_max_ttl                    = optional(number)
+    token_num_uses                   = optional(number)
+    token_period                     = optional(number)
+    token_ttl                        = optional(number)
+    token_no_default_policy          = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1667,7 +2177,13 @@ EOF
 
 variable "kubernetes_secret_backend" {
   type = list(object({
-    id = number
+    id                   = number
+    path                 = string
+    namespace            = optional(string)
+    kubernetes_ca_cert   = optional(string)
+    kubernetes_host      = optional(string)
+    service_account_jwt  = optional(string)
+    disable_local_ca_jwt = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -1676,43 +2192,96 @@ EOF
 
 variable "kubernetes_secret_backend_role" {
   type = list(object({
-    id = number
+    id                            = number
+    allowed_kubernetes_namespaces = list(string)
+    backend_id                    = number
+    name                          = string
+    namespace                     = optional(string)
+    name_template                 = optional(string)
+    token_max_ttl                 = optional(number)
+    token_default_ttl             = optional(number)
+    kubernetes_role_name          = optional(string)
+    kubernetes_role_type          = optional(string)
+    generated_role_rules          = optional(string)
+    extra_annotations             = optional(map(string))
+    extra_labels                  = optional(map(string))
   }))
   default     = []
   description = <<EOF
 EOF
 }
 
-variable "kmip_secret_scope" {
+variable "kv_secret" {
   type = list(object({
-    id = number
+    id        = number
+    data_json = string
+    path_id   = number
+    namespace = optional(string)
   }))
   default     = []
   description = <<EOF
-EOF
+  EOF
 }
 
-variable "kmip_secret_role" {
+variable "kv_secret_backend_v2" {
   type = list(object({
-    id = number
+    id                   = number
+    mount_id             = number
+    namespace            = optional(string)
+    max_versions         = optional(number)
+    cas_required         = optional(bool)
+    delete_version_after = optional(number)
   }))
   default     = []
   description = <<EOF
-EOF
+  EOF
 }
 
-variable "kmip_secret_backend" {
+variable "kv_secret_v2" {
   type = list(object({
-    id = number
+    id                  = number
+    data_json           = string
+    mount               = number
+    name                = string
+    namespace           = optional(string)
+    cas                 = optional(number)
+    disable_read        = optional(bool)
+    delete_all_versions = optional(bool)
   }))
   default     = []
   description = <<EOF
-EOF
+  EOF
 }
+
 
 variable "ldap_auth_backend" {
   type = list(object({
-    id = number
+    id                   = number
+    url                  = string
+    starttls             = optional(bool)
+    case_sensitive_names = optional(bool)
+    insecure_tls         = optional(bool)
+    deny_null_bind       = optional(bool)
+    discoverdn           = optional(bool)
+    disable_remount      = optional(bool)
+    use_token_groups     = optional(bool)
+    username_as_alias    = optional(bool)
+    local                = optional(bool)
+    token_num_uses       = optional(number)
+    max_page_size        = optional(number)
+    tls_min_version      = optional(string)
+    tls_max_version      = optional(string)
+    certificate          = optional(string)
+    client_tls_cert      = optional(string)
+    client_tls_key       = optional(string)
+    binddn               = optional(string)
+    bindpass             = optional(string)
+    upndomain            = optional(string)
+    groupattr            = optional(string)
+    groupdn              = optional(string)
+    groupfilter          = optional(string)
+    path                 = optional(string)
+    description          = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -1721,7 +2290,11 @@ EOF
 
 variable "ldap_auth_backend_group" {
   type = list(object({
-    id = number
+    id         = number
+    groupname  = string
+    namespace  = optional(string)
+    policies   = optional(list(string))
+    backend_id = optional(number)
   }))
   default     = []
   description = <<EOF
