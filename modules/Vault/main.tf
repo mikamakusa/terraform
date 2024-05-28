@@ -141,7 +141,7 @@ resource "vault_auth_backend" "this" {
 
 resource "vault_aws_auth_backend_cert" "this" {
   count           = length(var.aws_auth_backend_cert)
-  aws_public_cert = file(lookup(var.aws_auth_backend_cert[count.index], "aws_public_cert"))
+  aws_public_cert = file(join("/", [path.cwd, "certificate", lookup(var.aws_auth_backend_cert[count.index], "aws_public_cert")]))
   cert_name       = lookup(var.aws_auth_backend_cert[count.index], "cert_name")
   namespace       = lookup(var.aws_auth_backend_cert[count.index], "namespace")
   type            = lookup(var.aws_auth_backend_cert[count.index], "type")
@@ -1493,172 +1493,448 @@ resource "vault_ldap_auth_backend_group" "this" {
 }
 
 resource "vault_ldap_auth_backend_user" "this" {
-  count    = length(var.ldap_auth_backend_user)
-  username = ""
+  count     = length(var.ldap_auth_backend_user)
+  username  = lookup(var.ldap_auth_backend_user[count.index], "username")
+  backend   = try(element(vault_ldap_auth_backend.this.*.path, lookup(var.ldap_auth_backend_user[count.index], "backend_id")))
+  groups    = try(element(vault_ldap_auth_backend_group.this.*.id, lookup(var.ldap_auth_backend_user[count.index], "groups_id")))
+  policies  = lookup(var.ldap_auth_backend_user[count.index], "policies")
+  namespace = lookup(var.ldap_auth_backend_user[count.index], "namespace")
 }
 
 resource "vault_ldap_secret_backend" "this" {
-  count    = length(var.ldap_secret_backend)
-  binddn   = ""
-  bindpass = ""
+  count                        = length(var.ldap_secret_backend)
+  binddn                       = lookup(var.ldap_secret_backend[count.index], "binddn")
+  bindpass                     = lookup(var.ldap_secret_backend[count.index], "bindpass")
+  path                         = lookup(var.ldap_secret_backend[count.index], "path")
+  url                          = lookup(var.ldap_secret_backend[count.index], "url")
+  certificate                  = file(join("/", [path.cwd, "certificate", lookup(var.ldap_secret_backend[count.index], "certificate")]))
+  client_tls_cert              = file(join("/", [path.cwd, "certificate", lookup(var.ldap_secret_backend[count.index], "client_tls_cert")]))
+  client_tls_key               = file(join("/", [path.cwd, "certificate", lookup(var.ldap_secret_backend[count.index], "client_tls_key")]))
+  description                  = lookup(var.ldap_secret_backend[count.index], "description")
+  upndomain                    = lookup(var.ldap_secret_backend[count.index], "upndomain")
+  password_policy              = lookup(var.ldap_secret_backend[count.index], "password_policy")
+  schema                       = lookup(var.ldap_secret_backend[count.index], "schema")
+  userattr                     = lookup(var.ldap_secret_backend[count.index], "userattr")
+  userdn                       = lookup(var.ldap_secret_backend[count.index], "userdn")
+  audit_non_hmac_request_keys  = lookup(var.ldap_secret_backend[count.index], "audit_non_hmac_request_keys")
+  audit_non_hmac_response_keys = lookup(var.ldap_secret_backend[count.index], "audit_non_hmac_response_keys")
+  connection_timeout           = lookup(var.ldap_secret_backend[count.index], "connection_timeout")
+  default_lease_ttl_seconds    = lookup(var.ldap_secret_backend[count.index], "default_lease_ttl_seconds")
+  max_lease_ttl_seconds        = lookup(var.ldap_secret_backend[count.index], "max_lease_ttl_seconds")
+  request_timeout              = lookup(var.ldap_secret_backend[count.index], "request_timeout")
+  starttls                     = lookup(var.ldap_secret_backend[count.index], "starttls")
+  insecure_tls                 = lookup(var.ldap_secret_backend[count.index], "insecure_tls")
+  local                        = lookup(var.ldap_secret_backend[count.index], "local")
+  disable_remount              = lookup(var.ldap_secret_backend[count.index], "disable_remount")
 }
 
 resource "vault_ldap_secret_backend_dynamic_role" "this" {
-  count         = length(var.ldap_secret_backend_dynamic_role)
-  creation_ldif = ""
-  deletion_ldif = ""
-  role_name     = ""
+  count             = length(var.ldap_secret_backend_dynamic_role)
+  creation_ldif     = lookup(var.ldap_secret_backend_dynamic_role[count.index], "creation_ldif")
+  deletion_ldif     = lookup(var.ldap_secret_backend_dynamic_role[count.index], "deletion_ldif")
+  role_name         = lookup(var.ldap_secret_backend_dynamic_role[count.index], "role_name")
+  namespace         = lookup(var.ldap_secret_backend_dynamic_role[count.index], "namespace")
+  mount             = try(element(vault_ldap_secret_backend.this.*.path, lookup(var.ldap_secret_backend_dynamic_role[count.index], "mount")))
+  rollback_ldif     = lookup(var.ldap_secret_backend_dynamic_role[count.index], "rollback_ldif")
+  username_template = lookup(var.ldap_secret_backend_dynamic_role[count.index], "username_template")
+  default_ttl       = lookup(var.ldap_secret_backend_dynamic_role[count.index], "default_ttl")
+  max_ttl           = lookup(var.ldap_secret_backend_dynamic_role[count.index], "max_ttl")
 }
 
 resource "vault_ldap_secret_backend_library_set" "this" {
-  count                 = length(var.ldap_secret_backend_library_set)
-  name                  = ""
-  service_account_names = []
+  count                        = length(var.ldap_secret_backend_library_set)
+  name                         = lookup(var.ldap_secret_backend_library_set[count.index], "name")
+  service_account_names        = lookup(var.ldap_secret_backend_library_set[count.index], "service_account_names")
+  mount                        = try(element(vault_ldap_secret_backend.this.*.path, lookup(var.ldap_secret_backend_library_set[count.index], "mount")))
+  namespace                    = lookup(var.ldap_secret_backend_library_set[count.index], "namespace")
+  ttl                          = lookup(var.ldap_secret_backend_library_set[count.index], "ttl")
+  max_ttl                      = lookup(var.ldap_secret_backend_library_set[count.index], "max_ttl")
+  disable_check_in_enforcement = lookup(var.ldap_secret_backend_library_set[count.index], "disable_check_in_enforcement")
 }
 
 resource "vault_ldap_secret_backend_static_role" "this" {
   count           = length(var.ldap_secret_backend_static_role)
-  role_name       = ""
-  rotation_period = 0
-  username        = ""
+  role_name       = lookup(var.ldap_secret_backend_static_role[count.index], "role_name")
+  rotation_period = lookup(var.ldap_secret_backend_static_role[count.index], "rotation_period")
+  username        = lookup(var.ldap_secret_backend_static_role[count.index], "username")
+  mount           = try(element(vault_ldap_secret_backend.this.*.path, lookup(var.ldap_secret_backend_static_role[count.index], "mount")))
+  namespace       = lookup(var.ldap_secret_backend_static_role[count.index], "namespace")
+  dn              = lookup(var.ldap_secret_backend_static_role[count.index], "dn")
 }
 
 resource "vault_managed_keys" "this" {
-  count = length(var.managed_keys)
+  count     = length(var.managed_keys)
+  namespace = lookup(var.managed_keys[count.index], "namespace")
+
+  dynamic "aws" {
+    for_each = try(lookup(var.managed_keys[count.index], "aws")) == null ? [] : ["aws"]
+    content {
+      access_key         = sensitive(lookup(aws.value, "access_key"))
+      key_bits           = lookup(aws.value, "key_bits")
+      key_type           = lookup(aws.value, "key_type")
+      kms_key            = lookup(aws.value, "kms_key")
+      name               = lookup(aws.value, "name")
+      secret_key         = sensitive(lookup(aws.value, "secret_key"))
+      curve              = lookup(aws.value, "curve")
+      endpoint           = lookup(aws.value, "endpoint")
+      region             = lookup(aws.value, "region")
+      allow_generate_key = lookup(aws.value, "allow_generate_key")
+      allow_replace_key  = lookup(aws.value, "allow_replace_key")
+      allow_store_key    = lookup(aws.value, "allow_store_key")
+    }
+  }
+
+  dynamic "azure" {
+    for_each = try(lookup(var.managed_keys[count.index], "azure")) == null ? [] : ["azure"]
+    content {
+      client_id          = sensitive(lookup(azure.value, "client_id"))
+      client_secret      = sensitive(lookup(azure.value, "client_secret"))
+      key_name           = lookup(azure.value, "key_name")
+      key_type           = lookup(azure.value, "key_type")
+      name               = lookup(azure.value, "name")
+      tenant_id          = lookup(azure.value, "tenant_id")
+      vault_name         = lookup(azure.value, "vault_name")
+      environment        = lookup(azure.value, "environment")
+      resource           = lookup(azure.value, "resource")
+      key_bits           = lookup(azure.value, "key_bits")
+      allow_generate_key = lookup(azure.value, "allow_generate_key")
+      allow_replace_key  = lookup(azure.value, "allow_replace_key")
+      allow_store_key    = lookup(azure.value, "allow_store_key")
+    }
+  }
+
+  dynamic "pkcs" {
+    for_each = try(lookup(var.managed_keys[count.index], "pkcs")) == null ? [] : ["pkcs"]
+    content {
+      key_id             = sensitive(lookup(pkcs.value, "key_id"))
+      key_label          = sensitive(lookup(pkcs.value, "key_label"))
+      library            = lookup(pkcs.value, "library")
+      mechanism          = lookup(pkcs.value, "mechanism")
+      name               = lookup(pkcs.value, "name")
+      pin                = lookup(pkcs.value, "pin")
+      token_label        = lookup(pkcs.value, "token_label")
+      curve              = lookup(pkcs.value, "curve")
+      key_bits           = lookup(pkcs.value, "key_bits")
+      force_rw_session   = lookup(pkcs.value, "force_rw_session")
+      allow_generate_key = lookup(pkcs.value, "allow_generate_key")
+      allow_replace_key  = lookup(pkcs.value, "allow_replace_key")
+      allow_store_key    = lookup(pkcs.value, "allow_store_key")
+    }
+  }
 }
 
 resource "vault_mfa_duo" "this" {
   count           = length(var.mfa_duo)
-  api_hostname    = ""
-  integration_key = ""
-  mount_accessor  = ""
-  name            = ""
-  secret_key      = ""
+  api_hostname    = lookup(var.mfa_duo[count.index], "api_hostname")
+  integration_key = lookup(var.mfa_duo[count.index], "integration_key")
+  mount_accessor  = try(element(vault_auth_backend.this.*.accessor, lookup(var.mfa_duo[count.index], "mount_accessor")))
+  name            = lookup(var.mfa_duo[count.index], "name")
+  secret_key      = lookup(var.mfa_duo[count.index], "secret_key")
+  username_format = lookup(var.mfa_duo[count.index], "username_format")
+  namespace       = lookup(var.mfa_duo[count.index], "namespace")
+  push_info       = lookup(var.mfa_duo[count.index], "push_info")
 }
 
 resource "vault_mfa_okta" "this" {
-  count          = length(var.mfa_okta)
-  api_token      = ""
-  mount_accessor = ""
-  name           = ""
-  org_name       = ""
+  count           = length(var.mfa_okta)
+  api_token       = lookup(var.mfa_okta[count.index], "api_token")
+  mount_accessor  = try(element(vault_auth_backend.this.*.accessor, lookup(var.mfa_okta[count.index], "mount_accessor")))
+  name            = lookup(var.mfa_okta[count.index], "name")
+  org_name        = lookup(var.mfa_okta[count.index], "org_name")
+  namespace       = lookup(var.mfa_okta[count.index], "namespace")
+  username_format = lookup(var.mfa_okta[count.index], "username_format")
+  base_url        = lookup(var.mfa_okta[count.index], "base_url")
+  primary_email   = lookup(var.mfa_okta[count.index], "primary_email")
 }
 
 resource "vault_mfa_pingid" "this" {
   count                = length(var.mfa_pingid)
-  mount_accessor       = ""
-  name                 = ""
-  settings_file_base64 = ""
+  mount_accessor       = try(element(vault_auth_backend.this.*.accessor, lookup(var.mfa_pingid[count.index], "mount_accessor")))
+  name                 = lookup(var.mfa_pingid[count.index], "name")
+  settings_file_base64 = file(join("/", [path.cwd, "settings", lookup(var.mfa_pingid[count.index], "settings_file_base64")]))
+  namespace            = try(element(vault_namespace.this.*.id, lookup(var.mfa_pingid[count.index], "namespace_id")))
 }
 
 resource "vault_mfa_totp" "this" {
-  count  = length(var.mfa_totp)
-  issuer = ""
-  name   = ""
+  count     = length(var.mfa_totp)
+  issuer    = lookup(var.mfa_totp[count.index], "issuer")
+  name      = lookup(var.mfa_totp[count.index], "name")
+  namespace = try(element(vault_namespace.this.*.id, lookup(var.mfa_totp[count.index], "namespace_id")))
+  period    = lookup(var.mfa_totp[count.index], "period")
+  key_size  = lookup(var.mfa_totp[count.index], "key_size")
+  qr_size   = lookup(var.mfa_totp[count.index], "qr_size")
+  algorithm = lookup(var.mfa_totp[count.index], "algorithm")
+  digits    = lookup(var.mfa_totp[count.index], "digits")
+  skew      = lookup(var.mfa_totp[count.index], "skew")
 }
 
 resource "vault_mongodbatlas_secret_backend" "this" {
   count       = length(var.mongodbatlas_secret_backend)
-  mount       = ""
-  private_key = ""
-  public_key  = ""
+  mount       = try(element(vault_mount.this.*.path, lookup(var.mongodbatlas_secret_backend[count.index], "mount")))
+  private_key = sensitive(lookup(var.mongodbatlas_secret_backend[count.index], "private_key"))
+  public_key  = sensitive(lookup(var.mongodbatlas_secret_backend[count.index], "public_key"))
+  namespace   = try(element(vault_namespace.this.*.id, lookup(var.mongodbatlas_secret_backend[count.index], "namespace_id")))
 }
 
 resource "vault_mongodbatlas_secret_role" "this" {
-  count = length(var.mongodbatlas_secret_role)
-  mount = ""
-  name  = ""
-  roles = []
+  count           = length(var.mongodbatlas_secret_role)
+  mount           = try(element(vault_mount.this.*.path, lookup(var.mongodbatlas_secret_role[count.index], "mount")))
+  name            = lookup(var.mongodbatlas_secret_role[count.index], "name")
+  roles           = lookup(var.mongodbatlas_secret_role[count.index], "roles")
+  namespace       = try(element(vault_namespace.this.*.id, lookup(var.mongodbatlas_secret_role[count.index], "namespace_id")))
+  organization_id = lookup(var.mongodbatlas_secret_role[count.index], "organization_id")
+  project_id      = lookup(var.mongodbatlas_secret_role[count.index], "project_id")
+  project_roles   = lookup(var.mongodbatlas_secret_role[count.index], "project_roles")
+  ip_addresses    = lookup(var.mongodbatlas_secret_role[count.index], "ip_addresses")
+  cidr_blocks     = lookup(var.mongodbatlas_secret_role[count.index], "cidr_blocks")
+  ttl             = lookup(var.mongodbatlas_secret_role[count.index], "ttl")
+  max_ttl         = lookup(var.mongodbatlas_secret_role[count.index], "max_ttl")
 }
 
 resource "vault_mount" "this" {
-  count = length(var.mount)
-  path  = ""
-  type  = ""
+  count                        = length(var.mount)
+  path                         = lookup(var.mount[count.index], "path")
+  type                         = lookup(var.mount[count.index], "type_id") != null ? try(element(vault_mount.this.*.type, lookup(var.mount[count.index], "type_id"))) : lookup(var.mount[count.index], "type")
+  namespace                    = try(element(vault_namespace.this.*.id, lookup(var.mount[count.index], "namespace_id")))
+  description                  = lookup(var.mount[count.index], "description")
+  default_lease_ttl_seconds    = lookup(var.mount[count.index], "default_lease_ttl_seconds")
+  max_lease_ttl_seconds        = lookup(var.mount[count.index], "max_lease_ttl_seconds")
+  audit_non_hmac_request_keys  = lookup(var.mount[count.index], "audit_non_hmac_request_keys")
+  audit_non_hmac_response_keys = lookup(var.mount[count.index], "audit_non_hmac_response_keys")
+  local                        = lookup(var.mount[count.index], "local")
+  options                      = lookup(var.mount[count.index], "options")
+  seal_wrap                    = lookup(var.mount[count.index], "seal_wrap")
+  external_entropy_access      = lookup(var.mount[count.index], "external_entropy_access")
+  allowed_managed_keys         = lookup(var.mount[count.index], "allowed_managed_keys")
 }
 
 resource "vault_namespace" "this" {
-  count = length(var.namespace)
-  path  = ""
+  count           = length(var.namespace)
+  path            = lookup(var.namespace[count.index], "path")
+  namespace       = lookup(var.namespace[count.index], "namespace")
+  custom_metadata = lookup(var.namespace[count.index], "custom_metadata")
 }
 
 resource "vault_nomad_secret_backend" "this" {
-  count = length(var.nomad_secret_backend)
+  count                     = length(var.nomad_secret_backend)
+  backend                   = lookup(var.nomad_secret_backend[count.index], "backend")
+  namespace                 = try(element(vault_namespace.this.*.id, lookup(var.nomad_secret_backend[count.index], "namespace_id")))
+  disable_remount           = lookup(var.nomad_secret_backend[count.index], "disable_remount")
+  address                   = lookup(var.nomad_secret_backend[count.index], "address")
+  ca_cert                   = file(join("/", [path.cwd, "certificate", lookup(var.nomad_secret_backend[count.index], "ca_cert")]))
+  client_cert               = file(join("/", [path.cwd, "certificate", lookup(var.nomad_secret_backend[count.index], "client_cert")]))
+  client_key                = file(join("/", [path.cwd, "certificate", lookup(var.nomad_secret_backend[count.index], "client_key")]))
+  default_lease_ttl_seconds = lookup(var.nomad_secret_backend[count.index], "default_lease_ttl_seconds")
+  description               = lookup(var.nomad_secret_backend[count.index], "description")
+  local                     = lookup(var.nomad_secret_backend[count.index], "local")
+  max_lease_ttl_seconds     = lookup(var.nomad_secret_backend[count.index], "max_lease_ttl_seconds")
+  max_token_name_length     = lookup(var.nomad_secret_backend[count.index], "max_token_name_length")
+  max_ttl                   = lookup(var.nomad_secret_backend[count.index], "max_ttl")
+  token                     = lookup(var.nomad_secret_backend[count.index], "token")
+  ttl                       = lookup(var.nomad_secret_backend[count.index], "ttl")
 }
 
 resource "vault_nomad_secret_role" "this" {
-  count   = length(var.nomad_secret_role)
-  backend = ""
-  role    = ""
+  count     = length(var.nomad_secret_role)
+  backend   = try(element(vault_nomad_secret_backend.this.*.backend, lookup(var.nomad_secret_role[count.index], "backend_id")))
+  role      = lookup(var.nomad_secret_role[count.index], "role")
+  namespace = try(element(vault_namespace.this.*.id, lookup(var.nomad_secret_role[count.index], "namespace_id")))
+  global    = lookup(var.nomad_secret_role[count.index], "global")
+  policies  = lookup(var.nomad_secret_role[count.index], "policies")
+  type      = lookup(var.nomad_secret_role[count.index], "type")
+}
+
+resource "vault_okta_auth_backend" "this" {
+  count           = length(var.okta_auth_backend)
+  organization    = lookup(var.okta_auth_backend[count.index], "organization")
+  namespace       = try(element(vault_namespace.this.*.id, lookup(var.okta_auth_backend[count.index], "namespace")))
+  path            = lookup(var.okta_auth_backend[count.index], "path")
+  disable_remount = lookup(var.okta_auth_backend[count.index], "disable_remount")
+  token           = lookup(var.okta_auth_backend[count.index], "token")
+  base_url        = lookup(var.okta_auth_backend[count.index], "base_url")
+  bypass_okta_mfa = lookup(var.okta_auth_backend[count.index], "bypass_okta_mfa")
+  ttl             = lookup(var.okta_auth_backend[count.index], "ttl")
+  max_ttl         = lookup(var.okta_auth_backend[count.index], "max_ttl")
+
+  dynamic "group" {
+    for_each = try(lookup(var.okta_auth_backend[count.index], "group")) == null ? [] : ["group"]
+    content {
+      group_name = lookup(group.value, "group_name")
+      policies   = lookup(group.value, "policies")
+    }
+  }
+
+  dynamic "user" {
+    for_each = try(lookup(var.okta_auth_backend[count.index], "user")) == null ? [] : ["user"]
+    content {
+      username = lookup(user.value, "username")
+      groups   = lookup(user.value, "groups")
+      policies = lookup(user.value, "policies")
+    }
+  }
+}
+
+resource "vault_okta_auth_backend_group" "this" {
+  count      = length(var.okta_auth_backend_group)
+  group_name = lookup(var.okta_auth_backend_group[count.index], "group_name")
+  path       = try(element(vault_okta_auth_backend.this.*.path, lookup(var.okta_auth_backend_group[count.index], "path_id")))
+  namespace  = try(element(vault_namespace.this.*.id, lookup(var.okta_auth_backend_group[count.index], "namespace_id")))
+  policies   = lookup(var.okta_auth_backend_group[count.index], "policies")
+}
+
+resource "vault_okta_auth_backend_user" "this" {
+  count     = length(var.okta_auth_backend_user)
+  path      = try(element(vault_okta_auth_backend.this.*.path, lookup(var.okta_auth_backend_user[count.index], "path_id")))
+  username  = lookup(var.okta_auth_backend_user[count.index], "username")
+  namespace = try(element(vault_namespace.this.*.id, lookup(var.okta_auth_backend_user[count.index], "namespace_id")))
+  groups    = lookup(var.okta_auth_backend_user[count.index], "groups")
+  policies  = lookup(var.okta_auth_backend_user[count.index], "policies")
 }
 
 resource "vault_password_policy" "this" {
-  name   = ""
-  policy = ""
+  count     = length(var.password_policy)
+  name      = lookup(var.password_policy[count.index], "name")
+  policy    = lookup(var.password_policy[count.index], "policy")
+  namespace = try(element(vault_namespace.this.*.id, lookup(var.password_policy[count.index], "namespace_id")))
 }
 
 resource "vault_pki_secret_backend_cert" "this" {
-  backend     = ""
-  common_name = ""
-  name        = ""
+  count                 = length(var.pki_secret_backend_cert)
+  backend               = try(element(vault_mount.this.*.path, lookup(var.pki_secret_backend_cert[count.index], "backend_id")))
+  common_name           = lookup(var.pki_secret_backend_cert[count.index], "common_name")
+  name                  = lookup(var.pki_secret_backend_cert[count.index], "name")
+  namespace             = try(element(vault_namespace.this.*.id, lookup(var.pki_secret_backend_cert[count.index], "namespace_id")))
+  alt_names             = lookup(var.pki_secret_backend_cert[count.index], "alt_names")
+  ip_sans               = lookup(var.pki_secret_backend_cert[count.index], "ip_sans")
+  uri_sans              = lookup(var.pki_secret_backend_cert[count.index], "uri_sans")
+  other_sans            = lookup(var.pki_secret_backend_cert[count.index], "other_sans")
+  user_ids              = lookup(var.pki_secret_backend_cert[count.index], "user_ids")
+  ttl                   = lookup(var.pki_secret_backend_cert[count.index], "ttl")
+  format                = lookup(var.pki_secret_backend_cert[count.index], "format")
+  private_key_format    = lookup(var.pki_secret_backend_cert[count.index], "private_key_format")
+  exclude_cn_from_sans  = lookup(var.pki_secret_backend_cert[count.index], "exclude_cn_from_sans")
+  min_seconds_remaining = lookup(var.pki_secret_backend_cert[count.index], "min_seconds_remaining")
+  auto_renew            = lookup(var.pki_secret_backend_cert[count.index], "auto_renew")
+  revoke                = lookup(var.pki_secret_backend_cert[count.index], "revoke")
 }
 
 resource "vault_pki_secret_backend_config_ca" "this" {
-  backend    = ""
-  pem_bundle = ""
+  count      = length(var.pki_secret_backend_config_ca)
+  backend    = try(element(vault_mount.this.*.path, lookup(var.pki_secret_backend_config_ca[count.index], "backend_id")))
+  pem_bundle = lookup(var.pki_secret_backend_config_ca[count.index], "pem_bundle")
+  namespace  = try(element(vault_namespace.this.*.id, lookup(var.pki_secret_backend_config_ca[count.index], "namespace_id")))
 }
 
 resource "vault_pki_secret_backend_config_issuers" "this" {
-  backend = ""
+  count                         = length(var.pki_secret_backend_config_issuers)
+  backend                       = try(element(vault_mount.this.*.path, lookup(var.pki_secret_backend_config_issuers[count.index], "backend_id")))
+  namespace                     = try(element(vault_namespace.this.*.id, lookup(var.pki_secret_backend_config_issuers[count.index], "namespace_id")))
+  default                       = lookup(var.pki_secret_backend_config_issuers[count.index], "default")
+  default_follows_latest_issuer = lookup(var.pki_secret_backend_config_issuers[count.index], "default_follows_latest_issuer")
 }
 
 resource "vault_pki_secret_backend_config_urls" "this" {
-  backend = ""
+  count                   = length(var.pki_secret_backend_config_urls)
+  backend                 = try(element(vault_mount.this.*.path, lookup(var.pki_secret_backend_config_urls[count.index], "backend_id")))
+  namespace               = try(element(vault_namespace.this.*.id, lookup(var.pki_secret_backend_config_urls[count.index], "namespace_id")))
+  issuing_certificates    = lookup(var.pki_secret_backend_config_urls[count.index], "issuing_certificates")
+  crl_distribution_points = lookup(var.pki_secret_backend_config_urls[count.index], "crl_distribution_points")
+  ocsp_servers            = lookup(var.pki_secret_backend_config_urls[count.index], "ocsp_servers")
 }
 
 resource "vault_pki_secret_backend_crl_config" "this" {
-  backend = ""
+  count                         = length(var.pki_secret_backend_crl_config)
+  backend                       = try(element(vault_mount.this.*.path, lookup(var.pki_secret_backend_crl_config[count.index], "backend_id")))
+  namespace                     = try(element(vault_namespace.this.*.id, lookup(var.pki_secret_backend_crl_config[count.index], "namespace_id")))
+  expiry                        = lookup(var.pki_secret_backend_crl_config[count.index], "expiry")
+  disable                       = lookup(var.pki_secret_backend_crl_config[count.index], "disable")
+  ocsp_disable                  = lookup(var.pki_secret_backend_crl_config[count.index], "ocsp_disable")
+  ocsp_expiry                   = lookup(var.pki_secret_backend_crl_config[count.index], "ocsp_expiry")
+  auto_rebuild                  = lookup(var.pki_secret_backend_crl_config[count.index], "auto_rebuild")
+  auto_rebuild_grace_period     = lookup(var.pki_secret_backend_crl_config[count.index], "auto_rebuild_grace_period")
+  enable_delta                  = lookup(var.pki_secret_backend_crl_config[count.index], "enable_delta")
+  delta_rebuild_interval        = lookup(var.pki_secret_backend_crl_config[count.index], "delta_rebuild_interval")
+  cross_cluster_revocation      = lookup(var.pki_secret_backend_crl_config[count.index], "cross_cluster_revocation")
+  unified_crl                   = lookup(var.pki_secret_backend_crl_config[count.index], "unified_crl")
+  unified_crl_on_existing_paths = lookup(var.pki_secret_backend_crl_config[count.index], "unified_crl_on_existing_paths")
 }
 
 resource "vault_pki_secret_backend_intermediate_cert_request" "this" {
-  backend     = ""
-  common_name = ""
-  type        = ""
+  count                 = length(var.pki_secret_backend_intermediate_cert_request)
+  backend               = try(element(vault_mount.this.*.path, lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "backend_id")))
+  common_name           = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "common_name")
+  type                  = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "type")
+  namespace             = try(element(vault_namespace.this.*.id, lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "namespace_id")))
+  alt_names             = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "alt_names")
+  ip_sans               = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "ip_sans")
+  uri_sans              = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "uri_sans")
+  other_sans            = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "other_sans")
+  format                = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "format")
+  private_key_format    = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "private_key_format")
+  key_bits              = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "key_bits")
+  key_name              = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "key_name")
+  key_ref               = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "key_ref")
+  key_type              = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "key_type")
+  managed_key_id        = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "managed_key_id")
+  managed_key_name      = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "managed_key_name")
+  ou                    = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "ou")
+  organization          = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "organization")
+  country               = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "country")
+  locality              = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "locality")
+  province              = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "province")
+  street_address        = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "street_address")
+  postal_code           = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "postal_code")
+  add_basic_constraints = lookup(var.pki_secret_backend_intermediate_cert_request[count.index], "add_basic_constraints")
 }
 
 resource "vault_pki_secret_backend_intermediate_set_signed" "this" {
-  backend     = ""
-  certificate = ""
+  count       = length(var.pki_secret_backend_intermediate_set_signed)
+  backend     = try(element(vault_mount.this.*.path, lookup(var.pki_secret_backend_intermediate_set_signed[count.index], "backend_id")))
+  certificate = try(element(vault_pki_secret_backend_root_sign_intermediate.this.*.certificate, lookup(var.pki_secret_backend_intermediate_set_signed[count.index], "certificate_id")))
+  namespace   = try(element(vault_namespace.this.*.id, lookup(var.pki_secret_backend_intermediate_set_signed[count.index], "namespace_id")))
 }
 
 resource "vault_pki_secret_backend_issuer" "this" {
+  count      = length(var.pki_secret_backend_issuer)
   backend    = ""
   issuer_ref = ""
 }
 
 resource "vault_pki_secret_backend_key" "this" {
+  count   = length(var.pki_secret_backend_key)
   backend = ""
   type    = ""
 }
 
 resource "vault_pki_secret_backend_role" "this" {
+  count   = length(var.pki_secret_backend_role)
   backend = ""
   name    = ""
 }
 
 resource "vault_pki_secret_backend_root_cert" "this" {
+  count       = length(var.pki_secret_backend_root_cert)
   backend     = ""
   common_name = ""
   type        = ""
 }
 
 resource "vault_pki_secret_backend_root_sign_intermediate" "this" {
+  count       = length(var.pki_secret_backend_root_sign_intermediate)
   backend     = ""
   common_name = ""
-  csr         = ""
+  csr         = try(element(vault_pki_secret_backend_intermediate_cert_request.this.*.csr, ))
+}
+
+resource "vault_pki_secret_backend_intermediate_cert_request" "this" {
+  backend     = ""
+  common_name = ""
+  type        = ""
+
 }
 
 resource "vault_pki_secret_backend_sign" "this" {
+  count       = length(var.pki_secret_backend_sign)
   backend     = ""
   common_name = ""
   csr         = ""
@@ -1666,6 +1942,7 @@ resource "vault_pki_secret_backend_sign" "this" {
 }
 
 resource "vault_policy" "this" {
+  count  = length(var.policy)
   name   = ""
   policy = ""
 }

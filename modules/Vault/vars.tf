@@ -2303,7 +2303,12 @@ EOF
 
 variable "ldap_auth_backend_user" {
   type = list(object({
-    id = number
+    id        = number
+    username  = string
+    backend   = optional(number)
+    groups    = optional(list(number))
+    policies  = optional(list(string))
+    namespace = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -2312,7 +2317,30 @@ EOF
 
 variable "ldap_secret_backend" {
   type = list(object({
-    id = number
+    id                           = number
+    binddn                       = string
+    bindpass                     = string
+    path                         = optional(string)
+    url                          = optional(string)
+    certificate                  = optional(string)
+    client_tls_cert              = optional(string)
+    client_tls_key               = optional(string)
+    description                  = optional(string)
+    upndomain                    = optional(string)
+    password_policy              = optional(string)
+    schema                       = optional(string)
+    userattr                     = optional(string)
+    userdn                       = optional(string)
+    audit_non_hmac_request_keys  = optional(list(string))
+    audit_non_hmac_response_keys = optional(list(string))
+    connection_timeout           = optional(number)
+    default_lease_ttl_seconds    = optional(number)
+    max_lease_ttl_seconds        = optional(number)
+    request_timeout              = optional(number)
+    starttls                     = optional(bool)
+    insecure_tls                 = optional(bool)
+    local                        = optional(bool)
+    disable_remount              = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -2321,7 +2349,16 @@ EOF
 
 variable "ldap_secret_backend_dynamic_role" {
   type = list(object({
-    id = number
+    id                = number
+    creation_ldif     = string
+    deletion_ldif     = string
+    role_name         = string
+    namespace         = optional(string)
+    mount             = optional(number)
+    rollback_ldif     = optional(string)
+    username_template = optional(string)
+    default_ttl       = optional(number)
+    max_ttl           = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -2330,7 +2367,14 @@ EOF
 
 variable "ldap_secret_backend_library_set" {
   type = list(object({
-    id = number
+    id                           = number
+    name                         = string
+    service_account_names        = list(string)
+    mount                        = number
+    namespace                    = optional(string)
+    ttl                          = optional(number)
+    max_ttl                      = optional(number)
+    disable_check_in_enforcement = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -2339,7 +2383,13 @@ EOF
 
 variable "ldap_secret_backend_static_role" {
   type = list(object({
-    id = number
+    id              = number
+    role_name       = string
+    rotation_period = number
+    username        = string
+    mount           = optional(number)
+    namespace       = optional(string)
+    dn              = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -2348,7 +2398,52 @@ EOF
 
 variable "managed_keys" {
   type = list(object({
-    id = number
+    id        = number
+    namespace = optional(string)
+    aws = optional(list(object({
+      access_key         = string
+      key_bits           = string
+      key_type           = string
+      kms_key            = string
+      name               = string
+      secret_key         = string
+      curve              = optional(string)
+      endpoint           = optional(string)
+      region             = optional(string)
+      allow_generate_key = optional(bool)
+      allow_replace_key  = optional(bool)
+      allow_store_key    = optional(bool)
+    })), [])
+    azure = optional(list(object({
+      client_id          = string
+      client_secret      = string
+      key_name           = string
+      key_type           = string
+      name               = string
+      tenant_id          = string
+      vault_name         = string
+      environment        = optional(string)
+      resource           = optional(string)
+      key_bits           = optional(string)
+      allow_generate_key = optional(bool)
+      allow_replace_key  = optional(bool)
+      allow_store_key    = optional(bool)
+    })), [])
+    pkcs = optional(list(object({
+      key_id             = string
+      key_label          = string
+      library            = string
+      mechanism          = string
+      name               = string
+      pin                = string
+      token_label        = optional(string)
+      curve              = optional(string)
+      key_bits           = optional(string)
+      force_rw_session   = optional(string)
+      allow_generate_key = optional(bool)
+      allow_replace_key  = optional(bool)
+      allow_store_key    = optional(bool)
+    })), [])
   }))
   default     = []
   description = <<EOF
@@ -2357,7 +2452,15 @@ EOF
 
 variable "mfa_duo" {
   type = list(object({
-    id = number
+    id              = number
+    api_hostname    = string
+    integration_key = string
+    mount_accessor  = number
+    name            = string
+    secret_key      = string
+    username_format = string
+    namespace       = optional(string)
+    push_info       = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -2366,7 +2469,15 @@ EOF
 
 variable "mfa_okta" {
   type = list(object({
-    id = number
+    id              = number
+    api_token       = string
+    mount_accessor  = number
+    name            = string
+    org_name        = string
+    namespace       = optional(string)
+    username_format = optional(string)
+    base_url        = optional(string)
+    primary_email   = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -2375,7 +2486,11 @@ EOF
 
 variable "mfa_pingid" {
   type = list(object({
-    id = number
+    id                   = number
+    mount_accessor       = number
+    name                 = string
+    settings_file_base64 = string
+    namespace_id         = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -2384,7 +2499,16 @@ EOF
 
 variable "mfa_totp" {
   type = list(object({
-    id = number
+    id           = number
+    issuer       = string
+    name         = string
+    namespace_id = optional(number)
+    period       = optional(number)
+    key_size     = optional(number)
+    qr_size      = optional(number)
+    algorithm    = optional(string)
+    digits       = optional(number)
+    skew         = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -2393,7 +2517,11 @@ EOF
 
 variable "mongodbatlas_secret_backend" {
   type = list(object({
-    id = number
+    id           = number
+    mount        = number
+    private_key  = string
+    public_key   = string
+    namespace_id = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -2402,7 +2530,18 @@ EOF
 
 variable "mongodbatlas_secret_role" {
   type = list(object({
-    id = number
+    id              = number
+    mount           = number
+    name            = string
+    roles           = list(string)
+    namespace_id    = optional(number)
+    organization_id = optional(string)
+    project_id      = optional(string)
+    project_roles   = optional(list(string))
+    ip_addresses    = optional(list(string))
+    cidr_blocks     = optional(list(string))
+    ttl             = optional(string)
+    max_ttl         = optional(string)
   }))
   default     = []
   description = <<EOF
@@ -2411,7 +2550,21 @@ EOF
 
 variable "mount" {
   type = list(object({
-    id = number
+    id                           = number
+    path                         = string
+    type                         = string
+    type_id                      = optional(number)
+    namespace_id                 = optional(number)
+    description                  = optional(string)
+    default_lease_ttl_seconds    = optional(number)
+    max_lease_ttl_seconds        = optional(number)
+    audit_non_hmac_request_keys  = optional(list(string))
+    audit_non_hmac_response_keys = optional(list(string))
+    local                        = optional(bool)
+    options                      = optional(map(string))
+    seal_wrap                    = optional(bool)
+    external_entropy_access      = optional(bool)
+    allowed_managed_keys         = optional(list(string))
   }))
   default     = []
   description = <<EOF
@@ -2420,7 +2573,10 @@ EOF
 
 variable "namespace" {
   type = list(object({
-    id = number
+    id              = number
+    path            = string
+    namespace       = optional(string)
+    custom_metadata = optional(map(string))
   }))
   default     = []
   description = <<EOF
@@ -2429,7 +2585,22 @@ EOF
 
 variable "nomad_secret_backend" {
   type = list(object({
-    id = number
+    id                        = number
+    backend                   = optional(string)
+    namespace_id              = optional(number)
+    disable_remount           = optional(bool)
+    address                   = optional(string)
+    ca_cert                   = optional(string)
+    client_cert               = optional(string)
+    client_key                = optional(string)
+    default_lease_ttl_seconds = optional(number)
+    description               = optional(string)
+    local                     = optional(bool)
+    max_lease_ttl_seconds     = optional(number)
+    max_token_name_length     = optional(number)
+    max_ttl                   = optional(number)
+    token                     = optional(string)
+    ttl                       = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -2438,16 +2609,79 @@ EOF
 
 variable "nomad_secret_role" {
   type = list(object({
-    id = number
+    id           = number
+    backend_id   = optional(number)
+    role         = optional(string)
+    namespace_id = optional(number)
+    global       = optional(bool)
+    policies     = optional(list(string))
+    type         = optional(string)
   }))
   default     = []
   description = <<EOF
 EOF
 }
 
+variable "okta_auth_backend" {
+  type = list(object({
+    id              = number
+    organization    = string
+    namespace_id    = optional(number)
+    path            = optional(string)
+    disable_remount = optional(bool)
+    token           = optional(string)
+    base_url        = optional(string)
+    bypass_okta_mfa = optional(bool)
+    ttl             = optional(string)
+    max_ttl         = optional(string)
+    group = optional(list(object({
+      group_name = optional(string)
+      policies   = optional(list(string))
+    })), [])
+    user = optional(list(object({
+      username = optional(string)
+      groups   = optional(list(string))
+      policies = optional(list(string))
+    })), [])
+  }))
+  default     = []
+  description = <<EOF
+  EOF
+}
+
+variable "okta_auth_backend_group" {
+  type = list(object({
+    id           = number
+    group_name   = string
+    path_id      = number
+    namespace_id = optional(number)
+    policies     = optional(list(string))
+  }))
+  default     = []
+  description = <<EOF
+  EOF
+}
+
+variable "okta_auth_backend_user" {
+  type = list(object({
+    id           = number
+    path_id      = number
+    username     = string
+    namespace_id = optional(number)
+    groups       = optional(list(string))
+    policies     = optional(list(string))
+  }))
+  default     = []
+  description = <<EOF
+  EOF
+}
+
 variable "password_policy" {
   type = list(object({
-    id = number
+    id           = number
+    name         = string
+    policy       = string
+    namespace_id = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -2456,7 +2690,23 @@ EOF
 
 variable "pki_secret_backend_cert" {
   type = list(object({
-    id = number
+    id                    = number
+    backend_id            = number
+    common_name           = string
+    name                  = string
+    namespace_id          = optional(number)
+    alt_names             = optional(list(string))
+    ip_sans               = optional(list(string))
+    uri_sans              = optional(list(string))
+    other_sans            = optional(list(string))
+    user_ids              = optional(list(string))
+    ttl                   = optional(string)
+    format                = optional(string)
+    private_key_format    = optional(string)
+    exclude_cn_from_sans  = optional(bool)
+    min_seconds_remaining = optional(number)
+    auto_renew            = optional(bool)
+    revoke                = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -2465,7 +2715,10 @@ EOF
 
 variable "pki_secret_backend_config_ca" {
   type = list(object({
-    id = number
+    id           = number
+    backend_id   = number
+    pem_bundle   = string
+    namespace_id = optional(number)
   }))
   default     = []
   description = <<EOF
@@ -2474,7 +2727,11 @@ EOF
 
 variable "pki_secret_backend_config_issuers" {
   type = list(object({
-    id = number
+    id                            = number
+    backend_id                    = number
+    namespace_id                  = optional(number)
+    default                       = optional(string)
+    default_follows_latest_issuer = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -2483,7 +2740,12 @@ EOF
 
 variable "pki_secret_backend_config_urls" {
   type = list(object({
-    id = number
+    id                      = number
+    backend_id              = number
+    namespace_id            = optional(number)
+    issuing_certificates    = optional(list(string))
+    crl_distribution_points = optional(list(string))
+    ocsp_servers            = optional(list(string))
   }))
   default     = []
   description = <<EOF
@@ -2492,7 +2754,20 @@ EOF
 
 variable "pki_secret_backend_crl_config" {
   type = list(object({
-    id = number
+    id                            = number
+    backend_id                    = number
+    namespace_id                  = optional(number)
+    expiry                        = optional(string)
+    disable                       = optional(bool)
+    ocsp_disable                  = optional(bool)
+    ocsp_expiry                   = optional(string)
+    auto_rebuild                  = optional(bool)
+    auto_rebuild_grace_period     = optional(string)
+    enable_delta                  = optional(bool)
+    delta_rebuild_interval        = optional(string)
+    cross_cluster_revocation      = optional(bool)
+    unified_crl                   = optional(bool)
+    unified_crl_on_existing_paths = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -2501,7 +2776,31 @@ EOF
 
 variable "pki_secret_backend_intermediate_cert_request" {
   type = list(object({
-    id = number
+    id                    = number
+    backend_id            = number
+    common_name           = string
+    type                  = string
+    namespace_id          = optional(number)
+    alt_names             = optional(list(string))
+    ip_sans               = optional(list(string))
+    uri_sans              = optional(list(string))
+    other_sans            = optional(list(string))
+    format                = optional(string)
+    private_key_format    = optional(string)
+    key_bits              = optional(number)
+    key_name              = optional(string)
+    key_ref               = optional(string)
+    key_type              = optional(string)
+    managed_key_id        = optional(string)
+    managed_key_name      = optional(string)
+    ou                    = optional(string)
+    organization          = optional(string)
+    country               = optional(string)
+    locality              = optional(string)
+    province              = optional(string)
+    street_address        = optional(string)
+    postal_code           = optional(string)
+    add_basic_constraints = optional(bool)
   }))
   default     = []
   description = <<EOF
@@ -2510,7 +2809,10 @@ EOF
 
 variable "pki_secret_backend_intermediate_set_signed" {
   type = list(object({
-    id = number
+    id             = number
+    backend_id     = number
+    certificate_id = number
+    namespace      = optional(number)
   }))
   default     = []
   description = <<EOF
