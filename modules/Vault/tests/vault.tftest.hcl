@@ -292,3 +292,43 @@ run "vault_pki_secret_backend_intermediate_set_signed" {
     ]
   }
 }
+
+run "vault_transit_secret" {
+  command = apply
+
+  variables {
+    namespace = [
+      {
+        id    = 0
+        path  = "ns1"
+      }
+    ]
+    mount = [
+      {
+        id                        = 0
+        path                      = "transit"
+        type                      = "transit"
+        description               = "Example description"
+        default_lease_ttl_seconds = 3600
+        max_lease_ttl_seconds     = 86400
+        namespace_id              = 0
+      }
+    ]
+    transit_secret_backend_key = [
+      {
+        id            = 0
+        backend_id    = 0
+        namespace_id  = 0
+        name          = "my_key"
+      }
+    ]
+    transit_secret_cache_config = [
+      {
+        id            = 0
+        backend_id    = 0
+        namespace_id  = 0
+        size          = 500
+      }
+    ]
+  }
+}
