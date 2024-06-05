@@ -30,16 +30,16 @@ variable "tags" {
 }
 
 variable "mns_topics" {
-  type = list(map(object({
+  type = list(object({
     name                 = string
     maximum_message_size = optional(number, 0)
     logging_enabled      = optional(bool, true)
-  })))
+  }))
   default = {}
 }
 
 variable "ram_roles" {
-  type = list(map(object({
+  type = list(object({
     id                   = number
     name                 = string
     services             = optional(set(string))
@@ -49,7 +49,7 @@ variable "ram_roles" {
     description          = optional(string)
     force                = optional(bool, false)
     max_session_duration = optional(number, 3600)
-  })))
+  }))
   default     = []
   description = <<-EOT
     name                 = string / Name of the RAM role. This name can have a string of 1 to 64 characters, must contain only alphanumeric characters or hyphens, such as "-", "_", and must not begin with a hyphen.
@@ -64,7 +64,7 @@ EOT
 }
 
 variable "ram_policy" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     policy_name = string
     statement = optional(list(object({
@@ -76,7 +76,7 @@ variable "ram_policy" {
     description     = optional(string)
     rotate_strategy = optional(string)
     force           = optional(bool, false)
-  })))
+  }))
   default     = []
   description = <<-EOT
     policy_name = string / Name of the RAM policy. This name can have a string of 1 to 128 characters, must contain only alphanumeric characters or hyphen "-", and must not begin with a hyphen.
@@ -92,25 +92,25 @@ EOT
 }
 
 variable "role_policy_attachement" {
-  type = list(map(object({
+  type = list(object({
     id        = number
     policy_id = number
     role_id   = number
-  })))
+  }))
   default = []
 }
 
 variable "oss_bucket" {
-  type = list(map(object({
+  type = list(object({
     id     = number
     bucket = string
     tags   = map(string)
-  })))
+  }))
   default = []
 }
 
 variable "actiontrail" {
-  type = list(map(object({
+  type = list(object({
     id                 = number
     name               = string
     event_rw           = optional(string)
@@ -119,7 +119,7 @@ variable "actiontrail" {
     oss_key_prefix     = optional(string)
     sls_project_arn    = optional(string)
     sls_write_role_arn = optional(string)
-  })))
+  }))
   default     = []
   description = <<-EOT
 EOT
@@ -131,15 +131,15 @@ variable "storage_region" {
 }
 
 variable "delivery_job" {
-  type = list(map(object({
+  type = list(object({
     id       = number
     trail_id = number
-  })))
+  }))
   default = []
 }
 
 variable "trail" {
-  type = list(map(object({
+  type = list(object({
     id                    = number
     trail_id              = optional(number)
     name                  = optional(string)
@@ -152,16 +152,16 @@ variable "trail" {
     mns_topic_id          = optional(number)
     status                = optional(string)
     is_organization_trail = optional(bool, false)
-  })))
+  }))
   default = []
 }
 
 variable "log_projects" {
-  type = list(map(object({
+  type = list(object({
     id          = number
     name        = string
     description = optional(string)
     tags        = optional(map(string))
-  })))
+  }))
   default = []
 }
