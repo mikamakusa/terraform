@@ -230,3 +230,53 @@ run "namespace" {
     ]
   }
 }
+
+run "variable" {
+  command = apply
+
+  variables {
+    quota_specification = [
+      {
+        id          = 0
+        name        = "web-team"
+        description = "web team quota"
+        limits = [
+          {
+            region = "global"
+            region_limit = [
+              {
+                cpu       = 1000
+                memory_mb = 256
+              }
+            ]
+          }
+        ]
+      }
+    ]
+    namespace = [
+      {
+        id          = 0
+        name        = "web"
+        description = "Web team production environment."
+        quota_id    = 0
+      }
+    ]
+    variable = [
+      {
+        id    = 0
+        path  = "some/path/of/your/choosing"
+        items = {
+          example_key = "example_value"
+        }
+      },
+      {
+        id            = 1
+        path          = "some/path/of/your/choosing"
+        namespace_id  = 0
+        items     = {
+          example_key = "example_value"
+        }
+      }
+    ]
+  }
+}

@@ -337,27 +337,70 @@ resource "nomad_quota_specification" "this" {
 }
 
 resource "nomad_scheduler_config" "this" {
-  count = length(var.scheduler_config)
+  count                           = length(var.scheduler_config)
+  scheduler_algorithm             = lookup(var.scheduler_config[count.index], "scheduler_algorithm")
+  memory_oversubscription_enabled = lookup(var.scheduler_config[count.index], "memory_oversubscription_enabled")
+  preemption_config               = lookup(var.scheduler_config[count.index], "preemption_config")
 }
 
 resource "nomad_sentinel_policy" "this" {
   count             = length(var.sentinel_policy)
-  enforcement_level = ""
-  name              = ""
-  policy            = ""
-  scope             = ""
+  name              = lookup(var.sentinel_policy[count.index], "name")
+  policy            = lookup(var.sentinel_policy[count.index], "policy")
+  enforcement_level = lookup(var.sentinel_policy[count.index], "enforcement_level")
+  scope             = lookup(var.sentinel_policy[count.index], "scope")
+  description       = lookup(var.sentinel_policy[count.index], "description")
 }
 
 resource "nomad_variable" "this" {
-  count = length(var.variable)
-  items = {}
-  path  = ""
+  count     = length(var.variable)
+  items     = lookup(var.variable[count.index], "items")
+  path      = lookup(var.variable[count.index], "path")
+  namespace = try(element(nomad_namespace.this.*.id, lookup(var.variable[count.index], "namespace_id")))
 }
 
 resource "nomad_volume" "this" {
-  count       = length(var.volume)
-  external_id = ""
-  name        = ""
-  plugin_id   = ""
-  volume_id   = ""
+  count                 = length(var.volume)
+  external_id           = lookup(var.volume[count.index], "external_id")
+  namespace             = try(element(nomad_namespace.this.*.id, lookup(var.volume[count.index], "namespace_id")))
+  name                  = lookup(var.volume[count.index], "name")
+  plugin_id             = data.nomad_plugin.this.id
+  volume_id             = lookup(var.volume[count.index], "volume_id")
+  secrets               = lookup(var.volume[count.index], "secrets")
+  parameters            = lookup(var.volume[count.index], "parameters")
+  context               = lookup(var.volume[count.index], "context")
+  deregister_on_destroy = lookup(var.volume[count.index], "deregister_on_destroy")
+  
+  dynamic "capability" {
+    for_each = try(lookup(var.volume[count.index], "capability")) == null ? [] : ["capability"]
+    content {
+      access_mode     = lookup(capability.value, "access_mode")
+      attachment_mode = lookup(capability.value, "attachment_mode")
+    }
+  }
+
+  dynamic "topology_request" {
+    for_each = lookup(var.volume[count.index], "topology_request") == null ? [] : ["topology_request"]
+    content {
+      dynamic "required" {
+        for_each = lookup(topology_request.value, "required") == null ? [] : ["required"]
+        content {
+          dynamic "topology" {
+            for_each = lookup(required.value, "topology") == null ? [] : ["topology"]
+            content {
+              segments = lookup(topology.value, "segments")
+            }
+          }
+        }
+      }
+    }
+  }
+
+  dynamic "mount_options" {
+    for_each = lookup(var.volume[count.index], "mount_options") == null ? [] : ["mount_options"]
+    content {
+      fs_type     = lookup(mount_options.value, "fs_type")
+      mount_flags = lookup(mount_options.value, "mount_flags")
+    }
+  }
 }
