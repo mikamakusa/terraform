@@ -1,7 +1,7 @@
 resource "cloudfoundry_app" "this" {
-  count            = length(var.app)
+  count            = length(var.space) == 0 ? 0 : length(var.app)
   name             = lookup(var.app[count.index], "name")
-  space            = lookup(var.app[count.index], "space")
+  space_id         = try(element(cloudfoundry_space.this.*.id, lookup(var.app[count.index], "space_id")))
   annotations      = lookup(var.app[count.index], "annotations")
   source_code_hash = lookup(var.app[count.index], "source_code_hash")
   stack            = lookup(var.app[count.index], "stack")
@@ -274,7 +274,6 @@ resource "cloudfoundry_service_instance" "this" {
   )
   json_params                    = lookup(var.service_instance[count.index], "json_params")
   tags                           = lookup(var.service_instance[count.index], "tags")
-  recursive_delete               = lookup(var.service_instance[count.index], "recursive_delete")
   replace_on_params_change       = lookup(var.service_instance[count.index], "replace_on_params_change")
   replace_on_service_plan_change = lookup(var.service_instance[count.index], "replace_on_service_plan_change")
 }
